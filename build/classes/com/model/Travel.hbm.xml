@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 11-feb-2017 21:28:22 by Hibernate Tools 4.3.5.Final -->
+<hibernate-mapping>
+    <class name="com.model.Travel" table="travel" catalog="jruteros" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <set name="routes" table="route" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="travel_id" not-null="true" unique="true" />
+            </key>
+            <one-to-many class="com.model.Route" />
+        </set>
+        <set name="apoints" table="apoint" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="travel_id" not-null="true" />
+            </key>
+            <one-to-many class="com.model.Apoint" />
+        </set>
+    </class>
+</hibernate-mapping>

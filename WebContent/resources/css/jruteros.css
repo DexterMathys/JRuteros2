@@ -1,0 +1,14 @@
+@CHARSET "UTF-8";
+
+
+.menu-options {
+	color: white;
+}
+
+.login-text {
+	text-align: center;	
+}
+
+.pass-input {
+	display: none;
+}

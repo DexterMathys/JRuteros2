@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"	
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:p="http://primefaces.org/ui"
+			    template="/WEB-INF/facelets/templates/layout.xhtml"> 
+
+	<ui:define name="encabezado">
+		<ui:include src="/WEB-INF/facelets/headers/defaultHeader.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="body">
+		<h1>Iniciar Sesión</h1>
+		
+	  	<h:messages class="alert alert-error" globalOnly="true" />
+		
+		<h:form class="form-horizontal">
+			<fieldset>
+				<p:panelGrid>
+					<p:outputLabel value="Usuario"/>
+					<!-- Text input-->
+					<p:inputText name="username" value="#{userBean.user.userName}" />
+					
+					<p:outputLabel value="Contraseña"/>
+					<!-- Password input-->
+					<p:password name="userpass" value="#{userBean.user.password}" />
+					
+					<!-- Button -->
+					<p:commandButton value="Iniciar sesión" action="#{userBean.verificarDatos()}"/>
+					
+				</p:panelGrid>
+			</fieldset>
+		</h:form>
+		
+		<!-- Registrate -->
+		Si no tienes cuenta <h:link value="registrate!" outcome="signup" /> 
+	</ui:define>
+	
+</ui:composition>

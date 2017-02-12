@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+@import "bootstrap.css";
+@import "../plugins/datepicker/datepicker3.css";
+
+.menu-options {
+	color: white;
+}
+
+.login-text {
+	text-align: center;	
+}
+
+.pass-input {
+	display: none;
+	visibility: hidden;
+}

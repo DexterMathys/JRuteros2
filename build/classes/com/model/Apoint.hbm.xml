@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 11-feb-2017 21:28:22 by Hibernate Tools 4.3.5.Final -->
+<hibernate-mapping>
+    <class name="com.model.Apoint" table="apoint" catalog="jruteros" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="travel" class="com.model.Travel" fetch="select">
+            <column name="travel_id" not-null="true" />
+        </many-to-one>
+        <property name="latitude" type="string">
+            <column name="latitude" />
+        </property>
+        <property name="longuitude" type="string">
+            <column name="longuitude" />
+        </property>
+    </class>
+</hibernate-mapping>

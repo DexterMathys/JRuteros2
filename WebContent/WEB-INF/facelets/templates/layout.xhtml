@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"	
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
+  	<script src="js/bootstrap.js"></script>
+  	
+  	<script src="plugins/slimScroll/jquery.slimscroll.min.js"></script>
+  	<script src="plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="plugins/chartjs/Chart.js"></script>
+  	<script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+  	<script src="plugins/select2/select2.full.js"></script>
+  	<script src="js/app.js"></script>
+  
+    
+	<script src="plugins/datatables/jquery.dataTables.js"></script>
+  	<script src="js/jruteros.js"></script>
+
+
+	<h:outputStylesheet library="css" name="bootstrap.css" />
+	<h:outputStylesheet library="css" name="jruteros.css" />
+	<h:outputStylesheet library="css" name="AdminLTE.css" />
+	<h:outputStylesheet library="css" name="skins/_all-skins.css" />
+	<h:outputStylesheet library="plugins" name="datepicker/datepicker3.css" />
+	<h:outputStylesheet library="plugins" name="bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" />
+	<h:outputStylesheet library="plugins" name="select2/select2.css" />
+	<h:outputStylesheet library="css" name="font-awesome.css" />
+	<h:outputStylesheet library="css" name="font-awesome-animation.css" />
+	<h:outputStylesheet library="plugins" name="datatables/dataTables.bootstrap.css" />
+	
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+	
+	<title>
+		<ui:insert name="titulo">
+		JRuteros
+		</ui:insert>
+	</title>
+</h:head>
+<h:body class="skin-purple sidebar-mini fixed">
+	<div class="wrapper">
+		<div id="pageheader">
+			<ui:insert name="encabezado">
+	      	</ui:insert>
+	    </div>
+	    
+	    <div id="lateral">
+	    	<ui:insert name="menu">
+	      		
+	      	</ui:insert>
+	    </div>
+
+    <!-- =============================================== -->
+
+    <!-- Right side column. Contains the navbar and content of the page -->
+	    <div class="content-wrapper">
+	
+	      <!-- Main content -->
+	      <section class="content">
+	
+	        <div id="modal-holder"></div>
+	        <div id="body">
+	      	  <ui:insert name="body"/>
+
+	      		
+	    	</div>
+	
+	      </section><!-- /.content -->
+	    </div><!-- /.content-wrapper -->
+	
+	    <footer class="main-footer">
+	      <div class="pull-right hidden-xs">
+	      	<ui:insert name="footer">
+	      	 	<b>JRuteros</b> 1.0
+	      	</ui:insert>
+	      </div>
+	    </footer>
+	</div><!-- ./wrapper -->
+	
+</h:body>
+</html> 
