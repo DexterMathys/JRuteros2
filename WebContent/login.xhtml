@@ -13,12 +13,11 @@
 	
 	<ui:define name="body">
 		<h1>Iniciar Sesión</h1>
-		
-	  	<h:messages class="alert alert-error" globalOnly="true" />
-		
+		<hr/>
 		<h:form class="form-horizontal">
+			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 			<fieldset>
-				<p:panelGrid>
+				<h:panelGrid>
 					<p:outputLabel value="Usuario"/>
 					<!-- Text input-->
 					<p:inputText name="username" value="#{userBean.user.userName}" />
@@ -26,14 +25,14 @@
 					<p:outputLabel value="Contraseña"/>
 					<!-- Password input-->
 					<p:password name="userpass" value="#{userBean.user.password}" />
-					
+					<br />
 					<!-- Button -->
 					<p:commandButton value="Iniciar sesión" action="#{userBean.verificarDatos()}"/>
 					
-				</p:panelGrid>
+				</h:panelGrid>
 			</fieldset>
 		</h:form>
-		
+		<br/>
 		<!-- Registrate -->
 		Si no tienes cuenta <h:link value="registrate!" outcome="signup" /> 
 	</ui:define>

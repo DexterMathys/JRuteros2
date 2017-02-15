@@ -26,11 +26,11 @@ public class UserBean {
 			us = userDao.verificarDatos(this.user);
 			if (us != null) {
 				if (us.isActive() == true) {
+					this.user = us;
 					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user", us);
 					return "index";
 				}else {
-					System.out.println(us.isActive());
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 							"Su usuario ha sido deshabilitado", "Por favor comunicarse con el administrador"));
 					return "login";
 				}
