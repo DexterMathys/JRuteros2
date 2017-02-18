@@ -1,12 +1,49 @@
-<aside class="main-sidebar">
+<aside xmlns:h="http://java.sun.com/jsf/html" 
+       xmlns:p="http://primefaces.org/ui"
+       class="main-sidebar">
 	<!-- sidebar: style can be found in sidebar.less -->
 		<section class="sidebar">
-			<ul class="sidebar-menu">
-				<li class="header">OPCIONES</li>
-				<li><!-- <a href="${pageContext.request.contextPath}/newroute"> --><a href="#"> <i class="fa fa-plus-square"></i> <span class='menu-options'>Nueva ruta</span></a></li>
-				<li class=""> <!-- <a href="${pageContext.request.contextPath}/myroutes"> --><a href="#"> <i class="fa fa-th-list"></i> <span class='menu-options'>Mis rutas</span></a></li>
-				<li><!-- <a href="${pageContext.request.contextPath}/searchroute"> --><a href="#"> <i class="fa fa-search"></i> <span class='menu-options'>Buscar ruta</span></a></li>
-			</ul>
+			<h:form>	
+				<ul class="sidebar-menu">
+					<li class="header">OPCIONES</li>
+					<li>
+						<p:commandLink rendered="#{userBean.user.roll == 'User'}" action="#{userBean.logout()}"> 
+							<i class="fa fa-plus-square"></i> 
+							<span class='menu-options'>Nueva ruta</span>
+						</p:commandLink>
+					</li>
+					<li>
+						<p:commandLink rendered="#{userBean.user.roll == 'User'}" action="#{userBean.logout()}"> 
+							<i class="fa fa-th-list"></i> 
+							<span class='menu-options'>Mis rutas</span>
+						</p:commandLink>
+					</li>
+					<li>
+						<p:commandLink rendered="#{userBean.user.roll == 'User'}" action="#{userBean.logout()}"> 
+							<i class="fa fa-search"></i> 
+							<span class='menu-options'>Buscar ruta</span>
+						</p:commandLink>
+					</li>
+					<li>
+						<p:commandLink rendered="#{userBean.user.roll == 'Admin'}" action="#{userBean.logout()}"> 
+							<i class="fa fa-users"></i> 
+							<span class='menu-options'>Usuarios</span>
+						</p:commandLink>
+					</li>
+					<li>
+						<p:commandLink rendered="#{userBean.user.roll == 'Admin'}" action="#{userBean.logout()}"> 
+							<i class="fa fa-search"></i> 
+							<span class='menu-options'>Actividades</span>
+						</p:commandLink>
+					</li>
+					<li class="menu-options">
+						<p:commandLink action="#{userBean.logout()}">
+							<i class="fa fa-sign-out" aria-hidden="true"></i>
+							<span class='menu-options'>Salir</span>
+						</p:commandLink>
+					</li>
+				</ul>
+			</h:form>
 		</section>
 	<!-- /.sidebar -->
 </aside>
