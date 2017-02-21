@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+			      xmlns:ui="http://java.sun.com/jsf/facelets"
+			      xmlns:f="http://java.sun.com/jsf/core"
+			      xmlns:h="http://java.sun.com/jsf/html"
+			      xmlns:p="http://primefaces.org/ui"
+			      template="/WEB-INF/facelets/templates/layout.xhtml">
+			      
+	<ui:define name="encabezado">
+		<ui:include src="/WEB-INF/facelets/headers/defaultHeader.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="body">
+		<h1><p:outputLabel>Felicidades!</p:outputLabel></h1>
+		<p:separator></p:separator>
+			<p class="alert alert-success">Tu registro ha sido exitoso.<br></br>
+			Tu nombre de usuario es <b><p:outputLabel value="#{userBean.user.userName}"/></b> y tu clave es <b><p:outputLabel value="#{userBean.user.password}"/></b><br></br>
+			Ahora puedes <b>acceder</b> para ver todo el contenido de nuestro sitio o <b>salir</b> y volver más tarde.</p>
+		<br></br>
+		<h:form>
+		
+			<p:commandLink action="#{userBean.verificarDatos()}">
+				<span class="btn btn-success"><i class="fa fa-sign-in" aria-hidden="true"></i> Acceder</span>
+			</p:commandLink>
+			<p:commandLink action="#{userBean.logout()}">
+				<span class="btn btn-danger"><i class="fa fa-sign-out" aria-hidden="true"></i> Salir</span>
+			</p:commandLink>
+		 </h:form>
+	</ui:define>
+
+</ui:composition>

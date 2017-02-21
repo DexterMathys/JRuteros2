@@ -1,3 +1,16 @@
+/*
+.footer {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+.contenido {
+    position: absolute;
+    min-height: 100%;
+    min-width: 100%;
+}*/
 
 .menu-options {
 	color: white;
@@ -10,18 +23,4 @@
 .pass-input {
 	display: none;
 	visibility: hidden;
-}
-
-.footer {
-	position: absolute;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	padding: 1rem;
-}
-
-.contenido {
-    position: absolute;
-    min-height: 100%;
-    min-width: 100%;
 }

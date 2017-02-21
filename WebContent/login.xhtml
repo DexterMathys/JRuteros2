@@ -12,8 +12,8 @@
 	</ui:define>
 	
 	<ui:define name="body">
-		<h1>Iniciar Sesión</h1>
-		<hr/>
+		<h1><p:outputLabel>Iniciar Sesión</p:outputLabel></h1>
+		<p:separator></p:separator>
 		<h:form class="form-horizontal">
 			<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 			<fieldset>
@@ -27,13 +27,14 @@
 					<p:password name="userpass" value="#{userBean.user.password}" />
 					<br />
 					<!-- Button -->
-					<p:commandButton value="Iniciar sesión" action="#{userBean.verificarDatos()}"/>
-					
+					<p:commandLink action="#{userBean.verificarDatos()}">
+						<span class="btn btn-success btn-lg"><i class="fa fa-sign-in" aria-hidden="true"></i> Iniciar Sesión</span>
+					</p:commandLink>
 				</h:panelGrid>
 			</fieldset>
 			<br/>
 			<!-- Registrate -->
-			Si no tienes cuenta <h:link value="registrate!" outcome="signup" />
+			<b>Si no tienes cuenta <h:link value="registrate!" outcome="signup" /></b>
 		</h:form>
 		 
 	</ui:define>

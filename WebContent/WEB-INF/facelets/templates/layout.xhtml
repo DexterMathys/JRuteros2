@@ -27,9 +27,38 @@
 	<h:outputStylesheet library="plugins" name="datepicker/datepicker3.css" />
 	<h:outputStylesheet library="plugins" name="bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" />
 	<h:outputStylesheet library="plugins" name="select2/select2.css" />
-	<h:outputStylesheet library="css" name="font-awesome.css" />
-	<h:outputStylesheet library="css" name="font-awesome-animation.css" />
+	<h:outputStylesheet library="font-awesome" name="css/font-awesome.css" />
+	<h:outputStylesheet library="font-awesome" name="font-awesome-animation.css" />
 	<h:outputStylesheet library="plugins" name="datatables/dataTables.bootstrap.css" />
+	
+	<script>
+        PrimeFaces.locales['es'] = {
+                closeText: 'Cerrar',
+                prevText: 'Anterior',
+                nextText: 'Siguiente',
+                monthNames: ['Enero','Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+                dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                dayNamesShort: ['Dom','Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                dayNamesMin: ['D','L','M','M','J','V','S'],
+                weekHeader: 'Semana',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Sólo hora',
+                timeText: 'Tiempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                currentText: 'Fecha actual',
+                ampm: false,
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                allDayText : 'Todo el día'
+        };
+	</script>
 	
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
 	
@@ -55,7 +84,7 @@
     <!-- =============================================== -->
 
     <!-- Right side column. Contains the navbar and content of the page -->
-	    <div class="content-wrapper contenido">
+	    <div class="content-wrapper">
 	
 	      <!-- Main content -->
 	      <section class="content">
@@ -70,7 +99,7 @@
 	      </section><!-- /.content -->
 	    </div><!-- /.content-wrapper -->
 	
-	    <footer class="main-footer footer">
+	    <footer class="main-footer">
 	      <div class="pull-right hidden-xs">
 	      	<ui:insert name="footer">
 	      	 	<b>JRuteros</b> 2.0

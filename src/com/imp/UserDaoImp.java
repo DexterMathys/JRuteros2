@@ -2,16 +2,18 @@ package com.imp;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
 
 import com.dao.UserDao;
 import com.model.User;
 import com.util.HibernateUtil;
 
-public class UserDaoImp implements UserDao{
-	
+public class UserDaoImp implements UserDao {
+
 	private Session s;
 
 	@Override
@@ -23,7 +25,7 @@ public class UserDaoImp implements UserDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
@@ -39,7 +41,7 @@ public class UserDaoImp implements UserDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
@@ -55,7 +57,7 @@ public class UserDaoImp implements UserDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
@@ -66,7 +68,7 @@ public class UserDaoImp implements UserDao{
 	@Override
 	public List<User> listarUsers() {
 		List<User> users = null;
-		
+
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
 		String hql = "FROM User a INNER JOIN FETCH a.pais";
@@ -86,10 +88,10 @@ public class UserDaoImp implements UserDao{
 		User us = null;
 		try {
 			s = HibernateUtil.getSessionfactory().openSession();
-			String hql = "FROM User WHERE userName = '" + user.getUserName()
-						+ "' AND password = '" + user.getPassword() + "'";
+			String hql = "FROM User WHERE userName = '" + user.getUserName() + "' AND password = '" + user.getPassword()
+					+ "'";
 			Query query = s.createQuery(hql);
-			
+
 			if (!query.list().isEmpty()) {
 				us = (User) query.list().get(0);
 			}
@@ -97,6 +99,21 @@ public class UserDaoImp implements UserDao{
 			throw e;
 		}
 		return us;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> listarOrdenado() {
+		List<User> users = null;
+		try {
+			s = HibernateUtil.getSessionfactory().openSession();
+			Criteria cri = s.createCriteria(User.class);
+			cri.addOrder(Order.asc("userName"));
+			users = cri.list();
+		} catch (Exception e) {
+			throw e;
+		}
+		return users;
 	}
 
 }
