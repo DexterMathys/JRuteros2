@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      template="/WEB-INF/facelets/templates/layout.xhtml"> 
+
+	<ui:define name="encabezado">
+		<ui:include src="/WEB-INF/facelets/headers/userHeader.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="menu">
+		<ui:include src="/WEB-INF/facelets/menus/userMenu.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="body">
+		<div class="container-fluid">
+			<h1><p:outputLabel value="Editar Perfil" /></h1>
+			
+			<p:separator/>
+			
+			<p>Completa todos los campos y luego presiona <b>Confirmar</b> para modificar tu perfil</p><br></br>
+			
+			<h:form>
+				<ui:include src="/WEB-INF/facelets/forms/userForm.xhtml"/>
+				<br></br>
+				
+				<p>Si desea modificar su clave, por favor complete los siguientes campos y presione <b>Confirmar</b></p>
+				<p:panelGrid columns="2">
+				
+					<p:outputLabel value="Clave actual"/>
+					<p:password value="#{userBean.currentPass}"/>
+					
+					<p:outputLabel value="Clave nueva"/>
+					<p:password label="Clave nueva" value="#{userBean.newPass}"/>
+					
+					<p:outputLabel value="Repetir clave nueva"/>
+					<p:password label="Repetir clave nueva" value="#{userBean.confirmPass}"/>
+				
+				</p:panelGrid>
+				<br />
+				<p:commandButton value="Confirmar" action="#{userBean.modificar()}"/>
+ 			</h:form>
+		</div>
+	</ui:define>
+
+</ui:composition>

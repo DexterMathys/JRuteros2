@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<PROCESS model-entity="JSFProcess"/>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:#editprofile.xhtml" PATH="/editprofile.xhtml"
+  SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#editprofile.xhtml:0" NAME="item"
+   PATH="/editprofile.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="editprofile::#editprofile.xhtml"
+    NAME="output" PATH="/editprofile.xhtml"
+    TARGET="rules:#editprofile.xhtml" TITLE="editprofile" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+</PROCESS>

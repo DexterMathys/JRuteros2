@@ -20,6 +20,9 @@ public class UserBean {
 	private String day;
 	private String month;
 	private String year;
+	private String currentPass = null;
+	private String newPass = null;
+	private String confirmPass = null;
 
 	public User getUser() {
 		return user;
@@ -49,6 +52,30 @@ public class UserBean {
 		this.year = year;
 	}
 
+	public String getCurrentPass() {
+		return currentPass;
+	}
+
+	public void setCurrentPass(String currentPass) {
+		this.currentPass = currentPass;
+	}
+
+	public String getNewPass() {
+		return newPass;
+	}
+
+	public void setNewPass(String newPass) {
+		this.newPass = newPass;
+	}
+
+	public String getConfirmPass() {
+		return confirmPass;
+	}
+
+	public void setConfirmPass(String confirmPass) {
+		this.confirmPass = confirmPass;
+	}
+
 	public void setUser(User user) {
 		this.user = user;
 	}
@@ -68,6 +95,9 @@ public class UserBean {
 			if (us != null) {
 				if (us.isActive() == true) {
 					this.user = us;
+					this.setDay(String.valueOf(this.user.getBirthdate().getDate()));
+					this.setMonth(String.valueOf(this.user.getBirthdate().getMonth() + 1));
+					this.setYear(String.valueOf(this.user.getBirthdate().getYear()));
 					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user", us);
 					return "index";
 				} else {
@@ -127,8 +157,35 @@ public class UserBean {
 	}
 
 	public String modificar() {
+		if (this.currentPass != null && !this.currentPass.isEmpty()) {
+			if (this.currentPass.equals(this.user.getPassword())) {
+				if (this.newPass.equals(this.confirmPass)) {
+					this.user.setPassword(this.newPass);
+				} else {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Las claves no concuerdan.",
+							"Por favor verifique que el campo Clave nueva cohincida con el campo Repetir clave nueva."));
+					this.currentPass = null;
+					this.newPass = null;
+					this.confirmPass = null;
+					return "editprofile";
+				}
+			} else {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Clave incorrecta.", "Por favor ingresar la clave correcta"));
+				this.currentPass = null;
+				this.newPass = null;
+				this.confirmPass = null;
+				return "editprofile";
+			}
+		}
 		userDao.editarUser(this.user);
-		return "index";
+		this.currentPass = null;
+		this.newPass = null;
+		this.confirmPass = null;
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito.", "Su usuario fue editado correctamente."));
+		return "index?faces-redirect-true";
 	}
 
 	public void listar() throws Exception {

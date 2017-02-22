@@ -14,11 +14,15 @@ import com.util.HibernateUtil;
 
 public class UserDaoImp implements UserDao {
 
-	private Session s;
+	private Session s = HibernateUtil.sessionFactory.openSession();
 
 	@Override
 	public void nuevoUser(User user) {
 		try {
+			if (s != null) {
+				s.close();
+				s = null;
+			}
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
 			s.save(user);
@@ -26,15 +30,17 @@ public class UserDaoImp implements UserDao {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {
-			if (s != null) {
-				s.close();
-			}
+
 		}
 	}
 
 	@Override
 	public void editarUser(User user) {
 		try {
+			if (s != null) {
+				s.close();
+				s = null;
+			}
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
 			s.update(user);
@@ -42,15 +48,17 @@ public class UserDaoImp implements UserDao {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {
-			if (s != null) {
-				s.close();
-			}
+
 		}
 	}
 
 	@Override
 	public void eliminarUser(User user) {
 		try {
+			if (s != null) {
+				s.close();
+				s = null;
+			}
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
 			s.delete(user);
@@ -58,9 +66,7 @@ public class UserDaoImp implements UserDao {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {
-			if (s != null) {
-				s.close();
-			}
+
 		}
 	}
 
@@ -68,14 +74,16 @@ public class UserDaoImp implements UserDao {
 	@Override
 	public List<User> listarUsers() {
 		List<User> users = null;
-
+		if (s != null) {
+			s.close();
+			s = null;
+		}
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
 		String hql = "FROM User a INNER JOIN FETCH a.pais";
 		try {
 			users = s.createQuery(hql).list();
 			t.commit();
-			s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -87,6 +95,10 @@ public class UserDaoImp implements UserDao {
 	public User verificarDatos(User user) {
 		User us = null;
 		try {
+			if (s != null) {
+				s.close();
+				s = null;
+			}
 			s = HibernateUtil.getSessionfactory().openSession();
 			String hql = "FROM User WHERE userName = '" + user.getUserName() + "' AND password = '" + user.getPassword()
 					+ "'";
@@ -106,6 +118,10 @@ public class UserDaoImp implements UserDao {
 	public List<User> listarOrdenado() {
 		List<User> users = null;
 		try {
+			if (s != null) {
+				s.close();
+				s = null;
+			}
 			s = HibernateUtil.getSessionfactory().openSession();
 			Criteria cri = s.createCriteria(User.class);
 			cri.addOrder(Order.asc("userName"));

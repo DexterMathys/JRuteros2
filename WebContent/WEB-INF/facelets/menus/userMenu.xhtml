@@ -5,7 +5,7 @@
 		<section class="sidebar">
 			<h:form>	
 				<ul class="sidebar-menu">
-					<li class="header">OPCIONES</li>
+					<li class="header">MEN&#218;</li>
 					<li>
 						<p:commandLink rendered="#{userBean.user.roll == 'User'}" action="#{userBean.logout()}"> 
 							<i class="fa fa-plus-square"></i> 
@@ -34,6 +34,12 @@
 						<p:commandLink rendered="#{userBean.user.roll == 'Admin'}" action="#{userBean.logout()}"> 
 							<i class="fa fa-search"></i> 
 							<span class='menu-options'>Actividades</span>
+						</p:commandLink>
+					</li>
+					<li>
+						<p:commandLink rendered="#{userBean.user.roll == 'User'}" action="editprofile"> 
+							<i class="fa fa-user"></i> 
+							<span class='menu-options'>Perfil</span>
 						</p:commandLink>
 					</li>
 					<li class="menu-options">

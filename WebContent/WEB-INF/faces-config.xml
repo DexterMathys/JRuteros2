@@ -6,5 +6,13 @@
   <managed-bean-class>com.bean.UserBean</managed-bean-class>
   <managed-bean-scope>session</managed-bean-scope>
  </managed-bean>
+ <navigation-rule>
+  <display-name>editprofile</display-name>
+  <from-view-id>/editprofile.xhtml</from-view-id>
+  <navigation-case>
+   <from-outcome>editprofile</from-outcome>
+   <to-view-id>/editprofile.xhtml</to-view-id>
+  </navigation-case>
+ </navigation-rule>
  <application/>
 </faces-config>

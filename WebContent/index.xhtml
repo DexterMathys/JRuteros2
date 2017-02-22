@@ -13,5 +13,8 @@
 		<ui:define name="menu">
 			<ui:include src="/WEB-INF/facelets/menus/userMenu.xhtml"/>
 		</ui:define>
-	
+		
+		<ui:define name="body">
+			<p:messages  showDetail="true" autoUpdate="true" closable="true" globalOnly="true" />	
+		</ui:define>
 </ui:composition>
