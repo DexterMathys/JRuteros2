@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      template="/WEB-INF/facelets/templates/layout.xhtml"> 
+	
+	<ui:define name="encabezado">
+		<ui:include src="/WEB-INF/facelets/headers/userHeader.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="menu">
+		<ui:include src="/WEB-INF/facelets/menus/adminMenu.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="body" >
+		<div class="container-fluid">
+			<div class="row">
+				<div class='col-md-10'>
+					<!-- Form Name -->
+					<legend class="login-text">Usuarios</legend>
+					
+					<div class="row text-center well">
+						Aquí puedes habilitar/desabilitar usuarios del sistema<br></br>
+					</div>
+					<div class="col-md-2"></div>
+					<div class="col-md-8">
+						
+						<h:dataTable value="#{userBean.users}" var="u" rendered="#{userBean.users.size() > 0 eq true}" styleClass="table table-condensed table-bordered table-hove" id="tableusers">
+			    			
+				    		<h:column>
+				    			<f:facet name="header">Usuario</f:facet>
+				    			#{u.userName}
+				    		</h:column>
+				    		<h:column>
+				    			<f:facet name="header">Nombre</f:facet>
+				    			#{u.name}
+				    		</h:column>
+				    		<h:column>
+				    			<f:facet name="header">Apellido</f:facet>
+				    			#{u.lastName}				
+				    		</h:column>
+				    		<h:column>			    				
+				    			<f:facet name="header">Email</f:facet>			    				
+				    			#{u.email}			    				
+				    		</h:column>		
+				    		<h:column>			    				
+				    			<f:facet name="header">Rol</f:facet>			    				
+				    			#{u.roll}			    				
+				    		</h:column>
+				    		<h:column>			    				
+				    			<f:facet name="header">Estado</f:facet>			    				
+				    			#{u.getEstado()}			    				
+				    		</h:column>
+				    		<h:column>			    				
+				    			<f:facet name="header">Acción</f:facet>			    				
+				    			<h:form id="formId">
+    								<h:commandLink  action="#{userBean.toggle(u)}" rendered="#{!(u.getActive())}" styleClass="btn btn-success"> 
+    									<i class="fa fa-check" title="Habilitar"/>
+    								</h:commandLink>
+    								<h:commandLink action="#{userBean.toggle(u)}" rendered="#{u.getActive()}" styleClass="btn btn-danger">
+    									<i class="fa fa-close" title="Deshabilitar" />
+    								</h:commandLink>
+    								<h:inputHidden value="#{u.id}" id="userId" />
+								</h:form>		    				
+				    		</h:column>
+				    			    			
+			    		</h:dataTable>
+						
+					</div>
+						
+				</div>					   
+			</div>
+			
+		</div>
+	</ui:define>
+	
+</ui:composition>

@@ -4,14 +4,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.ArrayList;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
 import com.imp.UserDaoImp;
 import com.model.User;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
+
+
+
+@ManagedBean
+@RequestScoped
 public class UserBean {
 
 	private User user = new User();
@@ -23,6 +31,12 @@ public class UserBean {
 	private String currentPass = null;
 	private String newPass = null;
 	private String confirmPass = null;
+
+	
+	
+	public UserBean(){
+		this.users = (ArrayList<User>) (userDao.listarUsers()) ;
+	}
 
 	public User getUser() {
 		return user;
@@ -107,14 +121,45 @@ public class UserBean {
 				}
 			} else {
 				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre de usuario o contraseña incorrecto/a",
-								"Por favor ingresar un nombre de usuario y contraseña correctos"));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre de usuario o contraseï¿½a incorrecto/a",
+								"Por favor ingresar un nombre de usuario y contraseï¿½a correctos"));
 				return "login";
 			}
 		} catch (Exception e) {
 			throw e;
 		}
 	}
+	
+	public String logout() {
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+        return "login?faces-redirect=true";
+    }
+	
+	public boolean validateSession(){
+		boolean estado;
+		if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user") == null){
+			estado = false;
+		}else {
+			estado = true;
+		}
+		return estado;
+	}
+	
+	public String usersList(){
+		this.users = (ArrayList<User>) ( userDao.listarUsers()) ;
+		return "users";
+	}
+
+	
+	public String toggle(User user){
+		user.setActive(!user.isActive());
+		userDao.editarUser(user);
+		this.users = (ArrayList<User>) (userDao.listarUsers()) ;
+		return "success";
+	}
+	
+
+	
 
 	public boolean verificarSesion() {
 		boolean estado;
@@ -125,12 +170,6 @@ public class UserBean {
 		}
 
 		return estado;
-	}
-
-	public String logout() {
-		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-		this.user = new User();
-		return "login?faces-redirect-true";
 	}
 
 	public String registrar() throws Exception {
@@ -184,12 +223,18 @@ public class UserBean {
 		this.newPass = null;
 		this.confirmPass = null;
 		FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito.", "Su usuario fue editado correctamente."));
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "ï¿½xito.", "Su usuario fue editado correctamente."));
 		return "index?faces-redirect-true";
 	}
 
-	public void listar() throws Exception {
-		this.users = userDao.listarOrdenado();
+	
+	public String getMenu(){
+		if (this.user.isAdmin()) {
+			return "/WEB-INF/facelets/menus/adminMenu.xhtml";
+		}else{
+			return "/WEB-INF/facelets/menus/userMenu.xhtml";
+		}
+			
 	}
 
 }

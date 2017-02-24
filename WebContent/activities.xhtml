@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      template="/WEB-INF/facelets/templates/layout.xhtml"> 
+	
+	<ui:define name="encabezado">
+		<ui:include src="/WEB-INF/facelets/headers/userHeader.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="menu">
+		<ui:include src="/WEB-INF/facelets/menus/adminMenu.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="body" >
+		<div class="container-fluid">
+			<div class="row">
+				<div class='col-md-10'>
+					<!-- Form Name -->
+					<legend class="login-text">Actividades</legend>				
+						<p:messages id="message" showDetail="true" autoUpdate="true" closable="true" styleClass="text-center" />
+		
+				</div>
+		   </div>
+		   <div class="row">
+		   		<div class="col-md-10">	
+					<h:form styleClass="form-inline pull-right">
+						<div class="form-group">
+							<h:commandButton value="Agregar" actionListener="#{activityBean.addActivity()}" styleClass="btn btn-primary btn-lg"/>
+						</div>
+					</h:form>
+				</div>	
+		   </div>
+		   <div class="row">
+					<div class="col-md-1"></div>
+					<div class="col-md-8">
+						
+						<h:dataTable value="#{activityBean.activities}" var="u" rendered="#{activityBean.activities.size() > 0 eq true}" 
+						styleClass="table table-condensed table-bordered table-hove" id="datatable" >
+			    			
+				    		<h:column>
+				    			<f:facet name="header">Nombre</f:facet>
+				    			#{u.name}
+				    		</h:column>
+				    		<h:column>			    				
+				    			<f:facet name="header">Estado</f:facet>			    				
+				    			#{u.getEstado()}			    				
+				    		</h:column>
+				    		
+				    		<h:column>			    				
+				    			<f:facet name="header">Acción</f:facet>			    				
+				    			<h:form id="formId">
+    								<h:commandLink action="#{activityBean.toggle(u)}" rendered="#{!(u.isActive())}" styleClass="btn btn-success btn-sm">
+    									  <i class="fa fa-check"></i>
+    								</h:commandLink> 
+    								<h:commandLink action="#{activityBean.toggle(u)}" rendered="#{ (u.isActive())}" styleClass="btn btn-danger btn-sm">
+    									<i class="fa fa-close"></i>
+    								</h:commandLink>
+    								 <p:commandLink styleClass="btn btn-default btn-sm " action="#{activityBean.formEdit(u)}">
+        								<i class="fa fa-edit"></i>
+        								<p:ajax event="dialogReturn" listener="#{activityBean.responseUpdate}" update="message" />
+        								
+    								</p:commandLink>
+    								
+    								
+    								<h:inputHidden value="#{u.id}" id="userId" />
+								</h:form>		    				
+				    		</h:column>
+				    		
+				    			    			
+			    		</h:dataTable>
+						
+					</div>
+						
+				</div>			   
+			</div>
+			
+		
+	</ui:define>
+</ui:composition>

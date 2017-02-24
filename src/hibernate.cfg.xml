@@ -19,5 +19,6 @@
         <mapping resource="com/model/Routescore.hbm.xml" />
         <mapping resource="com/model/Photo.hbm.xml" />
         <mapping resource="com/model/Route.hbm.xml" />
+        <mapping resource="com/model/Activity.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

@@ -172,5 +172,22 @@ public class User implements java.io.Serializable {
 	public void setUserRoutes(Set<UserRoute> userRoutes) {
 		this.userRoutes = userRoutes;
 	}
+	
+	public String getEstado(){
+		if (active) {
+			return "Habilitado";
+		}else{
+			return "Deshabilitado";
+		}
+	}
+	
+	public boolean getActive() {
+		return this.active;
+	}
+	
+	public boolean isAdmin(){
+		return (this.getRoll().equals("Admin"));
+		
+	}
 
 }

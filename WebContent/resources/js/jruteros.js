@@ -6,7 +6,7 @@ initialize_select2_multiple = function(object) {
     width: "100%",
     multiple: true,
     allowClear: true,
-    placeholder: "Seleccione las rutas",
+    placeholder: "Seleccione las rutas"
    /** ajax: {
       theme: "bootstrap",
       url: url,
@@ -76,10 +76,37 @@ initialize_grafico = function(object) {
 	
 };
 
-initialize_dataTables = function(object){    
-        $('#tableroutes').DataTable();
-        $('#tableusers').DataTable();
-        $('#tablesearch').DataTable();
+initialize_dataTables = function(object){
+	var lenguageOptions = {
+			"language": {
+	            "sProcessing":     "Procesando...",
+	            "sLengthMenu":     "Mostrar _MENU_ registros",
+	            "sZeroRecords":    "No se encontraron resultados",
+	            "sEmptyTable":     "Ningún dato disponible en esta tabla",
+	            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+	            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+	            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+	            "sInfoPostFix":    "",
+	            "sSearch":         "Buscar:",
+	            "sUrl":            "",
+	            "sInfoThousands":  ",",
+	            "sLoadingRecords": "Cargando...",
+	            "oPaginate": {
+	                "sFirst":    "Primero",
+	                "sLast":     "Último",
+	                "sNext":     "Siguiente",
+	                "sPrevious": "Anterior"
+	            },
+	            "oAria": {
+	                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+	                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+	            }
+        	}
+		};
+        $('#tableroutes').DataTable(lenguageOptions);
+        $('#tableusers').DataTable(lenguageOptions);
+        $('#tablesearch').DataTable(lenguageOptions);
+        $('#datatable').DataTable(lenguageOptions);
 };
 
 $( document ).ready(function() {

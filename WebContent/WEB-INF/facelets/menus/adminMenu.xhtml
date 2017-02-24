@@ -6,20 +6,9 @@
 		<h:form>
 			<ul class="sidebar-menu">
 				<li class="header">OPCIONES</li>
-				<li><h:link value="Usuarios">
-						<i class="fa fa-users"></i>
-					</h:link></li>
-				<li><a href="#"> <i class="fa fa-search"></i> <span
-						class='menu-options'>Actividades</span>
-				</a></li>
-				
-				<li class="menu-options">
-					<p:commandLink rendered="#{userBean.user.roll == 'User'}" action="#{userBean.logout()}">
-						<i class="fa fa-sign-out" aria-hidden="true"></i>
-						Salir
-					</p:commandLink>
-				</li>
-	
+
+				<li><h:link value="Usuarios" outcome="users"> <i class="fa fa-users"></i></h:link></li>
+				<li><h:link value="Actividades" outcome="activities"> <i class="fa fa-search"></i></h:link></li>			
 			</ul>
 		</h:form>
 	</section>

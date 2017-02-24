@@ -80,7 +80,7 @@ public class UserDaoImp implements UserDao {
 		}
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
-		String hql = "FROM User a INNER JOIN FETCH a.pais";
+		String hql = "FROM User";
 		try {
 			users = s.createQuery(hql).list();
 			t.commit();
