@@ -5,93 +5,97 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.dao.ActivityDao;
+import com.dao.RouteDao;
 import com.model.Activity;
 import com.model.Route;
 import com.util.HibernateUtil;
 
-public class ActivityDaoImp implements ActivityDao{
+public class RouteDaoImp implements RouteDao{
 	
 	private Session s;
 
 	@Override
-	public void nuevo(Activity activity) {
-		try {
-			s = HibernateUtil.sessionFactory.openSession();
-			s.beginTransaction();
-			s.save(activity);
-			s.getTransaction().commit();
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}finally {
-			if (s != null) {
-				s.close();
-			}
-		}
-	}
-
-	@Override
-	public void editar(Activity activity) {
-		try {
-			s = HibernateUtil.sessionFactory.openSession();
-			s.beginTransaction();
-			s.update(activity);
-			s.getTransaction().commit();
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}finally {
-			if (s != null) {
-				s.close();
-			}
-		}
-		
-	}
-
-	@Override
-	public void eliminar(Activity activity) {
+	public List<Route> rutasActividad(Activity activity) {
 		// TODO Auto-generated method stub
-		try {
-			s = HibernateUtil.sessionFactory.openSession();
-			s.beginTransaction();
-			s.delete(activity);
-			s.getTransaction().commit();
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}finally {
-			if (s != null) {
-				s.close();
-			}
-		}
-	}
-
-	@Override
-	public List<Activity> listar() {
-		// TODO Auto-generated method stub
-		List<Activity> activities = null;
+		List<Route> rutas = null;
 		
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
-		String hql = "FROM Activity";
+		String hql = "FROM Route where activity_id = :id";
 		try {
-			activities = s.createQuery(hql).list();
+			rutas = s.createQuery(hql).setString("id", activity.getId().toString()).list();
 			t.commit();
 			s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
 		}
-		return activities;
+		return rutas;
 	}
 
 	@Override
-	public boolean existe(Activity activity) {
+	public void nuevo(Route route) {
+		// TODO Auto-generated method stub
+		try {
+			s = HibernateUtil.sessionFactory.openSession();
+			s.beginTransaction();
+			s.save(route);
+			s.getTransaction().commit();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+		
+	}
+
+	@Override
+	public void editar(Route route) {
+		// TODO Auto-generated method stub
+		try {
+			s = HibernateUtil.sessionFactory.openSession();
+			s.beginTransaction();
+			s.update(route);
+			s.getTransaction().commit();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+		
+	}
+
+	@Override
+	public void eliminar(Route route) {
+		// TODO Auto-generated method stub
+		try {
+			s = HibernateUtil.sessionFactory.openSession();
+			s.beginTransaction();
+			s.delete(route);
+			s.getTransaction().commit();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+		
+	}
+
+	@Override
+	public boolean existe(Route route) {
 		// TODO Auto-generated method stub
 		boolean ex = false;
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
-		String hql = "FROM Activity where name = :aname ";
+		String hql = "FROM Route where id = :id ";
 		try {
-			ex = (s.createQuery(hql).setString("aname",activity.getName()).uniqueResult() != null);
+			ex = (s.createQuery(hql).setString("id",route.getId().toString()).uniqueResult() != null);
 			t.commit();
 			s.close();
 		} catch (Exception e) {
@@ -102,15 +106,16 @@ public class ActivityDaoImp implements ActivityDao{
 	}
 
 	@Override
-	public List<Route> rutas(Activity activity) {
+	public List<Route> listar() {
+		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		List<Route> rutas = null;
 		
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
-		String hql = "FROM Route where activity_id = :id";
+		String hql = "FROM Route";
 		try {
-			rutas = s.createQuery(hql).setString("id", activity.getId().toString()).list();
+			rutas = s.createQuery(hql).list();
 			t.commit();
 			s.close();
 		} catch (Exception e) {

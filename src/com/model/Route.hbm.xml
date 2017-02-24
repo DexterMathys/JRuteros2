@@ -14,9 +14,9 @@
         <many-to-one name="user" class="com.model.User" fetch="select">
             <column name="user_id" />
         </many-to-one>
-        <property name="activity" type="string">
-            <column name="activity" />
-        </property>
+       <many-to-one name="activity" class="com.model.Activity" fetch="select">
+            <column name="activity_id" />
+        </many-to-one>
         <property name="date" type="timestamp">
             <column name="date" length="19" />
         </property>

@@ -13,7 +13,7 @@ public class Route implements java.io.Serializable {
 	private Long id;
 	private Travel travel;
 	private User user;
-	private String activity;
+	private Activity activity;
 	private Date date;
 	private String description;
 	private Integer difficulty;
@@ -36,7 +36,7 @@ public class Route implements java.io.Serializable {
 		this.isPublic = isPublic;
 	}
 
-	public Route(Travel travel, User user, String activity, Date date, String description, Integer difficulty,
+	public Route(Travel travel, User user, Activity activity, Date date, String description, Integer difficulty,
 			float distance, boolean isCircular, boolean isPublic, String name, Date time, Set<Photo> photos,
 			Set<UserRoute> userRoutes, Set<Routescore> routescores) {
 		this.travel = travel;
@@ -79,11 +79,11 @@ public class Route implements java.io.Serializable {
 		this.user = user;
 	}
 
-	public String getActivity() {
+	public Activity getActivity() {
 		return this.activity;
 	}
 
-	public void setActivity(String activity) {
+	public void setActivity(Activity activity) {
 		this.activity = activity;
 	}
 

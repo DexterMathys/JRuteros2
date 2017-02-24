@@ -14,8 +14,10 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 import com.imp.ActivityDaoImp;
+import com.imp.RouteDaoImp;
 import com.imp.UserDaoImp;
 import com.model.Activity;
+import com.model.Route;
 import com.model.User;
 
 @ManagedBean
@@ -98,18 +100,18 @@ public class ActivityBean {
 		//
 	}
 	
-	public void delete(){
+	public void delete(Activity ac){
 		ActivityDaoImp activityDAO = new ActivityDaoImp();
-		if (activityDAO.existe(this.activity)){
+		if (!activityDAO.rutas(ac).isEmpty()){
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 					"Esta actividad tiene rutas asociadas",  ""));
 			
 		}else {
-			activityDAO.eliminar(this.activity);
-			this.activities.remove(this.activity);
+			activityDAO.eliminar(ac);
+			this.activities.remove(ac);
 			
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-					"Actividad eliminada", this.activity.getName()));
+					"Actividad ", ac.getName() + " " + "eliminada"));
 			
 		}
 		

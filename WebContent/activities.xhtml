@@ -52,17 +52,19 @@
 				    		<h:column>			    				
 				    			<f:facet name="header">Acción</f:facet>			    				
 				    			<h:form id="formId">
-    								<h:commandLink action="#{activityBean.toggle(u)}" rendered="#{!(u.isActive())}" styleClass="btn btn-success btn-sm">
-    									  <i class="fa fa-check"></i>
+    								<h:commandLink title="Habilitar" action="#{activityBean.toggle(u)}" rendered="#{!(u.isActive())}" styleClass="btn btn-success btn-sm">
+    									  <i class="fa fa-check" ></i>
     								</h:commandLink> 
-    								<h:commandLink action="#{activityBean.toggle(u)}" rendered="#{ (u.isActive())}" styleClass="btn btn-danger btn-sm">
-    									<i class="fa fa-close"></i>
+    								<h:commandLink  title="Deshabilitar" action="#{activityBean.toggle(u)}" rendered="#{ (u.isActive())}" styleClass="btn btn-warning btn-sm">
+    									<i class="fa fa-close" ></i>
     								</h:commandLink>
-    								 <p:commandLink styleClass="btn btn-default btn-sm " action="#{activityBean.formEdit(u)}">
-        								<i class="fa fa-edit"></i>
+    								 <p:commandLink title="Editar" styleClass="btn btn-default btn-sm " action="#{activityBean.formEdit(u)}">
+        								<i class="fa fa-edit" ></i>
         								<p:ajax event="dialogReturn" listener="#{activityBean.responseUpdate}" update="message" />
-        								
     								</p:commandLink>
+    								<h:commandLink  title="Eliminar" action="#{activityBean.delete(u)}" styleClass="btn btn-danger btn-sm">
+    									<i class="fa fa-trash" aria-hidden="true" ></i>
+    								</h:commandLink>
     								
     								
     								<h:inputHidden value="#{u.id}" id="userId" />
