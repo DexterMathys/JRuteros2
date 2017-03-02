@@ -132,4 +132,25 @@ public class UserDaoImp implements UserDao {
 		return users;
 	}
 
+	@Override
+	public boolean existUsername(String username) {
+		boolean result = false;
+		try {
+			if (s != null) {
+				s.close();
+				s = null;
+			}
+			s = HibernateUtil.getSessionfactory().openSession();
+			String hql = "FROM User WHERE userName = '" + username + "'";
+			Query query = s.createQuery(hql);
+
+			if (!query.list().isEmpty()) {
+				result = true;
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+
 }

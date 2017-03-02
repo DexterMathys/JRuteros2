@@ -8,71 +8,64 @@
 	 	<p:outputLabel value="Usuario"/>
 	 	</p:column>
 	 	<p:column>
-	 	<p:inputText id="username" value="#{userBean.user.userName}" placeholder="Nombre de usuario" required="true" requiredMessage="Este campo no puede ser vacio." />
-	 	<p:message for="username"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	<p:inputText id="username" value="#{userBean.user.userName}" placeholder="Nombre de usuario" />
 	 	</p:column>
 	 	
 	 	<p:column>
 	 	<p:outputLabel value="DNI"/>
 	 	</p:column>
 	 	<p:column>
-	 	<p:inputText type="number" id="dni" value="#{userBean.user.dni}" required="true" requiredMessage="Este campo no puede ser vacio." />
-	 	<p:message for="dni"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	<p:inputText type="number" id="dni" value="#{userBean.user.dni}" />
 	 	</p:column>
 	 	
 	 	<p:column>
 	 	<p:outputLabel value="Nombre/s"/>
 	 	</p:column>
 	 	<p:column>
-	 	<p:inputText id="name" value="#{userBean.user.name}" placeholder="Nombre/s" required="true" requiredMessage="Este campo no puede ser vacio." />
-	 	<p:message for="name"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	<p:inputText id="name" value="#{userBean.user.name}" placeholder="Nombre/s" />
 	 	</p:column>
 	 	
 	 	<p:column>
 	 	<p:outputLabel value="Apellido/s"/>
 	 	</p:column>
 	 	<p:column>
-	 	<p:inputText id="lastname" value="#{userBean.user.lastName}" placeholder="Apellido/s" required="true" requiredMessage="Este campo no puede ser vacio." />
-	 	<p:message for="lastname"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	<p:inputText id="lastname" value="#{userBean.user.lastName}" placeholder="Apellido/s"/>
 	 	</p:column>
 	 	
 	 	<p:column>
 	 	<p:outputLabel value="Domicilio"/>
 	 	</p:column>
 	 	<p:column>
-	 	<p:inputText id="address" value="#{userBean.user.address}" placeholder="Domicilio" required="true" requiredMessage="Este campo no puede ser vacio." />
-	 	<p:message for="address"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	<p:inputText id="address" value="#{userBean.user.address}" placeholder="Domicilio" />
 	 	</p:column>
 	 	
 	 	<p:column>
-	 	<p:outputLabel value="Fecha de nacimiento"/>
+	 	<p:outputLabel id="birthdate" value="Fecha de nacimiento"/>
 	 	</p:column>
 	 	<p:column>
 		 	<p:outputLabel>Dia:</p:outputLabel>
-		 	<p:inputText value="#{userBean.day}" style="width:35px" placeholder="dd"/>
+		 	<p:inputText type="number" value="#{userBean.day}" style="width:50px" placeholder="dd"/>
 		 	<p:outputLabel>Mes:</p:outputLabel>
-		 	<p:inputText value="#{userBean.month}" style="width:35px" placeholder="mm"/>
+		 	<p:inputText type="number" value="#{userBean.month}" style="width:50px" placeholder="mm"/>
 		 	<p:outputLabel>A&#241;o:</p:outputLabel>
-		 	<p:inputText value="#{userBean.year}" style="width:60px" placeholder="aaaa"/>
+		 	<p:inputText type="number" value="#{userBean.year}" style="width:60px" placeholder="aaaa"/>
 	 	</p:column>
 	 	
 	 	<p:column>
 	 	<p:outputLabel value="Sexo"/>
 	 	</p:column>
 	 	<p:column>
-	 	<p:selectOneRadio id="sex" value="#{userBean.user.sex}" required="true" requiredMessage="Este campo no puede ser vacio." >
+	 	<p:selectOneRadio id="sex" value="#{userBean.user.sex}" >
 	 		<f:selectItem itemValue="female" itemLabel="Femenino"/>
 	 		<f:selectItem itemValue="male" itemLabel="Masculino"/>
 	 	</p:selectOneRadio>
-	 	<p:message for="sex"  showDetail="true" autoUpdate="true" closable="true"/>
 	 	</p:column>
 	 	
 	 	<p:column>
 	 	<p:outputLabel value="Email"/>
 	 	</p:column>
 	 	<p:column>
-	 	<p:inputText id="email" value="#{userBean.user.email}" placeholder="example@example.com" required="true" requiredMessage="Este campo no puede ser vacio." />
-	 	<p:message for="email"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	<p:inputText id="email" value="#{userBean.user.email}" placeholder="example@example.com" />
 	 	</p:column>
 	 </p:panelGrid>
 </div>

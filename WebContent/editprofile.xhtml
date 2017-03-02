@@ -20,11 +20,11 @@
 			
 			<p:separator/>
 			
-			<p>Completa todos los campos y luego presiona <b>Confirmar</b> para modificar tu perfil</p><br></br>
+			<p>Completa todos los campos y luego presiona <b>Confirmar</b> para modificar tu perfil</p>
 			
 			<h:form>
 				<ui:include src="/WEB-INF/facelets/forms/userForm.xhtml"/>
-				<br></br>
+				
 				
 				<p>Si desea modificar su clave, por favor complete los siguientes campos y presione <b>Confirmar</b></p>
 				<p:panelGrid columns="2">
@@ -40,7 +40,13 @@
 				
 				</p:panelGrid>
 				<br />
-				<p:commandButton value="Confirmar" action="#{userBean.modificar()}"/>
+				<p:commandLink action="#{userBean.modificar()}">
+					<span class="btn btn-success btn-lg"><i class="fa fa-check" aria-hidden="true"></i> Confirmar</span>
+				</p:commandLink>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<h:link class="btn btn-danger btn-lg" outcome="index">
+					<span><i class="fa fa-times" aria-hidden="true"></i> Cancelar</span>
+				</h:link>
  			</h:form>
 		</div>
 	</ui:define>

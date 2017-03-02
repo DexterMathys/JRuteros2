@@ -17,4 +17,6 @@ public interface UserDao {
 	public List<User> listarOrdenado();
 
 	public User verificarDatos(User user);
+
+	public boolean existUsername(String username);
 }

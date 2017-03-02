@@ -21,8 +21,11 @@
 			<h:form>
 				<ui:include src="/WEB-INF/facelets/forms/userForm.xhtml"/>
 				<br></br>
-				<p:commandButton value="Registrar" action="#{userBean.registrar()}"/>
- 				
+				
+				<p:commandLink action="#{userBean.registrar()}">
+					<span class="btn btn-success btn-lg"><i class="fa fa-upload" aria-hidden="true"></i> Registrar</span>
+				</p:commandLink>
+ 				<br /><br/>
  				<b>Si ya tienes cuenta <h:link value="inicia sesión!" outcome="login" /></b> 
 			</h:form>
 		</div>

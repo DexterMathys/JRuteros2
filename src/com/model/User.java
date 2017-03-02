@@ -29,6 +29,20 @@ public class User implements java.io.Serializable {
 	public User() {
 	}
 
+	public User(User us) {
+		this.active = us.getActive();
+		this.address = us.getAddress();
+		this.birthdate = us.getBirthdate();
+		this.dni = us.getDni();
+		this.email = us.getEmail();
+		this.lastName = us.getLastName();
+		this.name = us.getName();
+		this.password = us.getPassword();
+		this.roll = us.getRoll();
+		this.sex = us.getSex();
+		this.userName = us.getUserName();
+	}
+
 	public User(boolean active, int dni) {
 		this.active = active;
 		this.dni = dni;
@@ -172,22 +186,22 @@ public class User implements java.io.Serializable {
 	public void setUserRoutes(Set<UserRoute> userRoutes) {
 		this.userRoutes = userRoutes;
 	}
-	
-	public String getEstado(){
+
+	public String getEstado() {
 		if (active) {
 			return "Habilitado";
-		}else{
+		} else {
 			return "Deshabilitado";
 		}
 	}
-	
+
 	public boolean getActive() {
 		return this.active;
 	}
-	
-	public boolean isAdmin(){
+
+	public boolean isAdmin() {
 		return (this.getRoll().equals("Admin"));
-		
+
 	}
 
 }

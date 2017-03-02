@@ -27,4 +27,13 @@
   	</navigation-case>
  </navigation-rule>
  
+  <navigation-rule>
+ 	<display-name>signup</display-name>
+  	<from-view-id>/signup.xhtml</from-view-id>
+  	<navigation-case>
+   	<from-outcome>signup</from-outcome>
+   	<to-view-id>/signup.xhtml</to-view-id>
+  	</navigation-case>
+ </navigation-rule>
+ 
 </faces-config>

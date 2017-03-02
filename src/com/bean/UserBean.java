@@ -1,10 +1,12 @@
 package com.bean;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -14,9 +16,6 @@ import javax.faces.context.FacesContext;
 import com.imp.UserDaoImp;
 import com.model.User;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
-
-
-
 
 @ManagedBean
 @RequestScoped
@@ -31,11 +30,11 @@ public class UserBean {
 	private String currentPass = null;
 	private String newPass = null;
 	private String confirmPass = null;
+	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
+			Pattern.CASE_INSENSITIVE);
 
-	
-	
-	public UserBean(){
-		this.users = (ArrayList<User>) (userDao.listarUsers()) ;
+	public UserBean() {
+		this.users = (userDao.listarUsers());
 	}
 
 	public User getUser() {
@@ -109,10 +108,13 @@ public class UserBean {
 			if (us != null) {
 				if (us.isActive() == true) {
 					this.user = us;
-					this.setDay(String.valueOf(this.user.getBirthdate().getDate()));
-					this.setMonth(String.valueOf(this.user.getBirthdate().getMonth() + 1));
-					this.setYear(String.valueOf(this.user.getBirthdate().getYear()));
-					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user", us);
+					SimpleDateFormat df = new SimpleDateFormat("dd");
+					this.setDay(String.valueOf(df.format(this.user.getBirthdate())));
+					df = new SimpleDateFormat("MM");
+					this.setMonth(String.valueOf(df.format(this.user.getBirthdate())));
+					df = new SimpleDateFormat("yyyy");
+					this.setYear(String.valueOf(df.format(this.user.getBirthdate())));
+					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user", new User(us));
 					return "index";
 				} else {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -129,37 +131,33 @@ public class UserBean {
 			throw e;
 		}
 	}
-	
+
 	public String logout() {
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        return "login?faces-redirect=true";
-    }
-	
-	public boolean validateSession(){
+		FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+		return "login?faces-redirect=true";
+	}
+
+	public boolean validateSession() {
 		boolean estado;
-		if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user") == null){
+		if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user") == null) {
 			estado = false;
-		}else {
+		} else {
 			estado = true;
 		}
 		return estado;
 	}
-	
-	public String usersList(){
-		this.users = (ArrayList<User>) ( userDao.listarUsers()) ;
+
+	public String usersList() {
+		this.users = (userDao.listarUsers());
 		return "users";
 	}
 
-	
-	public String toggle(User user){
+	public String toggle(User user) {
 		user.setActive(!user.isActive());
 		userDao.editarUser(user);
-		this.users = (ArrayList<User>) (userDao.listarUsers()) ;
+		this.users = (userDao.listarUsers());
 		return "success";
 	}
-	
-
-	
 
 	public boolean verificarSesion() {
 		boolean estado;
@@ -173,6 +171,9 @@ public class UserBean {
 	}
 
 	public String registrar() throws Exception {
+		if (!this.validateUser()) {
+			return "signup";
+		}
 		this.user.setActive(true);
 		Random rand = new Random();
 		int randomNum = rand.nextInt((9999 - 1000) + 1) + 1000;
@@ -191,11 +192,103 @@ public class UserBean {
 		return "signupok";
 	}
 
+	private boolean validateUser() {
+		boolean ok = true;
+		if (this.user.getUserName() == "") {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"El campo Nombre de usuario no puede ser vacio.", ""));
+			ok = false;
+		} else {
+			User current_us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+			System.out.println(current_us.getUserName());
+			if ((this.validateSession() && !current_us.getUserName().equals(this.user.getUserName())
+					&& this.userDao.existUsername(this.user.getUserName()))
+					|| (!this.validateSession() && this.userDao.existUsername(this.user.getUserName()))) {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre de usuario no disponible.", ""));
+				ok = false;
+			}
+		}
+		if (this.user.getDni() == 0) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo DNI no puede ser vacio ni 0.", ""));
+			ok = false;
+		}
+		if (this.user.getName() == "") {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo Nombre/s no puede ser vacio.", ""));
+			ok = false;
+		}
+		if (this.user.getLastName() == "") {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo Apellido/s no puede ser vacio.", ""));
+			ok = false;
+		}
+		if (this.user.getAddress() == "") {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo Domicilio no puede ser vacio.", ""));
+			ok = false;
+		}
+		if (this.getDay() == "" || this.getMonth() == "" || this.getYear() == "") {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"El campo Fecha de nacimiento no puede ser vacio.", ""));
+			ok = false;
+		} else {
+			if (this.getDay().length() != 2 || this.getMonth().length() != 2 || this.getYear().length() != 4) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"El campo Fecha de nacimiento es invalido.", "Una fecha valida es por ejemplo 01/01/2017"));
+				ok = false;
+			} else {
+				try {
+					if (new Integer(this.getYear()) < 1900) {
+						throw new IllegalArgumentException("Año inválido.");
+					}
+
+					Calendar calendar = Calendar.getInstance();
+					calendar.setLenient(false);
+					calendar.set(Calendar.YEAR, new Integer(this.getYear()));
+					calendar.set(Calendar.MONTH, new Integer(this.getMonth()) - 1); // [0,...,11]
+					calendar.set(Calendar.DAY_OF_MONTH, new Integer(this.getDay()));
+					Date date = calendar.getTime();
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				} catch (IllegalArgumentException e) {
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"El campo Fecha de nacimiento es invalido.", "Una fecha valida es por ejemplo 01/01/2017"));
+					ok = false;
+				}
+			}
+		}
+		if (this.user.getSex() == "") {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar una opcion en el campo Sexo.", ""));
+			ok = false;
+		}
+		if (this.user.getEmail() == "") {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo Email no puede ser vacio.", ""));
+			ok = false;
+		} else {
+			Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(this.user.getEmail());
+			if (!matcher.find()) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Email invalido.", "Un mail valido es de la forma example@example.com"));
+				ok = false;
+			}
+		}
+		return ok;
+	}
+
 	public void eliminar(User user) throws Exception {
 		userDao.eliminarUser(user);
 	}
 
 	public String modificar() {
+		if (!this.validateUser()) {
+			this.currentPass = null;
+			this.newPass = null;
+			this.confirmPass = null;
+			return "editprofile";
+		}
 		if (this.currentPass != null && !this.currentPass.isEmpty()) {
 			if (this.currentPass.equals(this.user.getPassword())) {
 				if (this.newPass.equals(this.confirmPass)) {
@@ -223,18 +316,17 @@ public class UserBean {
 		this.newPass = null;
 		this.confirmPass = null;
 		FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "ï¿½xito.", "Su usuario fue editado correctamente."));
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito!.", "Su usuario fue editado correctamente."));
 		return "index?faces-redirect-true";
 	}
 
-	
-	public String getMenu(){
+	public String getMenu() {
 		if (this.user.isAdmin()) {
 			return "/WEB-INF/facelets/menus/adminMenu.xhtml";
-		}else{
+		} else {
 			return "/WEB-INF/facelets/menus/userMenu.xhtml";
 		}
-			
+
 	}
 
 }
