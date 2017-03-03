@@ -5,41 +5,42 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.dao.RouteDao;
-import com.model.Activity;
+import com.dao.TravelDao;
 import com.model.Route;
+import com.model.Travel;
 import com.util.HibernateUtil;
 
-public class RouteDaoImp implements RouteDao{
+public class TravelDaoImp implements TravelDao{
 	
 	private Session s;
 
 	@Override
-	public List<Route> rutasActividad(Activity activity) {
+	public List<Travel> listar() {
 		// TODO Auto-generated method stub
-		List<Route> rutas = null;
+		// TODO Auto-generated method stub
+		List<Travel> travels = null;
 		
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
-		String hql = "FROM Route where activity_id = :id";
+		String hql = "FROM Travel";
 		try {
-			rutas = s.createQuery(hql).setString("id", activity.getId().toString()).list();
+			travels = s.createQuery(hql).list();
 			t.commit();
 			s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
 		}
-		return rutas;
+		return travels;
 	}
 
 	@Override
-	public void nuevo(Route route) {
+	public void nuevo(Travel travel) {
 		// TODO Auto-generated method stub
 		try {
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
-			s.save(route);
+			s.save(travel);
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -52,12 +53,12 @@ public class RouteDaoImp implements RouteDao{
 	}
 
 	@Override
-	public void editar(Route route) {
+	public void editar(Travel travel) {
 		// TODO Auto-generated method stub
 		try {
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
-			s.update(route);
+			s.update(travel);
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -66,16 +67,15 @@ public class RouteDaoImp implements RouteDao{
 				s.close();
 			}
 		}
-		
 	}
 
 	@Override
-	public void eliminar(Route route) {
+	public void eliminar(Travel travel) {
 		// TODO Auto-generated method stub
 		try {
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
-			s.delete(route);
+			s.delete(travel);
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -84,18 +84,17 @@ public class RouteDaoImp implements RouteDao{
 				s.close();
 			}
 		}
-		
 	}
 
 	@Override
-	public boolean existe(Route route) {
+	public boolean existe(Travel travel) {
 		// TODO Auto-generated method stub
 		boolean ex = false;
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
-		String hql = "FROM Route where id = :id ";
+		String hql = "FROM Travel where id = :id ";
 		try {
-			ex = (s.createQuery(hql).setString("id",route.getId().toString()).uniqueResult() != null);
+			ex = (s.createQuery(hql).setString("id",travel.getId().toString()).uniqueResult() != null);
 			t.commit();
 			s.close();
 		} catch (Exception e) {
@@ -106,32 +105,12 @@ public class RouteDaoImp implements RouteDao{
 	}
 
 	@Override
-	public List<Route> listar() {
+	public Travel obtener(Long id) {
 		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub
-		List<Route> rutas = null;
-		
+		Travel travel;
 		s = HibernateUtil.sessionFactory.openSession();
-		Transaction t = s.beginTransaction();
-		String hql = "FROM Route";
-		try {
-			rutas = s.createQuery(hql).list();
-			t.commit();
-			s.close();
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			t.rollback();
-		}
-		return rutas;
-	}
-
-	@Override
-	public Route obtener(Long id) {
-		// TODO Auto-generated method stub
-		Route route;
-		s = HibernateUtil.sessionFactory.openSession();
-		route  = (Route) s.get(Route.class, id);
-		return route; 
+		travel  = (Travel) s.get(Travel.class, id);
+		return travel;
 	}
 
 

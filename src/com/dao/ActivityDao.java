@@ -12,5 +12,5 @@ public interface ActivityDao {
 	public List<Activity> listar();
 	boolean existe(Activity activity);
 	public List<Route> rutas(Activity activity);
-
+	public List<Activity> listarHabilitadas();
 }

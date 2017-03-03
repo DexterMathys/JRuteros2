@@ -12,5 +12,5 @@ public interface RouteDao {
 	public List<Route> listar();
 	boolean existe(Route route);
 	public List<Route> rutasActividad(Activity activity);
-
+	public Route obtener(Long id);
 }

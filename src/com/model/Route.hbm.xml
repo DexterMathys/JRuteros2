@@ -23,9 +23,12 @@
         <property name="description" type="string">
             <column name="description" />
         </property>
-        <property name="difficulty" type="java.lang.Integer">
-            <column name="difficulty" />
-        </property>
+        <property name="difficulty" column="difficulty">
+		    <type name="org.hibernate.type.EnumType">
+		        <param name="enumClass">com.model.Difficulty</param>
+		        <param name="useNamed">true</param>
+		    </type>
+		</property>
         <property name="distance" type="float">
             <column name="distance" precision="12" scale="0" not-null="true" />
         </property>

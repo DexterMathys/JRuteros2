@@ -1,0 +1,96 @@
+<div xmlns:h="http://java.sun.com/jsf/html"
+	 xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:p="http://primefaces.org/ui">
+	 <p:messages  showDetail="true" autoUpdate="true" closable="true" globalOnly="true" />	
+	 
+	 <p:panelGrid columns="2">
+	 	<p:column>
+	 	<p:outputLabel value="Nombre de la ruta"/>
+	 	</p:column>
+	 	<p:column>
+	 	<p:inputText id="name" value="#{routeBean.route.name}" placeholder="Nombre de la ruta" />
+	 	<p:message for="name"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	</p:column>
+	 	
+	 	<p:column>
+	 	<p:outputLabel value="Descripcion"/>
+	 	</p:column>
+	 	<p:column>
+	 	<p:inputText id="description" value="#{routeBean.route.description}" />
+	 	<p:message for="description"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	</p:column>
+	 	
+	 	<p:column>
+	 	<p:outputLabel value="Privacidad"/>
+	 	</p:column>
+	 	<p:column>
+	 		<h:selectOneRadio value="#{routeBean.route.isPublic}">
+   				<f:selectItem itemValue="1" itemLabel="Publica" />
+  			 	<f:selectItem itemValue="0" itemLabel="Privada" />
+			</h:selectOneRadio>	 	
+	 	</p:column>
+	 	
+	 	<p:column>
+	 	<p:outputLabel value="Recorrido"/>
+	 	</p:column>
+	 	<p:column>
+	 	MAPA
+	 	</p:column>
+	 	
+		<p:column>
+	 	<p:outputLabel value="Formato"/>
+	 	</p:column>
+	 	<p:column>
+	 		<h:selectOneRadio value="#{routeBean.route.isCircular}">
+   				<f:selectItem itemValue="0" itemLabel="Solo ida" />
+  			 	<f:selectItem itemValue="1" itemLabel="Circuito" />
+			</h:selectOneRadio>	 	
+	 	</p:column>
+	 	
+	 	<p:column>
+	 	<p:outputLabel value="Distancia"/>
+	 	</p:column>
+	 	<p:column>
+			<p:inputText type="number" id="distance" value="#{routeBean.route.distance}"  />
+	 		<p:message for="distance"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	</p:column>
+	 	
+	 	<p:column>
+	 	<p:outputLabel value="Dificultad"/>
+	 	</p:column>
+	 	<p:column>
+	 		<h:selectOneMenu styleClass="select2" id="difficulty" value="#{routeBean.route.difficulty}">
+   				<f:selectItems value="#{routeBean.difficulties()}" var="diff" itemValue="#{diff}" itemLabel="#{diff}" />
+			</h:selectOneMenu>
+	 		<p:message for="difficulty"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	</p:column>
+	 	
+	 	<p:column>
+	 	<p:outputLabel value="Actividad"/>
+	 	</p:column>
+	 	<p:column>
+	 		<h:selectOneMenu styleClass="select2" id="activity" value="#{routeBean.route.activity}">
+    			<f:selectItems value="#{routeBean.getActivities()}" var="act" itemLabel="#{act.getName()}" />
+			</h:selectOneMenu>
+			<p:message for="activity"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	</p:column>
+	 	
+	 	<p:column>
+	 	<p:outputLabel value="Tiempo estimado"/>
+	 	</p:column>
+	 	<p:column>
+			<p:inputText id="time" value="#{routeBean.route.time}"  />
+	 		<p:message for="time"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	</p:column>
+	 	
+	 	<p:column>
+	 	<p:outputLabel value="Fecha de realización"/>
+	 	</p:column>
+	 	<p:column>
+			<p:inputText id="date" styleClass="route-datepicker" value="#{routeBean.route.date}"  />
+	 		<p:message for="date"  showDetail="true" autoUpdate="true" closable="true"/>
+	 	</p:column>
+	 	
+	 	
+	 </p:panelGrid>
+</div>

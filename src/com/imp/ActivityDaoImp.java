@@ -120,5 +120,24 @@ public class ActivityDaoImp implements ActivityDao{
 		return rutas;
 	}
 
+	@Override
+	public List<Activity> listarHabilitadas() {
+		// TODO Auto-generated method stub
+		List<Activity> activities = null;
+		
+		s = HibernateUtil.sessionFactory.openSession();
+		Transaction t = s.beginTransaction();
+		String hql = "FROM Activity WHERE active = true";
+		try {
+			activities = s.createQuery(hql).list();
+			t.commit();
+			s.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			t.rollback();
+		}
+		return activities;
+	}
+
 
 }
