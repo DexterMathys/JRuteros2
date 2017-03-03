@@ -15,27 +15,18 @@
 	</ui:define>
 	
 	<ui:define name="body" >
-		<div class="container-fluid">
-			<div class="row">
-				<div class='col-md-10'>
-					<!-- Form Name -->
-					<legend class="login-text">Actividades</legend>				
+					<h1><p:outputLabel value="Actividades" /></h1>
+					<p:separator/>			
+					
 						<p:messages id="message" showDetail="true" autoUpdate="true" closable="true" styleClass="text-center" />
 		
-				</div>
-		   </div>
-		   <div class="row">
-		   		<div class="col-md-10">	
-					<h:form styleClass="form-inline pull-right">
+					<h:form styleClass="pull-right">
 						<div class="form-group">
 							<h:commandButton value="Agregar" actionListener="#{activityBean.addActivity()}" styleClass="btn btn-primary btn-lg"/>
 						</div>
 					</h:form>
-				</div>	
-		   </div>
-		   <div class="row">
-					<div class="col-md-1"></div>
-					<div class="col-md-8">
+					
+					<br /><br />
 						
 						<h:dataTable value="#{activityBean.activities}" var="u" rendered="#{activityBean.activities.size() > 0 eq true}" 
 						styleClass="table table-condensed table-bordered table-hove" id="datatable" >
@@ -72,13 +63,7 @@
 				    		</h:column>
 				    		
 				    			    			
-			    		</h:dataTable>
-						
-					</div>
-						
-				</div>			   
-			</div>
-			
+			    		</h:dataTable>									
 		
 	</ui:define>
 </ui:composition>

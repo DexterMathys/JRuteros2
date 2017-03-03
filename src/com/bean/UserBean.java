@@ -94,6 +94,8 @@ public class UserBean {
 	}
 
 	public List<User> getUsers() {
+		UserDaoImp userDao = new UserDaoImp();
+		users = userDao.listarUsers();
 		return users;
 	}
 

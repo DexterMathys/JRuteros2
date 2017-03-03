@@ -15,17 +15,10 @@
 	</ui:define>
 	
 	<ui:define name="body" >
-		<div class="container-fluid">
-			<div class="row">
-				<div class='col-md-10'>
-					<!-- Form Name -->
-					<legend class="login-text">Usuarios</legend>
+					<h1><p:outputLabel value="Usuarios" /></h1>
+					<p:separator/>
 					
-					<div class="row text-center well">
 						Aquí puedes habilitar/desabilitar usuarios del sistema<br></br>
-					</div>
-					<div class="col-md-2"></div>
-					<div class="col-md-8">
 						
 						<h:dataTable value="#{userBean.users}" var="u" rendered="#{userBean.users.size() > 0 eq true}" styleClass="table table-condensed table-bordered table-hove" id="tableusers">
 			    			
@@ -66,14 +59,8 @@
 								</h:form>		    				
 				    		</h:column>
 				    			    			
-			    		</h:dataTable>
-						
-					</div>
-						
-				</div>					   
-			</div>
+			    		</h:dataTable>						
 			
-		</div>
 	</ui:define>
 	
 </ui:composition>
