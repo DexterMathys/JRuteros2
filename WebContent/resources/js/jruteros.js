@@ -34,6 +34,7 @@ initialize_select2_multiple = function(object) {
 
 initialize_datepicker = function(object) {
 	$("#activity-datepicker").datepicker("option", "dateFormat","dd/mm/yyyy");
+	$(".route-datepicker").datepicker("option", "dateFormat","dd/mm/yyyy");
 };
 
 //Grafico
@@ -114,5 +115,6 @@ $( document ).ready(function() {
 	  initialize_select2_multiple();
 	  initialize_dataTables();
 	  initialize_grafico();
+	  $(".select2").select2();
 	  
 });
