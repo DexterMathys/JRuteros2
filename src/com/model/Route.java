@@ -19,7 +19,7 @@ public class Route implements java.io.Serializable {
 	private Activity activity;
 	private Date date;
 	private String description;
-	@Enumerated (value = EnumType.STRING)
+	@Enumerated(value = EnumType.STRING)
 	private Difficulty difficulty;
 	private float distance;
 	private boolean isCircular;
@@ -31,6 +31,7 @@ public class Route implements java.io.Serializable {
 	private Set<Routescore> routescores = new HashSet<Routescore>(0);
 
 	public Route() {
+		this.activity = new Activity();
 	}
 
 	public Route(Travel travel, float distance, boolean isCircular, boolean isPublic) {
@@ -106,7 +107,7 @@ public class Route implements java.io.Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public Difficulty getDifficulty() {
 		return this.difficulty;
 	}
