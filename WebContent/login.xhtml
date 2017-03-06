@@ -27,9 +27,9 @@
 					<p:password name="userpass" value="#{userBean.user.password}" />
 					<br />
 					<!-- Button -->
-					<p:commandLink action="#{userBean.verificarDatos()}">
-						<span class="btn btn-success btn-lg"><i class="fa fa-sign-in" aria-hidden="true"></i> Iniciar Sesión</span>
-					</p:commandLink>
+					<p:commandButton action="#{userBean.verificarDatos()}" styleClass="btn btn-success btn-lg" value="Iniciar Sesión">
+						 
+					</p:commandButton>
 				</h:panelGrid>
 			</fieldset>
 			<br/>

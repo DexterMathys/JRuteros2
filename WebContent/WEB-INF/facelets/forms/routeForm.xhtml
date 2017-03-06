@@ -2,7 +2,7 @@
 	 xmlns:f="http://java.sun.com/jsf/core"
      xmlns:p="http://primefaces.org/ui">
 	 <p:messages  showDetail="true" autoUpdate="true" closable="true" globalOnly="true" />	
-	 
+	
 	 <p:panelGrid columns="2">
 	 	<p:column>
 	 	<p:outputLabel value="Nombre de la ruta"/>
@@ -34,7 +34,11 @@
 	 	<p:outputLabel value="Recorrido"/>
 	 	</p:column>
 	 	<p:column>
-	 	MAPA
+		 	<div id="floating-panel">
+	     		<input onclick="deleteMarkers();" type="button" value="Limpiar mapa"/>
+	    	</div>
+	 	<div id="map"  style="width:500px;height:380px;"></div>
+	 	
 	 	</p:column>
 	 	
 		<p:column>
