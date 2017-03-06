@@ -1,29 +1,43 @@
 var map;
-var myURI = "/JRuteros/rest/route/1";
-var mapProp = {
-	center : new google.maps.LatLng(-34.9038055, -57.9392111, 18),
-	zoom : 10,
-	mapTypeId : google.maps.MapTypeId.ROADMAP
-};
+var myURI = "/JRuteros/rest/route/3";
+var flightPath;
 
 var puntos = [];
 
 // Evento
-google.maps.event.addDomListener(window, 'load', initialize);
+//google.maps.event.addDomListener(window, 'load', initialize);
 
 /**
  * Inicializa el mapa
  */
-function initialize() {
-	map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+function initMap() {
+	var mapProp = {
+			center : new google.maps.LatLng(-34.9038055, -57.9392111, 18),
+			zoom : 10,
+			mapTypeId : google.maps.MapTypeId.ROADMAP
+		};
+
+	map = new google.maps.Map(document.getElementById("map"), mapProp);
 
 	map.addListener('click', function(e) {
 		agregarMarker(e.latLng, map);
 
 	});
 	puntos = [];
+	initPolyline()
 	obtenerMarkers();
+	
 }
+
+function initPolyline(){
+	flightPath = new google.maps.Polyline({
+		path : [],
+		strokeColor : "#0000FF",
+		strokeOpacity : 0.8,
+		strokeWeight : 2,
+		map: map
+	});
+} 
 
 // Obtiene markers y los dibuja
 function obtenerMarkers(dibujar) {
@@ -34,10 +48,8 @@ function obtenerMarkers(dibujar) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
 		success : function(result) {
-			console.log("result " + result);
 			puntos = [];
 			$.each(result, function(i, dato) {
-				console.log("dato" + i + dato);
 				dibujarMarker(dato);
 			});
 			dibujarRecorrido();
@@ -59,13 +71,16 @@ function dibujarMarker(dato) {
 	});
 
 	marker.addListener("rightclick", function(point) {
-		console.log("rigthclick");
-		borrarMarker(dato.id);
+		//borra de la bd
+		//borrarMarker(dato.id);
+		//borrar de puntos
+		puntos.splice(puntos.indexOf(marker), 1);
 		marker.setMap(null);
+		//dibujar de nuevo
+		dibujarRecorrido();
 	});
 
-	puntos[puntos.length] = position;
-
+	puntos[puntos.length] = marker;
 	marker.setMap(map);
 }
 
@@ -75,9 +90,10 @@ function agregarMarker(latLng) {
 		lat : latLng.lat(),
 		lon : latLng.lng()
 	};
+	dibujarMarker(punto);
+	dibujarRecorrido();
 
-	$.ajax({
-
+/*	$.ajax({
 		data : punto,
 		url : myURI,
 		type : "POST",
@@ -85,20 +101,16 @@ function agregarMarker(latLng) {
 			obtenerMarkers();
 
 		}
-	});
+	});*/
 
 }
 
 function dibujarRecorrido() {
-
-	var flightPath = new google.maps.Polyline({
-		path : puntos,
-		strokeColor : "#0000FF",
-		strokeOpacity : 0.8,
-		strokeWeight : 2
-	});
-
-	flightPath.setMap(map);
+	drawPuntos = [];
+	for (i = 0; i < puntos.length; i++) { 
+	    drawPuntos[i] =  {lat: puntos[i].position.lat(), lng: puntos[i].position.lng()};
+	}
+	flightPath.setPath(drawPuntos);
 }
 
 function dibujarRecorridoCircular() {
@@ -114,7 +126,9 @@ function dibujarRecorridoCircular() {
 	});
 
 	flightPath.setMap(map);
+	
 }
+
 
 function limpiarMapa() {
 
@@ -126,14 +140,13 @@ function limpiarMapa() {
 		url : myURI,
 		type : "DELETE",
 		success : function(result) {
-			initialize();
+			initMap();
 		}
 	});
 
 }
 
 function borrarMarker(id) {
-	console.log("borrar marker " + id);
 	punto = {
 		id : id
 	};
@@ -142,7 +155,42 @@ function borrarMarker(id) {
 		url : myURI ,
 		type : "DELETE",
 		success : function(result) {
-			initialize();
+			initMap();
 		}
 	});
+}
+
+function borrarTodosMarkers() {
+	
+	$.ajax({
+		data : punto,
+		url : myURI ,
+		type : "DELETE",
+		success : function(result) {
+			initMap();
+		}
+	});
+}
+function limpiarRecorrido(){
+	flightPath.setMap(null);
+	initPolyline();
+	puntos = [];
+}
+
+//Sets the map on all markers in the array
+function setMapOnAll(map) {
+	for (var i = 0; i < puntos.length; i++) {
+	    puntos[i].setMap(map);
+	  }
+	}
+
+//Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+	setMapOnAll(null);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+	clearMarkers();
+	limpiarRecorrido();
 }
