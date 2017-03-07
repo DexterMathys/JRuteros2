@@ -116,7 +116,7 @@ public class UserBean {
 					this.setMonth(String.valueOf(df.format(this.user.getBirthdate())));
 					df = new SimpleDateFormat("yyyy");
 					this.setYear(String.valueOf(df.format(this.user.getBirthdate())));
-					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user", new User(us));
+					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user", this.user);
 					return "index";
 				} else {
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,

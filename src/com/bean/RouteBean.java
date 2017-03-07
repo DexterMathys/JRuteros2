@@ -11,8 +11,6 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
-import org.primefaces.context.RequestContext;
-
 import com.imp.ActivityDaoImp;
 import com.imp.RouteDaoImp;
 import com.imp.TravelDaoImp;
@@ -20,6 +18,7 @@ import com.model.Activity;
 import com.model.Difficulty;
 import com.model.Route;
 import com.model.Travel;
+import com.model.User;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 @ManagedBean
@@ -31,9 +30,27 @@ public class RouteBean {
 	private List<SelectItem> activities;
 	private String tiempo;
 	private String fecha;
+	private String isPublic;
+	private String isCircular;
 
 	public RouteBean() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public String getIsPublic() {
+		return isPublic;
+	}
+
+	public void setIsPublic(String isPublic) {
+		this.isPublic = isPublic;
+	}
+
+	public String getIsCircular() {
+		return isCircular;
+	}
+
+	public void setIsCircular(String isCircular) {
+		this.isCircular = isCircular;
 	}
 
 	public String getFecha() {
@@ -70,7 +87,6 @@ public class RouteBean {
 
 	public List<SelectItem> getActivities() {
 		this.activities = new ArrayList<SelectItem>();
-		RouteDaoImp routeDao = new RouteDaoImp();
 		ActivityDaoImp actDao = new ActivityDaoImp();
 		List<Activity> actividades = actDao.listar();
 		activities.clear();
@@ -102,13 +118,27 @@ public class RouteBean {
 	}
 
 	public String add() {
+		System.out.println(this.isCircular);
+		System.out.println(this.isPublic);
+		if (this.isCircular.equals("1")) {
+			this.route.setIsCircular(true);
+		} else {
+			this.route.setIsCircular(false);
+		}
+		if (this.isPublic.equals("1")) {
+			this.route.setIsPublic(true);
+		} else {
+			this.route.setIsPublic(false);
+		}
+		User u = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		this.route.setUser(u);
 		SimpleDateFormat formatter = new SimpleDateFormat("hh");
 		Date time = null;
 		try {
 			try {
 				time = formatter.parse(this.tiempo);
-			} catch (java.text.ParseException e) {
-				// TODO Auto-generated catch block
+			} catch (java.text.ParseException e) { // TODO Auto-generated catch
+													// block
 				e.printStackTrace();
 			}
 		} catch (ParseException e) {
@@ -121,8 +151,8 @@ public class RouteBean {
 		try {
 			try {
 				date = formatter.parse(this.fecha);
-			} catch (java.text.ParseException e) {
-				// TODO Auto-generated catch block
+			} catch (java.text.ParseException e) { // TODO Auto-generated catch
+													// block
 				e.printStackTrace();
 			}
 		} catch (ParseException e) {
@@ -137,12 +167,12 @@ public class RouteBean {
 
 		} else {
 			TravelDaoImp travelDAO = new TravelDaoImp();
-			Travel travel = travelDAO.obtener(new Long(3));
+			Travel travel = travelDAO.obtener(new Long(2));
 			this.route.setTravel(travel);
 			routeDAO.nuevo(this.route);
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ruta agregada", this.route.getName()));
-			RequestContext.getCurrentInstance().closeDialog(this.activities);
+			// RequestContext.getCurrentInstance().closeDialog(this.activities);
 
 		}
 
