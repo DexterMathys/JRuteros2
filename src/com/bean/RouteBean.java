@@ -4,17 +4,21 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
 import com.imp.ActivityDaoImp;
+import com.imp.ApointDaoImp;
 import com.imp.RouteDaoImp;
 import com.imp.TravelDaoImp;
 import com.model.Activity;
+import com.model.Apoint;
 import com.model.Difficulty;
 import com.model.Route;
 import com.model.Travel;
@@ -32,6 +36,7 @@ public class RouteBean {
 	private String fecha;
 	private String isPublic;
 	private String isCircular;
+	private String points;
 
 	public RouteBean() {
 		// TODO Auto-generated constructor stub
@@ -167,11 +172,24 @@ public class RouteBean {
 
 		} else {
 			TravelDaoImp travelDAO = new TravelDaoImp();
-			Travel travel = travelDAO.obtener(new Long(2));
+			Travel travel = new Travel(); 
+			travelDAO.nuevo(travel);
+			
+			//Crear puntos
+			ApointDaoImp apointDAO = new ApointDaoImp();
+			Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+			String action = params.get("points");
+			//Separo por puntos
+			String[] points = action.split(",");
+			String[] partPoint ;
+			for(String point : points){
+				partPoint = point.split(" ");
+				apointDAO.nuevo(new Apoint(travel, partPoint[0], partPoint[1] ));	
+			}
 			this.route.setTravel(travel);
 			routeDAO.nuevo(this.route);
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ruta agregada", this.route.getName()));
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Ruta agregada", this.route.getName()));
 			// RequestContext.getCurrentInstance().closeDialog(this.activities);
 
 		}
@@ -181,6 +199,14 @@ public class RouteBean {
 
 	public Difficulty[] difficulties() {
 		return Difficulty.values();
+	}
+
+	public String getPoints() {
+		return points;
+	}
+
+	public void setPoints(String points) {
+		this.points = points;
 	}
 
 }
