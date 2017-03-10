@@ -1,5 +1,7 @@
 package com.bean;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,14 +31,30 @@ public class RouteBean {
 	private Route route = new Route();
 	private List<Route> routes = (new RouteDaoImp().listar());
 	private List<SelectItem> activities;
-	private Date tiempo;
+	private int hours;
+	private int minutes;
 	private String isPublic;
 	private String isCircular;
 	private Date date;
 	private String points;
 
 	public RouteBean() {
-		// TODO Auto-generated constructor stub
+	}
+
+	public int getHours() {
+		return hours;
+	}
+
+	public void setHours(int hours) {
+		this.hours = hours;
+	}
+
+	public int getMinutes() {
+		return minutes;
+	}
+
+	public void setMinutes(int minutes) {
+		this.minutes = minutes;
 	}
 
 	public Date getDate() {
@@ -61,14 +79,6 @@ public class RouteBean {
 
 	public void setIsCircular(String isCircular) {
 		this.isCircular = isCircular;
-	}
-
-	public Date getTiempo() {
-		return tiempo;
-	}
-
-	public void setTiempo(Date tiempo) {
-		this.tiempo = tiempo;
 	}
 
 	public Route getRoute() {
@@ -123,6 +133,7 @@ public class RouteBean {
 		if (!this.validateRoute()) {
 			return "newRoute";
 		}
+
 		if (this.isCircular.equals("1")) {
 			this.route.setIsCircular(true);
 		} else {
@@ -135,8 +146,16 @@ public class RouteBean {
 		}
 		User u = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
 		this.route.setUser(u);
-
-		this.route.setTime(this.tiempo);
+		Date time = null;
+		try {
+			time = new SimpleDateFormat("HH:mm").parse(String.valueOf(this.hours) + ":" + String.valueOf(this.minutes));
+		} catch (ParseException e) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo Tiempo estimado no es correcto.",
+							"Un Tiempo estimado correcto es por ejemplo 02 horas y 30 minutos."));
+			return "newRoute";
+		}
+		this.route.setTime(time);
 
 		this.route.setDate(this.date);
 
@@ -159,6 +178,7 @@ public class RouteBean {
 			String[] points = action.split(",");
 			String[] partPoint;
 			for (String point : points) {
+				System.out.println("point: " + point);
 				partPoint = point.split(" ");
 				apointDAO.nuevo(new Apoint(travel, partPoint[0], partPoint[1]));
 			}
@@ -172,8 +192,8 @@ public class RouteBean {
 			this.date = null;
 			this.isCircular = null;
 			this.isPublic = null;
-			this.tiempo = null;
-
+			this.hours = 0;
+			this.minutes = 0;
 		}
 
 		return "index";
@@ -210,9 +230,24 @@ public class RouteBean {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo Distancia debe ser mayor a 0.", ""));
 			ok = false;
 		}
-		if (this.route.getDate() == null) {
+		if ((this.hours == 0 && this.minutes == 0) || (this.hours < 0 || this.minutes < 0)) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo Tiempo estimado no es correcto.",
+							"Un Tiempo estimado correcto es por ejemplo 02 horas y 30 minutos."));
+			ok = false;
+		}
+		if (this.date == null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"El campo Fecha de realizacion no puede ser vacio.", ""));
+			ok = false;
+		}
+		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+		String action = params.get("points");
+		// Separo por puntos
+		String[] points = action.split(",");
+		if (points.length < 2) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Debe seleccionar al menos 2 puntos en el mapa.", ""));
 			ok = false;
 		}
 		return ok;

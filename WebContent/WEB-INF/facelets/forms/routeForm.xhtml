@@ -73,7 +73,7 @@
 	 	<p:outputLabel value="Actividad"/>
 	 	</p:column>
 	 	<p:column>
-			<h:selectOneMenu id="activity" value="#{routeBean.route.activity.id}">
+			<h:selectOneMenu styleClass="select2" id="activity" value="#{routeBean.route.activity.id}">
 				<f:selectItems value="#{routeBean.activities}"/>
 			</h:selectOneMenu>
 	 	</p:column>
@@ -82,8 +82,11 @@
 	 	<p:outputLabel value="Tiempo estimado"/>
 	 	</p:column>
 	 	<p:column>
-			<p:calendar id="time" placeholder="HH:mm" value="#{routeBean.tiempo}"  />
+			<p:inputText type="number" id="hours" placeholder="HH" value="#{routeBean.hours}" />
+			<p:outputLabel for="hours" value="Horas" />
 			
+			<p:inputText type="number" id="minutes" placeholder="MM" value="#{routeBean.minutes}" />	
+			<p:outputLabel for="minutes" value="Minutos" />		
 	 	</p:column>
 	 	
 	 	<p:column>
