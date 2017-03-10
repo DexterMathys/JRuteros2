@@ -14,17 +14,17 @@
 	 	<p:outputLabel value="Descripcion"/>
 	 	</p:column>
 	 	<p:column>
-	 	<p:inputText id="description" value="#{routeBean.route.description}" />
+	 	<p:inputText id="description" value="#{routeBean.route.description}" placeholder="Descripcion de la ruta" />
 	 	</p:column>
 	 	
 	 	<p:column>
 	 	<p:outputLabel value="Privacidad"/>
 	 	</p:column>
 	 	<p:column>
-	 		<h:selectOneRadio value="#{routeBean.isPublic}">
+	 		<p:selectOneRadio value="#{routeBean.isPublic}">
    				<f:selectItem itemValue="1" itemLabel="Publica" />
   			 	<f:selectItem itemValue="0" itemLabel="Privada" />
-			</h:selectOneRadio>	 	
+			</p:selectOneRadio>	 	
 	 	</p:column>
 	 	
 	 	<p:column>
@@ -42,10 +42,10 @@
 	 	<p:outputLabel value="Formato"/>
 	 	</p:column>
 	 	<p:column>
-	 		<h:selectOneRadio value="#{routeBean.isCircular}">
+	 		<p:selectOneRadio value="#{routeBean.isCircular}">
    				<f:selectItem itemValue="0" itemLabel="Solo ida" />
   			 	<f:selectItem itemValue="1" itemLabel="Circuito" />
-			</h:selectOneRadio>	 	
+			</p:selectOneRadio>	 	
 	 	</p:column>
 	 	
 	 	<p:column>
@@ -53,6 +53,7 @@
 	 	</p:column>
 	 	<p:column>
 			<p:inputText type="number" id="distance" value="#{routeBean.route.distance}"  />
+			<p:outputLabel value=" Metros"/>
 	 	</p:column>
 	 	
 	 	<p:column>
@@ -78,14 +79,15 @@
 	 	<p:outputLabel value="Tiempo estimado"/>
 	 	</p:column>
 	 	<p:column>
-			<p:inputText id="time" value="#{routeBean.tiempo}"  />
+			<p:calendar id="time" placeholder="HH:mm" value="#{routeBean.tiempo}"  />
+			
 	 	</p:column>
 	 	
 	 	<p:column>
 	 	<p:outputLabel value="Fecha de realización"/>
 	 	</p:column>
 	 	<p:column>
-			<p:inputText id="date" styleClass="route-datepicker" value="#{routeBean.fecha}"  />
+			<p:calendar id="date" placeholder="dd/mm/aaaa" value="#{routeBean.date}" effect="fold" pattern="dd/MM/yyyy" />
 	 	</p:column>
 	 	
 	 </p:panelGrid>

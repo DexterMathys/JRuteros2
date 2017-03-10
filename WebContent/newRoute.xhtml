@@ -24,8 +24,14 @@
 			
 			<h:form>
 				<ui:include src="/WEB-INF/facelets/forms/routeForm.xhtml"/>
-				<br></br>
-				<p:commandButton styleClass="btn btn-success btn-lg" value="Agregar" action="#{routeBean.add()}"/>
+				<br></br>				
+				<p:commandLink action="#{routeBean.add()}">
+					<span class="btn btn-success btn-lg"><i class="fa fa-check" aria-hidden="true"></i> Agregar</span>
+				</p:commandLink>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<h:link class="btn btn-danger btn-lg" outcome="index">
+					<span><i class="fa fa-times" aria-hidden="true"></i> Cancelar</span>
+				</h:link>
  			</h:form>
 		</div>
 		<script type="text/javascript">

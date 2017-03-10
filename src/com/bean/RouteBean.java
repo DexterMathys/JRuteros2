@@ -1,6 +1,5 @@
 package com.bean;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +18,6 @@ import com.model.Difficulty;
 import com.model.Route;
 import com.model.Travel;
 import com.model.User;
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 @ManagedBean
 @RequestScoped
@@ -28,13 +26,21 @@ public class RouteBean {
 	private Route route = new Route();
 	private List<Route> routes = (new RouteDaoImp().listar());
 	private List<SelectItem> activities;
-	private String tiempo;
-	private String fecha;
+	private Date tiempo;
 	private String isPublic;
 	private String isCircular;
+	private Date date;
 
 	public RouteBean() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	public String getIsPublic() {
@@ -53,19 +59,11 @@ public class RouteBean {
 		this.isCircular = isCircular;
 	}
 
-	public String getFecha() {
-		return fecha;
-	}
-
-	public void setFecha(String fecha) {
-		this.fecha = fecha;
-	}
-
-	public String getTiempo() {
+	public Date getTiempo() {
 		return tiempo;
 	}
 
-	public void setTiempo(String tiempo) {
+	public void setTiempo(Date tiempo) {
 		this.tiempo = tiempo;
 	}
 
@@ -118,8 +116,9 @@ public class RouteBean {
 	}
 
 	public String add() {
-		System.out.println(this.isCircular);
-		System.out.println(this.isPublic);
+		if (!this.validateRoute()) {
+			return "newRoute";
+		}
 		if (this.isCircular.equals("1")) {
 			this.route.setIsCircular(true);
 		} else {
@@ -132,33 +131,10 @@ public class RouteBean {
 		}
 		User u = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
 		this.route.setUser(u);
-		SimpleDateFormat formatter = new SimpleDateFormat("hh");
-		Date time = null;
-		try {
-			try {
-				time = formatter.parse(this.tiempo);
-			} catch (java.text.ParseException e) { // TODO Auto-generated catch
-													// block
-				e.printStackTrace();
-			}
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		this.route.setTime(time);
 
-		formatter = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = null;
-		try {
-			try {
-				date = formatter.parse(this.fecha);
-			} catch (java.text.ParseException e) { // TODO Auto-generated catch
-													// block
-				e.printStackTrace();
-			}
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		this.route.setDate(date);
+		this.route.setTime(this.tiempo);
+
+		this.route.setDate(this.date);
 
 		RouteDaoImp routeDAO = new RouteDaoImp();
 		if (routeDAO.existe(this.route)) {
@@ -167,20 +143,61 @@ public class RouteBean {
 
 		} else {
 			TravelDaoImp travelDAO = new TravelDaoImp();
-			Travel travel = travelDAO.obtener(new Long(2));
+			Travel travel = new Travel();
+			travelDAO.nuevo(travel);
 			this.route.setTravel(travel);
 			routeDAO.nuevo(this.route);
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ruta agregada", this.route.getName()));
-			// RequestContext.getCurrentInstance().closeDialog(this.activities);
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Ruta agregada: ", this.route.getName()));
+			this.route = null;
+			this.route = new Route();
+			this.date = null;
+			this.isCircular = null;
+			this.isPublic = null;
+			this.tiempo = null;
 
 		}
 
-		return "success";
+		return "index";
 	}
 
 	public Difficulty[] difficulties() {
 		return Difficulty.values();
+	}
+
+	private boolean validateRoute() {
+		boolean ok = true;
+		if (this.route.getName() == "") {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"El campo Nombre de la ruta no puede ser vacio.", ""));
+			ok = false;
+		}
+		if (this.route.getDescription() == "") {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo Descripcion no puede ser vacio.", ""));
+			ok = false;
+		}
+		if (this.isPublic == "") {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar una opcion de Privacidad.", ""));
+			ok = false;
+		}
+		if (this.isCircular == "") {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Debe seleccionar una opcion de Formato.", ""));
+			ok = false;
+		}
+		if (this.route.getDistance() <= 0) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo Distancia debe ser mayor a 0.", ""));
+			ok = false;
+		}
+		if (this.route.getDate() == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"El campo Fecha de realizacion no puede ser vacio.", ""));
+			ok = false;
+		}
+		return ok;
 	}
 
 }

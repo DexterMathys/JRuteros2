@@ -43,12 +43,7 @@
 	 	<p:outputLabel id="birthdate" value="Fecha de nacimiento"/>
 	 	</p:column>
 	 	<p:column>
-		 	<p:outputLabel>Dia:</p:outputLabel>
-		 	<p:inputText type="number" value="#{userBean.day}" style="width:50px" placeholder="dd"/>
-		 	<p:outputLabel>Mes:</p:outputLabel>
-		 	<p:inputText type="number" value="#{userBean.month}" style="width:50px" placeholder="mm"/>
-		 	<p:outputLabel>A&#241;o:</p:outputLabel>
-		 	<p:inputText type="number" value="#{userBean.year}" style="width:60px" placeholder="aaaa"/>
+		 	<p:calendar id="date" value="#{userBean.birthdate}" placeholder="dd/mm/aaaa" effect="fold" pattern="dd/MM/yyyy" />
 	 	</p:column>
 	 	
 	 	<p:column>

@@ -15,7 +15,6 @@ import javax.faces.context.FacesContext;
 
 import com.imp.UserDaoImp;
 import com.model.User;
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 @ManagedBean
 @RequestScoped
@@ -24,12 +23,10 @@ public class UserBean {
 	private User user = new User();
 	private UserDaoImp userDao = new UserDaoImp();
 	private List<User> users;
-	private String day;
-	private String month;
-	private String year;
 	private String currentPass = null;
 	private String newPass = null;
 	private String confirmPass = null;
+	private Date birthdate;
 	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
 			Pattern.CASE_INSENSITIVE);
 
@@ -37,32 +34,16 @@ public class UserBean {
 		this.users = (userDao.listarUsers());
 	}
 
+	public Date getBirthdate() {
+		return birthdate;
+	}
+
+	public void setBirthdate(Date birthdate) {
+		this.birthdate = birthdate;
+	}
+
 	public User getUser() {
 		return user;
-	}
-
-	public String getDay() {
-		return day;
-	}
-
-	public void setDay(String day) {
-		this.day = day;
-	}
-
-	public String getMonth() {
-		return month;
-	}
-
-	public void setMonth(String month) {
-		this.month = month;
-	}
-
-	public String getYear() {
-		return year;
-	}
-
-	public void setYear(String year) {
-		this.year = year;
 	}
 
 	public String getCurrentPass() {
@@ -110,12 +91,7 @@ public class UserBean {
 			if (us != null) {
 				if (us.isActive() == true) {
 					this.user = us;
-					SimpleDateFormat df = new SimpleDateFormat("dd");
-					this.setDay(String.valueOf(df.format(this.user.getBirthdate())));
-					df = new SimpleDateFormat("MM");
-					this.setMonth(String.valueOf(df.format(this.user.getBirthdate())));
-					df = new SimpleDateFormat("yyyy");
-					this.setYear(String.valueOf(df.format(this.user.getBirthdate())));
+					this.birthdate = this.user.getBirthdate();
 					FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("user", this.user);
 					return "index";
 				} else {
@@ -181,15 +157,7 @@ public class UserBean {
 		int randomNum = rand.nextInt((9999 - 1000) + 1) + 1000;
 		this.user.setPassword(String.valueOf(randomNum));
 		this.user.setRoll("User");
-		String str_birthdate = this.year + "-" + this.month + "-" + this.day;
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
-		Date birthdate = null;
-		try {
-			birthdate = formatter.parse(str_birthdate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		this.user.setBirthdate(birthdate);
+		this.user.setBirthdate(this.birthdate);
 		userDao.nuevoUser(this.user);
 		return "signupok";
 	}
@@ -231,33 +199,22 @@ public class UserBean {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo Domicilio no puede ser vacio.", ""));
 			ok = false;
 		}
-		if (this.getDay() == "" || this.getMonth() == "" || this.getYear() == "") {
+		if (this.getBirthdate() == null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"El campo Fecha de nacimiento no puede ser vacio.", ""));
 			ok = false;
 		} else {
-			if (this.getDay().length() != 2 || this.getMonth().length() != 2 || this.getYear().length() != 4) {
+
+			try {
+				Calendar calendar = Calendar.getInstance();
+				calendar.setLenient(false);
+				calendar.setTime(this.birthdate);
+				Date date = calendar.getTime();
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			} catch (IllegalArgumentException e) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 						"El campo Fecha de nacimiento es invalido.", "Una fecha valida es por ejemplo 01/01/2017"));
 				ok = false;
-			} else {
-				try {
-					if (new Integer(this.getYear()) < 1900) {
-						throw new IllegalArgumentException("Año inválido.");
-					}
-
-					Calendar calendar = Calendar.getInstance();
-					calendar.setLenient(false);
-					calendar.set(Calendar.YEAR, new Integer(this.getYear()));
-					calendar.set(Calendar.MONTH, new Integer(this.getMonth()) - 1); // [0,...,11]
-					calendar.set(Calendar.DAY_OF_MONTH, new Integer(this.getDay()));
-					Date date = calendar.getTime();
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				} catch (IllegalArgumentException e) {
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"El campo Fecha de nacimiento es invalido.", "Una fecha valida es por ejemplo 01/01/2017"));
-					ok = false;
-				}
 			}
 		}
 		if (this.user.getSex() == "") {
