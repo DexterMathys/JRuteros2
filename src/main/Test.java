@@ -1,12 +1,14 @@
 package main;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import com.imp.RouteDaoImp;
 import com.imp.TravelDaoImp;
 import com.model.Activity;
+import com.model.Apoint;
 import com.model.Difficulty;
 import com.model.Photo;
 import com.model.Route;
@@ -36,9 +38,14 @@ public class Test {
 	        	System.out.println(route.getDifficulty());
 	        }
 	        Route route2;
-	        route2 = routeDAO.obtener(new Long(1));
+	        route2 = routeDAO.obtener(new Long(3));
 	        if (route2 != null){
-	        	System.out.println(route2.getName());
+	        	//System.out.println(route2.getTravel().getApoints());
+	        	 for (Iterator<Apoint> it = route2.getTravel().getApoints().iterator(); it.hasNext(); ) {
+	        	        Apoint f = it.next();
+	        	        
+	        	            System.out.println(f.getLatitude());
+	        	    }
 	        }
 	        
 	        System.out.println(Difficulty.values());

@@ -92,6 +92,15 @@ function agregarMarker(latLng) {
 	};
 	dibujarMarker(punto);
 	dibujarRecorrido();
+	//$('<input>').attr({type: 'hidden', name: 'points[]', value: [punto.lat , punto.lon] }).appendTo('#route_points');
+	points = $('#points').val();
+	newPoint = punto.lat + " " + punto.lon;
+	if (points != ''){
+		$('#points').val(points +  "," + newPoint);
+	}else {
+		$('#points').val(newPoint);
+	}
+	
 
 /*	$.ajax({
 		data : punto,
