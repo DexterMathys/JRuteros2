@@ -23,6 +23,7 @@ public class UserBean {
 	private User user = new User();
 	private UserDaoImp userDao = new UserDaoImp();
 	private List<User> users;
+	private List<User> filteredUsers;
 	private String currentPass = null;
 	private String newPass = null;
 	private String confirmPass = null;
@@ -32,6 +33,14 @@ public class UserBean {
 
 	public UserBean() {
 		this.users = (userDao.listarUsers());
+	}
+
+	public List<User> getFilteredUsers() {
+		return filteredUsers;
+	}
+
+	public void setFilteredUsers(List<User> filteredUsers) {
+		this.filteredUsers = filteredUsers;
 	}
 
 	public Date getBirthdate() {
@@ -170,7 +179,6 @@ public class UserBean {
 			ok = false;
 		} else {
 			User current_us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
-			System.out.println(current_us.getUserName());
 			if ((this.validateSession() && !current_us.getUserName().equals(this.user.getUserName())
 					&& this.userDao.existUsername(this.user.getUserName()))
 					|| (!this.validateSession() && this.userDao.existUsername(this.user.getUserName()))) {

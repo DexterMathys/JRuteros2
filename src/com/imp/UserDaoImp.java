@@ -48,7 +48,10 @@ public class UserDaoImp implements UserDao {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {
-
+			if (s != null) {
+				s.close();
+				s = null;
+			}
 		}
 	}
 
@@ -87,6 +90,11 @@ public class UserDaoImp implements UserDao {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+				s = null;
+			}
 		}
 		return users;
 	}
