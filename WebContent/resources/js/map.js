@@ -11,6 +11,7 @@ var puntos = [];
  * Inicializa el mapa
  */
 function initMap() {
+	var src = 'https://developers.google.com/maps/documentation/javascript/examples/kml/westcampus.kml';
 	var mapProp = {
 			center : new google.maps.LatLng(-34.9038055, -57.9392111, 18),
 			zoom : 10,
@@ -26,6 +27,7 @@ function initMap() {
 	puntos = [];
 	initPolyline()
 	obtenerMarkers();
+	//loadKmlLayer(src, map);
 	
 }
 
@@ -78,6 +80,14 @@ function dibujarMarker(dato) {
 		marker.setMap(null);
 		//dibujar de nuevo
 		dibujarRecorrido();
+		//quitar del input
+		var removePoint = marker.getPosition().lat() + " " + marker.getPosition().lng();
+		if ($('#points').val().split(",").length > 1 ) {
+			removePoint = "," + removePoint;
+		}
+		var points = $('#points').val().replace(removePoint, '');
+		$('#points').val(points);
+		
 	});
 
 	puntos[puntos.length] = marker;
@@ -202,4 +212,18 @@ function clearMarkers() {
 function deleteMarkers() {
 	clearMarkers();
 	limpiarRecorrido();
+	$('#points').val("");
 }
+
+
+function loadKmlLayer(src, map) {
+   /* var kmlLayer = new google.maps.KmlLayer(src, {
+      suppressInfoWindows: true,
+      preserveViewport: false,
+      map: map
+    });*/
+	var ctaLayer = new google.maps.KmlLayer({
+	    url: src,
+	    map: map
+	  });
+  }
