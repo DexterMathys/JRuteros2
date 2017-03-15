@@ -55,7 +55,7 @@
 	 	<p:outputLabel value="Distancia"/>
 	 	</p:column>
 	 	<p:column>
-			<p:inputText type="number" id="distance" value="#{routeBean.route.distance}"  />
+	 		<p:spinner id="distance" value="#{routeBean.route.distance}" min="0" stepFactor="0.5" />
 			<p:outputLabel value=" Metros"/>
 	 	</p:column>
 	 	
@@ -82,10 +82,10 @@
 	 	<p:outputLabel value="Tiempo estimado"/>
 	 	</p:column>
 	 	<p:column>
-			<p:inputText type="number" id="hours" placeholder="HH" value="#{routeBean.hours}" />
+	 		<p:spinner id="hours" placeholder="HH" value="#{routeBean.hours}" min="0" />
 			<p:outputLabel for="hours" value="Horas" />
 			
-			<p:inputText type="number" id="minutes" placeholder="MM" value="#{routeBean.minutes}" />	
+			<p:spinner id="minutes" placeholder="MM" value="#{routeBean.minutes}" min="0" max="59" />
 			<p:outputLabel for="minutes" value="Minutos" />		
 	 	</p:column>
 	 	

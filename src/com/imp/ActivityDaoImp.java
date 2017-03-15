@@ -10,8 +10,8 @@ import com.model.Activity;
 import com.model.Route;
 import com.util.HibernateUtil;
 
-public class ActivityDaoImp implements ActivityDao{
-	
+public class ActivityDaoImp implements ActivityDao {
+
 	private Session s;
 
 	@Override
@@ -23,7 +23,7 @@ public class ActivityDaoImp implements ActivityDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
@@ -39,12 +39,12 @@ public class ActivityDaoImp implements ActivityDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ActivityDaoImp implements ActivityDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
@@ -68,7 +68,7 @@ public class ActivityDaoImp implements ActivityDao{
 	public List<Activity> listar() {
 		// TODO Auto-generated method stub
 		List<Activity> activities = null;
-		
+
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
 		String hql = "FROM Activity";
@@ -91,7 +91,8 @@ public class ActivityDaoImp implements ActivityDao{
 		Transaction t = s.beginTransaction();
 		String hql = "FROM Activity where name = :aname ";
 		try {
-			ex = (s.createQuery(hql).setString("aname",activity.getName()).uniqueResult() != null);
+			Activity act = (Activity) s.createQuery(hql).setString("aname", activity.getName()).uniqueResult();
+			ex = (act != null && act.getId() != activity.getId());
 			t.commit();
 			s.close();
 		} catch (Exception e) {
@@ -105,7 +106,7 @@ public class ActivityDaoImp implements ActivityDao{
 	public List<Route> rutas(Activity activity) {
 		// TODO Auto-generated method stub
 		List<Route> rutas = null;
-		
+
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
 		String hql = "FROM Route where activity_id = :id";
@@ -124,7 +125,7 @@ public class ActivityDaoImp implements ActivityDao{
 	public List<Activity> listarHabilitadas() {
 		// TODO Auto-generated method stub
 		List<Activity> activities = null;
-		
+
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
 		String hql = "FROM Activity WHERE active = true";
@@ -138,6 +139,5 @@ public class ActivityDaoImp implements ActivityDao{
 		}
 		return activities;
 	}
-
 
 }
