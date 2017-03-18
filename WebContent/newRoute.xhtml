@@ -22,12 +22,11 @@
 			
 			<p>Completa todos los campos y luego presiona <b>Confirmar</b> para agregar la ruta</p><br></br>
 			
-			<h:form>
+			<h:form method="post" enctype="multipart/form-data" >
 				<ui:include src="/WEB-INF/facelets/forms/routeForm.xhtml"/>
-				<br></br>				
-				<p:commandLink action="#{routeBean.add()}">
-					<span class="btn btn-success btn-lg"><i class="fa fa-check" aria-hidden="true"></i> Agregar</span>
-				</p:commandLink>
+				<br></br>			
+				 <h:commandButton styleClass="btn btn-success btn-lg" value="Agregar" action="#{routeBean.add()}"/>	
+				
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<h:link class="btn btn-danger btn-lg" outcome="index">
 					<span><i class="fa fa-times" aria-hidden="true"></i> Cancelar</span>

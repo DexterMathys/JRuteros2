@@ -1,17 +1,31 @@
 package com.bean;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.servlet.http.Part;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.imp.ActivityDaoImp;
 import com.imp.ApointDaoImp;
@@ -37,8 +51,27 @@ public class RouteBean {
 	private String isCircular;
 	private Date date;
 	private String points;
+	private Part file;
+	private String fileContent;
+	 
 
 	public RouteBean() {
+	}
+	
+	public Part getFile() {
+		return file;
+	}
+
+	public void setFile(Part file) {
+		this.file = file;
+	}
+
+	public String getFileContent() {
+		return fileContent;
+	}
+
+	public void setFileContent(String fileContent) {
+		this.fileContent = fileContent;
 	}
 
 	public int getHours() {
@@ -129,7 +162,8 @@ public class RouteBean {
 		return "/newRoute.xhtml";
 	}
 
-	public String add() {
+	public String add() throws ParserConfigurationException, SAXException, IOException {
+		
 		if (!this.validateRoute()) {
 			return "newRoute";
 		}
@@ -168,20 +202,12 @@ public class RouteBean {
 			TravelDaoImp travelDAO = new TravelDaoImp();
 			Travel travel = new Travel();
 			travelDAO.nuevo(travel);
-
-			// Crear puntos
-			ApointDaoImp apointDAO = new ApointDaoImp();
-			Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext()
-					.getRequestParameterMap();
-			String action = params.get("points");
-			// Separo por puntos
-			String[] points = action.split(",");
-			String[] partPoint;
-			for (String point : points) {
-				System.out.println("point: " + point);
-				partPoint = point.split(" ");
-				apointDAO.nuevo(new Apoint(travel, partPoint[0], partPoint[1]));
-			}
+			
+			String action = obtenerPuntos();
+			// Separo los puntos
+			String[] points =  action.split(",");
+			crearPuntos(points, travel);
+			
 			this.route.setTravel(travel);
 			routeDAO.nuevo(this.route);
 
@@ -203,7 +229,7 @@ public class RouteBean {
 		return Difficulty.values();
 	}
 
-	private boolean validateRoute() {
+	private boolean validateRoute() throws ParserConfigurationException, SAXException, IOException {
 		boolean ok = true;
 		if (this.route.getName() == "") {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -241,11 +267,8 @@ public class RouteBean {
 					"El campo Fecha de realizacion no puede ser vacio.", ""));
 			ok = false;
 		}
-		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-		String action = params.get("points");
-		// Separo por puntos
-		String[] points = action.split(",");
-		if (points.length < 2) {
+		String[] points = obtenerPuntos().split(",");
+		if (points.length < 2 ) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Debe seleccionar al menos 2 puntos en el mapa.", ""));
 			ok = false;
@@ -260,5 +283,72 @@ public class RouteBean {
 	public void setPoints(String points) {
 		this.points = points;
 	}
+	
+	public void upload() throws ParserConfigurationException, SAXException {
+		try {
+			 this.fileContent = new Scanner(this.file.getInputStream()).useDelimiter("\\A").next();
+		 } catch (IOException e) {
+		      // Error handling
+		 }
+	}
+	 
+	 private String fileToString(String filePath) throws ParserConfigurationException, SAXException, IOException
+	 {  
+		 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();  
+		 DocumentBuilder builder;  
+		 Document document = null ;
+		 
+		 builder = factory.newDocumentBuilder();  
+		 document = builder.parse( new InputSource( new StringReader( filePath ) ) );  
+		 document.getDocumentElement().normalize();
+		 //System.out.println ("Root element of the doc is " + document.getDocumentElement().getNodeName());
+         NodeList listOfPoints = document.getElementsByTagName("Point");
+         int totalCoordinates = listOfPoints.getLength();
+        // System.out.println("Total point : " + totalCoordinates);
+		 String points = null;
+         for(int s=0; s<listOfPoints.getLength() ; s++){
+
+        	Node firstPersonNode = listOfPoints.item(s);
+        	if(firstPersonNode.getNodeType() == Node.ELEMENT_NODE){
+	        	Element firstPersonElement = (Element)firstPersonNode; 
+	        	
+	        	NodeList firstNameList = firstPersonElement.getElementsByTagName("coordinates");
+	        	Element firstNameElement = (Element)firstNameList.item(0);
+	        	//lon, lat, alt
+	        	NodeList textFNList = firstNameElement.getChildNodes();
+	        	String[] point = ((Node)textFNList.item(0)).getNodeValue().toString().split(",");
+	        	if (points == null){
+	        		// lat, lon
+	        		points = point[1] + " " +  point[0];
+	        	}else{
+	        		points = points + ","  + point[1] + " " +  point[0];
+	        	}
+	        	//System.out.println("Coordinate : " + ((Node)textFNList.item(0)).getNodeValue().trim());
+        	}
+        }
+		return points;
+	 }
+	 
+	 public void crearPuntos(String[] points, Travel travel) {
+		 ApointDaoImp apointDAO = new ApointDaoImp();
+		 String[] partPoint;
+			for (String point : points) {
+				partPoint = point.split(" ");
+				//travel, lat ,long
+				apointDAO.nuevo(new Apoint(travel, partPoint[0], partPoint[1]));
+			}
+	 }
+	 
+	 public String obtenerPuntos() throws ParserConfigurationException, SAXException, IOException{
+		 Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext()
+					.getRequestParameterMap();
+		String action = params.get("points");
+		if (action.equals("")) {
+			upload();
+			action = fileToString(this.fileContent);
+		}
+		return action;
+		 
+	 }
 
 }
