@@ -38,11 +38,10 @@
 							<!-- Menu Footer-->
 							<li class="user-footer">
 								<div class="pull-left">
-									<h:link outcome="editprofile">Perfil</h:link>
-									<a href="#" class="btn btn-default btn-flat">Perfil</a>
+									<h:link outcome="editprofile" styleClass="btn btn-success btn-flat">Perfil</h:link>
 								</div>
 								<div class="pull-right">
-									<p:commandButton value="Salir" action="#{userBean.logout()}" />
+									<p:commandButton value="Salir" styleClass="btn btn-danger btn-flat" action="#{userBean.logout()}" />
 								</div>
 							</li>
 						</ul>

@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      template="/WEB-INF/facelets/templates/layout.xhtml"> 
+
+	<ui:define name="encabezado">
+		<ui:include src="/WEB-INF/facelets/headers/userHeader.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="menu">
+		<ui:include src="/WEB-INF/facelets/menus/userMenu.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="body">
+		<div class="container-fluid">
+			<h1><p:outputLabel value="Mis Rutas" /></h1>
+			
+			<p:separator/>
+			
+			<p class="well">Aquí puedes <b>ver, editar y eliminar</b> tus <b>Rutas</b>.</p><br></br>
+			
+			<h:form>
+						
+				<p:dataTable id="tablaRutas" var="item" value="#{routeBean.routes}" widgetVar="routesTable" emptyMessage="No se encuentra ninguna Ruta" paginator="true" rows="5"
+				 			 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				 			 rowsPerPageTemplate="5,10,15" filteredValue="#{routeBean.filteredRoutes}">
+					<f:facet name="header">
+			            <p:outputPanel>
+			                <h:outputText value="Buscar:" />
+			                <p:inputText id="globalFilter" onkeyup="PF('routesTable').filter()" style="width:150px" placeholder=""/>
+			            </p:outputPanel>
+			        </f:facet>
+			       
+					 
+					<p:column headerText="Nombre" filterBy="#{item[0].name}" filterMatchMode="contains" sortBy="#{item[0].name}">
+						<p:outputLabel value="#{item[0].name}" />
+					</p:column>
+					
+					<p:column headerText="Privacidad" filterBy="#{item[0].getPrivacidad()}" filterMatchMode="contains" sortBy="#{item[0].getPrivacidad()}">
+						<p:outputLabel value="#{item[0].getPrivacidad()}" />
+					</p:column>
+					
+					<p:column headerText="Formato" filterBy="#{item[0].getFormato()}" filterMatchMode="contains" sortBy="#{item[0].getFormato()}">
+						<p:outputLabel value="#{item[0].getFormato()}" />
+					</p:column>
+					
+					<p:column headerText="Distancia" filterBy="#{item[0].distance}" filterMatchMode="contains" sortBy="#{item[0].distance}">
+						<p:outputLabel value="#{item[0].distance}" />
+					</p:column>
+					
+					<p:column headerText="Dificultad" filterBy="#{item[0].difficulty}" filterMatchMode="contains" sortBy="#{item[0].difficulty}">
+						<p:outputLabel value="#{item[0].difficulty}" />
+					</p:column>
+					
+					<p:column headerText="Actividad" filterBy="#{item[1].name}" filterMatchMode="contains" sortBy="#{item[1].name}">
+						<p:outputLabel value="#{item[1].name}" />
+					</p:column>
+					
+					<p:column headerText="Tiempo estimado" filterBy="#{item[0].time}" filterMatchMode="contains" sortBy="#{item[0].time}">
+						<p:outputLabel value="#{item[0].time}" />
+					</p:column>
+					
+					<p:column headerText="Fecha de realización" filterBy="#{item[0].date}" filterMatchMode="contains" sortBy="#{item[0].date}">
+						<p:calendar value="#{item[0].date}" pattern="dd-MM-yyyy" readonly="true" showOn="none" />
+					</p:column>
+					
+					<p:column headerText="Accion">
+							<p:commandLink action="#{routeBean.view(item[0])}" update="tablaRutas" styleClass="btn btn-success btn-xs">
+								<i class="fa fa-search" title="Ver"/>
+							</p:commandLink>
+							<p:commandLink action="#{routeBean.edit()}" update="tablaRutas" styleClass="btn btn-warning btn-xs">
+								<i class="fa fa-pencil" title="Modificar"/>
+							</p:commandLink>
+							<p:commandLink action="#{routeBean.delete(item[0])}" update="tablaRutas" styleClass="btn btn-danger btn-xs">
+								<i class="fa fa-close" title="Eliminar"/>
+							</p:commandLink>
+							<p:inputText type="hidden" value="#{item[0].id}" id="userId"/>
+					</p:column>
+				</p:dataTable>
+				
+			</h:form>
+		</div>
+		
+	</ui:define>
+	
+
+</ui:composition>

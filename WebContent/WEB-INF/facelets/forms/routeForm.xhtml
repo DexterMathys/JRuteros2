@@ -63,7 +63,7 @@
 	 	<p:outputLabel value="Dificultad"/>
 	 	</p:column>
 	 	<p:column>
-	 		<h:selectOneMenu styleClass="select2" id="difficulty" value="#{routeBean.route.difficulty}">
+	 		<h:selectOneMenu styleClass="select2" style="width: 130px" id="difficulty" value="#{routeBean.route.difficulty}">
    				<f:selectItems value="#{routeBean.difficulties()}" var="diff" itemValue="#{diff}" itemLabel="#{diff}" />
 			</h:selectOneMenu>
 	 	</p:column>
@@ -73,7 +73,7 @@
 	 	<p:outputLabel value="Actividad"/>
 	 	</p:column>
 	 	<p:column>
-			<h:selectOneMenu styleClass="select2" id="activity" value="#{routeBean.route.activity.id}">
+			<h:selectOneMenu styleClass="select2" id="activity" style="width: 200px" value="#{routeBean.route.activity.id}">
 				<f:selectItems value="#{routeBean.activities}"/>
 			</h:selectOneMenu>
 	 	</p:column>

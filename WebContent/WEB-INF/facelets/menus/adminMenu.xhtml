@@ -18,7 +18,13 @@
 						<i class="fa fa-search"></i>
 						<span class='menu-options'>Actividades</span>
 					</h:link>
-				</li>			
+				</li>	
+				<li class="menu-options">
+						<p:commandLink action="#{userBean.logout()}">
+							<i class="fa fa-sign-out" aria-hidden="true"></i>
+							<span class='menu-options'>Salir</span>
+						</p:commandLink>
+					</li>		
 			</ul>
 		</h:form>
 	</section>

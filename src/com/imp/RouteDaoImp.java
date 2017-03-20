@@ -10,15 +10,15 @@ import com.model.Activity;
 import com.model.Route;
 import com.util.HibernateUtil;
 
-public class RouteDaoImp implements RouteDao{
-	
+public class RouteDaoImp implements RouteDao {
+
 	private Session s;
 
 	@Override
 	public List<Route> rutasActividad(Activity activity) {
 		// TODO Auto-generated method stub
 		List<Route> rutas = null;
-		
+
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
 		String hql = "FROM Route where activity_id = :id";
@@ -43,12 +43,12 @@ public class RouteDaoImp implements RouteDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -61,12 +61,12 @@ public class RouteDaoImp implements RouteDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -79,12 +79,12 @@ public class RouteDaoImp implements RouteDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class RouteDaoImp implements RouteDao{
 		Transaction t = s.beginTransaction();
 		String hql = "FROM Route where id = :id ";
 		try {
-			ex = (s.createQuery(hql).setString("id",route.getId().toString()).uniqueResult() != null);
+			ex = (s.createQuery(hql).setString("id", route.getId().toString()).uniqueResult() != null);
 			t.commit();
 			s.close();
 		} catch (Exception e) {
@@ -105,15 +105,33 @@ public class RouteDaoImp implements RouteDao{
 		return ex;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Route> listar() {
-		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub
 		List<Route> rutas = null;
-		
+
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
-		String hql = "FROM Route";
+		String hql = "FROM Route r INNER JOIN r.activity";
+		try {
+			rutas = s.createQuery(hql).list();
+			t.commit();
+			s.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			t.rollback();
+		}
+		return rutas;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Route> listar(long idUser) {
+		List<Route> rutas = null;
+
+		s = HibernateUtil.sessionFactory.openSession();
+		Transaction t = s.beginTransaction();
+		String hql = "FROM Route r INNER JOIN r.activity WHERE user_id = " + idUser;
 		try {
 			rutas = s.createQuery(hql).list();
 			t.commit();
@@ -130,9 +148,8 @@ public class RouteDaoImp implements RouteDao{
 		// TODO Auto-generated method stub
 		Route route;
 		s = HibernateUtil.sessionFactory.openSession();
-		route  = (Route) s.get(Route.class, id);
-		return route; 
+		route = (Route) s.get(Route.class, id);
+		return route;
 	}
-
 
 }

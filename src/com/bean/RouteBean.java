@@ -30,6 +30,7 @@ public class RouteBean {
 
 	private Route route = new Route();
 	private List<Route> routes = (new RouteDaoImp().listar());
+	private List<Route> filteredRoutes;
 	private List<SelectItem> activities;
 	private int hours;
 	private int minutes;
@@ -37,8 +38,17 @@ public class RouteBean {
 	private String isCircular;
 	private Date date;
 	private String points;
+	private RouteDaoImp routeDao = new RouteDaoImp();
 
 	public RouteBean() {
+	}
+
+	public List<Route> getFilteredRoutes() {
+		return filteredRoutes;
+	}
+
+	public void setFilteredRoutes(List<Route> filteredRoutes) {
+		this.filteredRoutes = filteredRoutes;
 	}
 
 	public int getHours() {
@@ -125,8 +135,20 @@ public class RouteBean {
 		 * FacesContext.getCurrentInstance().getExternalContext().redirect(
 		 * "newRoute.xhtml"); } catch (IOException ex) { // do something here }
 		 */
+		this.route = new Route();
+		this.date = null;
+		this.hours = 0;
+		this.minutes = 0;
+		this.isCircular = null;
+		this.isPublic = null;
 		this.listActivities();
 		return "/newRoute.xhtml";
+	}
+
+	public String myRoutes() {
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		this.setRoutes(new RouteDaoImp().listar(us.getId()));
+		return "/myRoutes.xhtml";
 	}
 
 	public String add() {
@@ -259,6 +281,32 @@ public class RouteBean {
 
 	public void setPoints(String points) {
 		this.points = points;
+	}
+
+	public String view(Route route) {
+		this.route = routeDao.obtener(route.getId());
+		if (this.route.isIsPublic()) {
+			this.isPublic = "1";
+		} else {
+			this.isPublic = "0";
+		}
+		if (this.route.isIsCircular()) {
+			this.isCircular = "1";
+		} else {
+			this.isCircular = "0";
+		}
+		this.hours = this.route.getTime().getHours();
+		this.minutes = this.route.getTime().getMinutes();
+		this.date = this.route.getDate();
+		return "route.xhtml";
+	}
+
+	public void edit() {
+
+	}
+
+	public void delete(Route route) {
+		routeDao.eliminar(route);
 	}
 
 }

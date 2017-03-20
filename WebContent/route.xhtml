@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      template="/WEB-INF/facelets/templates/layout.xhtml"> 
+
+	<ui:define name="encabezado">
+		<ui:include src="/WEB-INF/facelets/headers/userHeader.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="menu">
+		<ui:include src="/WEB-INF/facelets/menus/userMenu.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="body">
+		<div class="container-fluid">
+			<h1><p:outputLabel value="Ruta #{routeBean.route.name}" /></h1>
+			
+			<p:separator/>
+			
+			<p class="well">#{routeBean.route.description}</p><br></br>
+			
+			<h:form>
+				<p:panelGrid columns="2">
+				 	
+				 	<p:column>
+				 	<p:outputLabel value="Privacidad"/>
+				 	</p:column>
+				 	<p:column>
+				 		<p:outputLabel value="#{routeBean.route.getPrivacidad()}" />	 	
+				 	</p:column>
+				 	
+				 	<p:column>
+				 	<p:outputLabel value="Recorrido"/>
+				 	</p:column>
+				 	<p:column>
+					 	<div id="floating-panel">
+				     		<input onclick="deleteMarkers();" type="button" value="Limpiar mapa"/>
+				    	</div>
+				 		<div id="map"  style="width:500px;height:380px;"></div>
+				 		<div id="route_points">
+				 			<input type="hidden" name="points" id="points"/>
+				 		</div>
+				 	</p:column>
+				 	
+					<p:column>
+				 	<p:outputLabel value="Formato"/>
+				 	</p:column>
+				 	<p:column>
+				 		<p:outputLabel id="format" value="#{routeBean.route.getFormato()}" />	
+				 	</p:column>
+				 	
+				 	<p:column>
+				 	<p:outputLabel value="Distancia"/>
+				 	</p:column>
+				 	<p:column>
+						<p:outputLabel id="distance" value="#{routeBean.route.distance} Metros"/>
+				 	</p:column>
+				 	
+				 	<p:column>
+				 	<p:outputLabel value="Dificultad"/>
+				 	</p:column>
+				 	<p:column>
+				 		<p:outputLabel id="difficulty" value="#{routeBean.route.difficulty}"/>
+				 	</p:column>
+				 	
+				 	<p:column>
+				 	 
+				 	<p:outputLabel value="Actividad"/>
+				 	</p:column>
+				 	<p:column>
+						<p:outputLabel id="activity" value="#{routeBean.route.activity.name}"/>
+				 	</p:column>
+				 	 
+				 	<p:column>
+				 	<p:outputLabel value="Tiempo estimado"/>
+				 	</p:column>
+				 	<p:column>
+						<p:outputLabel id="hours" value="#{routeBean.hours} Horas &nbsp;" />
+						
+						<p:outputLabel id="minutes" value="#{routeBean.minutes} Minutos " />		
+				 	</p:column>
+				 	
+				 	<p:column>
+				 	<p:outputLabel value="Fecha de realización"/>
+				 	</p:column>
+				 	<p:column>
+						<p:calendar id="date" showOn="none" readonly="true" value="#{routeBean.date}" pattern="dd/MM/yyyy" />
+				 	</p:column>
+				 	
+				 </p:panelGrid>
+				<br></br>				
+				<p:commandLink action="#{routeBean.add()}">
+					<span class="btn btn-success btn-lg"><i class="fa fa-check" aria-hidden="true"></i> Agregar</span>
+				</p:commandLink>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<h:link class="btn btn-danger btn-lg" outcome="index">
+					<span><i class="fa fa-times" aria-hidden="true"></i> Cancelar</span>
+				</h:link>
+ 			</h:form>
+		</div>
+		<script type="text/javascript">
+				$( document ).ready(function() {
+					initMap();
+				});
+	</script>
+	</ui:define>
+	
+
+</ui:composition>
