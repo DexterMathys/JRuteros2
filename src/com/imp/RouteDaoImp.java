@@ -126,6 +126,25 @@ public class RouteDaoImp implements RouteDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
+	public List<Route> listarPublicas() {
+		List<Route> rutas = null;
+
+		s = HibernateUtil.sessionFactory.openSession();
+		Transaction t = s.beginTransaction();
+		String hql = "FROM Route r INNER JOIN r.activity WHERE isPublic = 1";
+		try {
+			rutas = s.createQuery(hql).list();
+			t.commit();
+			s.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			t.rollback();
+		}
+		return rutas;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<Route> listar(long idUser) {
 		List<Route> rutas = null;
 

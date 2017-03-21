@@ -21,4 +21,6 @@ public interface RouteDao {
 	public Route obtener(Long id);
 
 	List<Route> listar(long idUser);
+
+	List<Route> listarPublicas();
 }

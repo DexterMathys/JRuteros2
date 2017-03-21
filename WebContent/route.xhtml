@@ -16,7 +16,7 @@
 	
 	<ui:define name="body">
 		<div class="container-fluid">
-			<h1><p:outputLabel value="Ruta #{routeBean.route.name}" /></h1>
+			<h1><p:outputLabel value="Ruta #{routeBean.route.name}, de #{routeBean.route.user.userName}" /></h1>
 			
 			<p:separator/>
 			
@@ -91,14 +91,7 @@
 				 	</p:column>
 				 	
 				 </p:panelGrid>
-				<br></br>				
-				<p:commandLink action="#{routeBean.add()}">
-					<span class="btn btn-success btn-lg"><i class="fa fa-check" aria-hidden="true"></i> Agregar</span>
-				</p:commandLink>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<h:link class="btn btn-danger btn-lg" outcome="index">
-					<span><i class="fa fa-times" aria-hidden="true"></i> Cancelar</span>
-				</h:link>
+
  			</h:form>
 		</div>
 		<script type="text/javascript">

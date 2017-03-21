@@ -183,6 +183,11 @@ public class RouteBean {
 		return "/myRoutes.xhtml";
 	}
 
+	public String searchRoute() {
+		this.setRoutes(new RouteDaoImp().listarPublicas());
+		return "/publicRoutes.xhtml";
+	}
+
 	public String add() throws ParserConfigurationException, SAXException, IOException {
 
 		if (!this.validateRoute()) {
