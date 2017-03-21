@@ -396,6 +396,10 @@ public class RouteBean {
 
 	public void delete(Route route) {
 		routeDao.eliminar(route);
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		this.setRoutes(new RouteDaoImp().listar(us.getId()));
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ruta ", route.getName() + " " + "eliminada"));
 	}
 
 }
