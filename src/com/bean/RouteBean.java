@@ -30,11 +30,13 @@ import org.xml.sax.SAXException;
 import com.imp.ActivityDaoImp;
 import com.imp.ApointDaoImp;
 import com.imp.RouteDaoImp;
+import com.imp.RoutescoreDaoImp;
 import com.imp.TravelDaoImp;
 import com.model.Activity;
 import com.model.Apoint;
 import com.model.Difficulty;
 import com.model.Route;
+import com.model.Routescore;
 import com.model.Travel;
 import com.model.User;
 
@@ -43,6 +45,11 @@ import com.model.User;
 public class RouteBean {
 
 	private Route route = new Route();
+	private RoutescoreDaoImp scoreDao = new RoutescoreDaoImp();
+	private double totalScore = 0.0;
+	private int score = 0;
+	private String myscore;
+	private String scorePromedio;
 	private List<Route> routes = (new RouteDaoImp().listar());
 	private List<Route> filteredRoutes;
 	private List<SelectItem> activities;
@@ -57,6 +64,38 @@ public class RouteBean {
 	private String fileContent;
 
 	public RouteBean() {
+	}
+
+	public String getMyscore() {
+		return myscore;
+	}
+
+	public void setMyscore(String myscore) {
+		this.myscore = myscore;
+	}
+
+	public String getScorePromedio() {
+		return scorePromedio;
+	}
+
+	public void setScorePromedio(String scorePromedio) {
+		this.scorePromedio = scorePromedio;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public double getTotalScore() {
+		return totalScore;
+	}
+
+	public void setTotalScore(double totalScore) {
+		this.totalScore = totalScore;
 	}
 
 	public Part getFile() {
@@ -142,9 +181,8 @@ public class RouteBean {
 	public List<SelectItem> getActivities() {
 		this.activities = new ArrayList<SelectItem>();
 		ActivityDaoImp actDao = new ActivityDaoImp();
-		List<Activity> actividades = actDao.listar();
+		List<Activity> actividades = actDao.listarHabilitadas();
 		activities.clear();
-
 		for (Activity actividad : actividades) {
 			SelectItem actItem = new SelectItem(actividad.getId(), actividad.getName());
 			this.activities.add(actItem);
@@ -392,6 +430,25 @@ public class RouteBean {
 		this.hours = this.route.getTime().getHours();
 		this.minutes = this.route.getTime().getMinutes();
 		this.date = this.route.getDate();
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		Routescore s = scoreDao.obtener(this.route.getId(), us.getId());
+
+		if (s != null) {
+			this.score = s.getScore();
+		} else {
+			this.score = 0;
+		}
+		this.myscore = String.valueOf(this.score);
+		List<Routescore> scores = scoreDao.listar(this.route.getId());
+		double promedio = 0.0;
+		double suma = 0;
+		for (Routescore routescore : scores) {
+			suma += routescore.getScore();
+		}
+		if (suma > 0) {
+			promedio = suma / scores.size();
+		}
+		this.scorePromedio = String.valueOf(promedio);
 		return "route.xhtml";
 	}
 
@@ -405,6 +462,39 @@ public class RouteBean {
 		this.setRoutes(new RouteDaoImp().listar(us.getId()));
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ruta ", route.getName() + " " + "eliminada"));
+	}
+
+	public void puntuar() {
+		if (this.score == 0) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El puntaje no puede ser 0", ""));
+		} else {
+			User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+			this.myscore = String.valueOf(this.score);
+			Routescore routeScore = new Routescore(this.route, us, this.score);
+			scoreDao.nuevo(routeScore);
+			List<Routescore> scores = scoreDao.listar(this.route.getId());
+			double promedio = 0.0;
+			double suma = 0;
+			for (Routescore routescore : scores) {
+				suma += routescore.getScore();
+			}
+			if (suma > 0) {
+				promedio = suma / scores.size();
+			}
+			this.scorePromedio = String.valueOf(promedio);
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Se guardó tu puntaje:", String.valueOf(this.score)));
+		}
+	}
+
+	public boolean existePuntaje() {
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		if (scoreDao.existe(this.route.getId(), us.getId())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }
