@@ -1,8 +1,13 @@
 package com.model;
 // Generated 11-feb-2017 21:28:21 by Hibernate Tools 4.3.5.Final
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.EnumType;
@@ -184,7 +189,7 @@ public class Route implements java.io.Serializable {
 
 	public String getPrivacidad() {
 		if (isPublic) {
-			return "Pública";
+			return "Pï¿½blica";
 		} else {
 			return "Privada";
 		}
@@ -194,8 +199,27 @@ public class Route implements java.io.Serializable {
 		if (isCircular) {
 			return "Circuito";
 		} else {
-			return "Sólo ida";
+			return "Sï¿½lo ida";
 		}
+	}
+	
+	public List<Apoint> getPoints(){
+		return getTravel().getApoints();
+	}
+	
+	public String getPointsToString(){
+		String points = "";
+		List<Apoint> l = getPoints();
+		l.removeIf(Objects::isNull);
+		Iterator<Apoint> itr = l.iterator();
+		Apoint point = itr.next();
+		points = point.getLatitude() + " " +  point.getLonguitude();
+	    while(itr.hasNext()) {
+	         point = itr.next();
+	         points = points + "," +  point.getLatitude() + " " +  point.getLonguitude();
+	    }
+	    //System.out.println(points);
+		return points ;
 	}
 
 }

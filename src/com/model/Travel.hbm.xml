@@ -14,11 +14,10 @@
             </key>
             <one-to-many class="com.model.Route" />
         </set>
-        <set name="apoints" table="apoint" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="travel_id" not-null="true" />
-            </key>
+        <list name="apoints" cascade="all">
+            <key column="travel_id" />
+            <index column="id" />  
             <one-to-many class="com.model.Apoint" />
-        </set>
+        </list>
     </class>
 </hibernate-mapping>
