@@ -2,6 +2,7 @@ package com.imp;
 
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -25,10 +26,14 @@ public class RouteDaoImp implements RouteDao {
 		try {
 			rutas = s.createQuery(hql).setString("id", activity.getId().toString()).list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return rutas;
 	}
@@ -55,6 +60,10 @@ public class RouteDaoImp implements RouteDao {
 	public void editar(Route route) {
 		// TODO Auto-generated method stub
 		try {
+			if (s != null) {
+				s.close();
+				s = null;
+			}
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
 			s.update(route);
@@ -97,10 +106,14 @@ public class RouteDaoImp implements RouteDao {
 		try {
 			ex = (s.createQuery(hql).setString("id", route.getId().toString()).uniqueResult() != null);
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return ex;
 	}
@@ -116,10 +129,14 @@ public class RouteDaoImp implements RouteDao {
 		try {
 			rutas = s.createQuery(hql).list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return rutas;
 	}
@@ -135,10 +152,14 @@ public class RouteDaoImp implements RouteDao {
 		try {
 			rutas = s.createQuery(hql).list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return rutas;
 	}
@@ -154,10 +175,14 @@ public class RouteDaoImp implements RouteDao {
 		try {
 			rutas = s.createQuery(hql).list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return rutas;
 	}
@@ -165,10 +190,18 @@ public class RouteDaoImp implements RouteDao {
 	@Override
 	public Route obtener(Long id) {
 		// TODO Auto-generated method stub
-		Route route;
-		s = HibernateUtil.sessionFactory.openSession();
-		route = (Route) s.get(Route.class, id);
+		Route route = null;
+		try {
+			s = HibernateUtil.sessionFactory.openSession();
+			s.beginTransaction();
+			route = (Route) s.get(Route.class, id);
+			s.getTransaction().commit();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 		return route;
+		
+		
 	}
 
 }

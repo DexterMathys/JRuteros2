@@ -26,10 +26,14 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 		try {
 			scores = s.createQuery(hql).list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return scores;
 	}
@@ -96,10 +100,14 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 		try {
 			ex = (s.createQuery(hql).setString("id", score.getId().toString()).uniqueResult() != null);
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return ex;
 	}
@@ -117,10 +125,14 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 			q.setParameter("idUser", idUser);
 			ex = (q.uniqueResult() != null);
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return ex;
 	}
@@ -139,10 +151,14 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 			q.setParameter("idRoute", idRoute);
 			scores = q.list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return scores;
 	}
@@ -153,6 +169,7 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 		Routescore score;
 		s = HibernateUtil.sessionFactory.openSession();
 		score = (Routescore) s.get(Routescore.class, id);
+		s.close();
 		return score;
 	}
 
@@ -170,10 +187,14 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 			q.setParameter("idUser", idUser);
 			score = (Routescore) q.uniqueResult();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return score;
 	}

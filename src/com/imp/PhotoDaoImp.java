@@ -25,10 +25,14 @@ public class PhotoDaoImp implements PhotoDao{
 		try {
 			photos = s.createQuery(hql).list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return photos;
 	}
@@ -95,10 +99,14 @@ public class PhotoDaoImp implements PhotoDao{
 		try {
 			ex = (s.createQuery(hql).setString("id",photo.getId().toString()).uniqueResult() != null);
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return ex;
 	}
@@ -109,6 +117,7 @@ public class PhotoDaoImp implements PhotoDao{
 		Photo photo;
 		s = HibernateUtil.sessionFactory.openSession();
 		photo  = (Photo) s.get(Photo.class, id);
+		s.close();
 		return photo;
 	}
 
