@@ -39,6 +39,8 @@ import com.model.Route;
 import com.model.Routescore;
 import com.model.Travel;
 import com.model.User;
+import com.model.UserRoute;
+import com.model.UserRouteId;
 
 @ManagedBean
 @RequestScoped
@@ -495,6 +497,30 @@ public class RouteBean {
 		} else {
 			return false;
 		}
+	}
+
+	public void hacerRuta() {
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		UserRouteId user_route_id = new UserRouteId(us.getId(), this.route.getId());
+		UserRoute user_route = new UserRoute(user_route_id, this.route, us);
+		routeDao.nuevo(user_route);
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "Has realizado esta ruta", ""));
+	}
+
+	public boolean existeRutaHecha() {
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		UserRouteId user_route_id = new UserRouteId(us.getId(), this.route.getId());
+		UserRoute user_route = routeDao.obtener(user_route_id);
+		if (user_route != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public long cantUsers() {
+		return routeDao.countUsers(this.route.getId());
 	}
 
 }

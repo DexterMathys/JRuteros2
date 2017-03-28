@@ -8,6 +8,8 @@ import org.hibernate.Transaction;
 import com.dao.RouteDao;
 import com.model.Activity;
 import com.model.Route;
+import com.model.UserRoute;
+import com.model.UserRouteId;
 import com.util.HibernateUtil;
 
 public class RouteDaoImp implements RouteDao {
@@ -169,6 +171,49 @@ public class RouteDaoImp implements RouteDao {
 		s = HibernateUtil.sessionFactory.openSession();
 		route = (Route) s.get(Route.class, id);
 		return route;
+	}
+
+	@Override
+	public void nuevo(UserRoute user_route) {
+		try {
+			s = HibernateUtil.sessionFactory.openSession();
+			s.beginTransaction();
+			s.save(user_route);
+			s.getTransaction().commit();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+	}
+
+	@Override
+	public UserRoute obtener(UserRouteId user_route_id) {
+		UserRoute user_route = null;
+		s = HibernateUtil.sessionFactory.openSession();
+		user_route = (UserRoute) s.get(UserRoute.class, user_route_id);
+		return user_route;
+	}
+
+	@Override
+	public long countUsers(long route_id) {
+		long cant = 0;
+
+		s = HibernateUtil.sessionFactory.openSession();
+		Transaction t = s.beginTransaction();
+		String hql = "SELECT COUNT(*) FROM UserRoute WHERE traveledRoutes_id = " + route_id;
+		try {
+			cant = (long) s.createQuery(hql).uniqueResult();
+			t.commit();
+			s.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			t.rollback();
+		}
+		return cant;
+
 	}
 
 }
