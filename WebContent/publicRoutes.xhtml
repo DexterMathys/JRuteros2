@@ -66,7 +66,7 @@
 					</p:column>
 					
 					<p:column headerText="Accion">
-							<p:commandLink action="#{routeBean.view(item[0])}" update="tablaRutas" styleClass="btn btn-success">
+							<p:commandLink action="#{routeBean.view(item[0].id)}" update="tablaRutas" styleClass="btn btn-success">
 								<i class="fa fa-search" title="Ver"/>
 							</p:commandLink>
 							<p:inputText type="hidden" value="#{item[0].id}" id="userId"/>
