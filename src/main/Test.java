@@ -1,10 +1,12 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.imp.ApointDaoImp;
 import com.imp.RouteDaoImp;
 import com.imp.TravelDaoImp;
 import com.model.Activity;
@@ -20,7 +22,7 @@ import com.model.UserRoute;
 public class Test {
 
 	 public static void main(String[] args) {
-	        System.out.println(Difficulty.EASY);
+	        
 	       /* Route route = new Route();
 	        route.setName("Ruta de prueba");
 	        route.setDifficulty(Difficulty.EASY);
@@ -30,7 +32,7 @@ public class Test {
 	        
 	        route.setTravel(listaTravel.get(1));*/
 	        
-	        RouteDaoImp routeDAO = new RouteDaoImp();
+	        /*RouteDaoImp routeDAO = new RouteDaoImp();
 	        //routeDAO.nuevo(route);
 	        
 	        for (Route route : routeDAO.listar()) {
@@ -49,6 +51,27 @@ public class Test {
 	        }
 	        
 	        System.out.println(Difficulty.values());
+	        Route r = new Route();
+	        Travel t = new Travel();
+	        Apoint p = new Apoint(t, "1", "2");
+	        
+	        ArrayList<Apoint> points = new ArrayList<Apoint>();
+	        //points.add(new Apoint(t, "1", "2"));
+	        points.add(p);
+	        points.add(new Apoint(t, "3", "4"));
+	        t.setApoints(points);
+	        TravelDaoImp td = new TravelDaoImp();
+	        td.nuevo(t);
+	        /*ApointDaoImp pd = new ApointDaoImp();
+	        pd.nuevo(p);
+	     //   r.setTravel(t);
+	        RouteDaoImp rd = new RouteDaoImp();
+	        rd.nuevo(r);
+	        System.out.println(t.getId());*/
+		 TravelDaoImp td = new TravelDaoImp();
+		 Travel travel = td.obtener(new Long(10));
+		 td.eliminar(travel);
+	        
 	        
 	 }
 

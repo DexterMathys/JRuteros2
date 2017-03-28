@@ -8,7 +8,7 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="travel" class="com.model.Travel" fetch="select">
+        <many-to-one name="travel" class="com.model.Travel" cascade="all" fetch="select">
             <column name="travel_id" not-null="true" unique="true" />
         </many-to-one>
         <many-to-one name="user" class="com.model.User" fetch="select">

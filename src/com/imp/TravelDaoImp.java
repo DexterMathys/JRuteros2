@@ -17,7 +17,6 @@ public class TravelDaoImp implements TravelDao{
 	@Override
 	public List<Travel> listar() {
 		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub
 		List<Travel> travels = null;
 		
 		s = HibernateUtil.sessionFactory.openSession();
@@ -26,10 +25,13 @@ public class TravelDaoImp implements TravelDao{
 		try {
 			travels = s.createQuery(hql).list();
 			t.commit();
-			s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return travels;
 	}
@@ -96,10 +98,14 @@ public class TravelDaoImp implements TravelDao{
 		try {
 			ex = (s.createQuery(hql).setString("id",travel.getId().toString()).uniqueResult() != null);
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return ex;
 	}

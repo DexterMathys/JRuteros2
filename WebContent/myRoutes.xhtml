@@ -70,10 +70,10 @@
 					</p:column>
 					
 					<p:column headerText="Accion">
-							<p:commandLink action="#{routeBean.view(item[0])}" update="tablaRutas" styleClass="btn btn-success btn-xs">
+							<p:commandLink action="#{routeBean.view(item[0].id)}" update="tablaRutas" styleClass="btn btn-success btn-xs">
 								<i class="fa fa-search" title="Ver"/>
 							</p:commandLink>
-							<p:commandLink action="#{routeBean.edit()}" update="tablaRutas" styleClass="btn btn-warning btn-xs">
+							<p:commandLink action="#{routeBean.edit(item[0].id)}" update="tablaRutas" styleClass="btn btn-warning btn-xs">
 								<i class="fa fa-pencil" title="Modificar"/>
 							</p:commandLink>
 							<p:commandLink action="#{routeBean.delete(item[0])}" update="tablaRutas" styleClass="btn btn-danger btn-xs">

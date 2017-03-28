@@ -31,10 +31,14 @@ public class ApointDaoImp implements ApointDao{
 		try {
 			points = s.createQuery(hql).list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return points;
 	}
@@ -101,10 +105,14 @@ public class ApointDaoImp implements ApointDao{
 		try {
 			ex = (s.createQuery(hql).setString("id",point.getId().toString()).uniqueResult() != null);
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return ex;
 	}
@@ -115,6 +123,7 @@ public class ApointDaoImp implements ApointDao{
 		Apoint point;
 		s = HibernateUtil.sessionFactory.openSession();
 		point  = (Apoint) s.get(Apoint.class, id);
+		s.close();
 		return point;
 	}
 
@@ -128,10 +137,14 @@ public class ApointDaoImp implements ApointDao{
 		try {
 			points = s.createQuery(hql).setString("id",travel.getId().toString()).list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return points;
 			
@@ -146,10 +159,14 @@ public class ApointDaoImp implements ApointDao{
 		try {
 			s.createQuery(hql).setString("id",travel.getId().toString()).executeUpdate();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		
 	}

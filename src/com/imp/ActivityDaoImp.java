@@ -75,10 +75,14 @@ public class ActivityDaoImp implements ActivityDao {
 		try {
 			activities = s.createQuery(hql).list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return activities;
 	}
@@ -94,10 +98,14 @@ public class ActivityDaoImp implements ActivityDao {
 			Activity act = (Activity) s.createQuery(hql).setString("aname", activity.getName()).uniqueResult();
 			ex = (act != null && act.getId() != activity.getId());
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return ex;
 	}
@@ -113,10 +121,14 @@ public class ActivityDaoImp implements ActivityDao {
 		try {
 			rutas = s.createQuery(hql).setString("id", activity.getId().toString()).list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return rutas;
 	}
@@ -132,10 +144,14 @@ public class ActivityDaoImp implements ActivityDao {
 		try {
 			activities = s.createQuery(hql).list();
 			t.commit();
-			s.close();
+			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
 		}
 		return activities;
 	}

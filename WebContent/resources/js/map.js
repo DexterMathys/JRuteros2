@@ -1,5 +1,5 @@
 var map;
-var myURI = "/JRuteros/rest/route/3";
+var myURI = "/JRuteros/rest/route/37";
 var flightPath;
 
 var puntos = [];
@@ -11,7 +11,6 @@ var puntos = [];
  * Inicializa el mapa
  */
 function initMap() {
-	var src = 'https://developers.google.com/maps/documentation/javascript/examples/kml/westcampus.kml';
 	var mapProp = {
 			center : new google.maps.LatLng(-34.9038055, -57.9392111, 18),
 			zoom : 10,
@@ -42,9 +41,19 @@ function initPolyline(){
 } 
 
 // Obtiene markers y los dibuja
-function obtenerMarkers(dibujar) {
-
-	$.ajax({
+function obtenerMarkers() {
+	var points = $("#points").val().split(",");
+	$.each(points, function( index, apoint ) {
+		p = apoint.split(" ");
+		var punto = {
+			lat : p[0],
+			lon : p[1]
+		};
+		dibujarMarker(punto)
+	})
+	
+	dibujarRecorrido();
+	/*$.ajax({
 		type: 'GET',
         url: myURI,
         contentType: "application/json; charset=utf-8",
@@ -56,7 +65,7 @@ function obtenerMarkers(dibujar) {
 			});
 			dibujarRecorrido();
 		}
-	});
+	});*/
 }
 
 function dibujarMarker(dato) {

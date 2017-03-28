@@ -62,12 +62,9 @@
 				 	<p:outputLabel value="Recorrido"/>
 				 	</p:column>
 				 	<p:column>
-					 	<div id="floating-panel">
-				     		<input onclick="deleteMarkers();" type="button" value="Limpiar mapa"/>
-				    	</div>
 				 		<div id="map"  style="width:500px;height:380px;"></div>
 				 		<div id="route_points">
-				 			<input type="hidden" name="points" id="points"/>
+				 			<input type="hidden" name="points" id="points"  value="#{routeBean.getPoints()}"/>
 				 		</div>
 				 	</p:column>
 				 	

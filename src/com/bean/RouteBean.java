@@ -48,6 +48,7 @@ public class RouteBean {
 
 	private Route route = new Route();
 	private RoutescoreDaoImp scoreDao = new RoutescoreDaoImp();
+	private TravelDaoImp travelDao = new TravelDaoImp();
 	private double totalScore = 0.0;
 	private int score = 0;
 	private String myscore;
@@ -258,24 +259,20 @@ public class RouteBean {
 		this.route.setTime(time);
 
 		this.route.setDate(this.date);
-
-		RouteDaoImp routeDAO = new RouteDaoImp();
-		if (routeDAO.existe(this.route)) {
+		if (routeDao.existe(this.route)) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Esta ruta ya existe", ""));
 
 		} else {
-			TravelDaoImp travelDAO = new TravelDaoImp();
 			Travel travel = new Travel();
-			travelDAO.nuevo(travel);
+			
 
 			String action = obtenerPuntos();
 			// Separo los puntos
 			String[] points = action.split(",");
-			crearPuntos(points, travel);
-
+			travel.setApoints(crearPuntos(points, travel));
 			this.route.setTravel(travel);
-			routeDAO.nuevo(this.route);
+			routeDao.nuevo(this.route);
 
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Ruta agregada: ", this.route.getName()));
@@ -286,6 +283,7 @@ public class RouteBean {
 			this.isPublic = null;
 			this.hours = 0;
 			this.minutes = 0;
+			this.points = null;
 		}
 
 		return "index";
@@ -396,29 +394,139 @@ public class RouteBean {
 		return points;
 	}
 
-	public void crearPuntos(String[] points, Travel travel) {
+	public ArrayList<Apoint> crearPuntos(String[] points, Travel travel) {
+		ArrayList<Apoint> listPoints = new ArrayList<Apoint>();
 		ApointDaoImp apointDAO = new ApointDaoImp();
 		String[] partPoint;
 		for (String point : points) {
 			partPoint = point.split(" ");
 			// travel, lat ,long
-			apointDAO.nuevo(new Apoint(travel, partPoint[0], partPoint[1]));
+			//apointDAO.nuevo(new Apoint(travel, partPoint[0], partPoint[1]));
+			listPoints.add(new Apoint(travel, partPoint[0], partPoint[1]));
 		}
+		return listPoints;
 	}
 
 	public String obtenerPuntos() throws ParserConfigurationException, SAXException, IOException {
 		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-		String action = params.get("points");
-		if (action.equals("")) {
+		//String action = params.get("points");
+		this.points = params.get("points");
+		if (this.points.equals("")) {
 			upload();
-			action = fileToString(this.fileContent);
+			this.points = fileToString(this.fileContent);
 		}
-		return action;
+		return this.points;
 
 	}
 
-	public String view(Route route) {
-		this.route = routeDao.obtener(route.getId());
+	public String view(Long routeId) {
+		initRoute(routeId);
+		return "route.xhtml";
+	}
+
+	public String edit(Long routeId) {
+		initRoute(routeId);
+		return "editRoute.xhtml";
+		
+	}
+	
+	public String update() throws ParserConfigurationException, SAXException, IOException{
+		if (!this.validateRoute()) {
+			return "editRoute";
+		}
+
+		if (this.isCircular.equals("1")) {
+			this.route.setIsCircular(true);
+		} else {
+			this.route.setIsCircular(false);
+		}
+		if (this.isPublic.equals("1")) {
+			this.route.setIsPublic(true);
+		} else {
+			this.route.setIsPublic(false);
+		}
+		Date time = null;
+		try {
+			time = new SimpleDateFormat("HH:mm").parse(String.valueOf(this.hours) + ":" + String.valueOf(this.minutes));
+		} catch (ParseException e) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El campo Tiempo estimado no es correcto.",
+							"Un Tiempo estimado correcto es por ejemplo 02 horas y 30 minutos."));
+			return "editRoute";
+		}
+		this.route.setTime(time);
+
+		this.route.setDate(this.date);
+		if (!this.points.equals(this.route.getPointsToString())) {
+			System.out.println("No son iguales");
+			//eliminar los puntos
+			travelDao.eliminar(this.route.getTravel());
+			String action = obtenerPuntos();
+			// Separo los puntos
+			String[] points = action.split(",");
+			Travel travel = new Travel();
+			travel.setApoints(crearPuntos(points, travel));
+			this.route.setTravel(travel);
+		}
+		routeDao.editar(this.route);
+
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "Ruta actualizada: ", this.route.getName()));
+		this.route = null;
+		this.route = new Route();
+		this.date = null;
+		this.isCircular = null;
+		this.isPublic = null;
+		this.hours = 0;
+		this.minutes = 0;
+		this.points = null;
+		return "index";
+		
+	}
+
+	public void delete(Route route) {
+		routeDao.eliminar(route);
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		this.setRoutes(new RouteDaoImp().listar(us.getId()));
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ruta ", route.getName() + " " + "eliminada"));
+	}
+
+	public void puntuar() {
+		if (this.score == 0) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El puntaje no puede ser 0", ""));
+		} else {
+			User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+			this.myscore = String.valueOf(this.score);
+			Routescore routeScore = new Routescore(this.route, us, this.score);
+			scoreDao.nuevo(routeScore);
+			List<Routescore> scores = scoreDao.listar(this.route.getId());
+			double promedio = 0.0;
+			double suma = 0;
+			for (Routescore routescore : scores) {
+				suma += routescore.getScore();
+			}
+			if (suma > 0) {
+				promedio = suma / scores.size();
+			}
+			this.scorePromedio = String.valueOf(promedio);
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Se guardï¿½ tu puntaje:", String.valueOf(this.score)));
+		}
+	}
+
+	public boolean existePuntaje() {
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		if (scoreDao.existe(this.route.getId(), us.getId())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public void initRoute(Long routeId){
+		this.route = routeDao.obtener(routeId);
 		if (this.route.isIsPublic()) {
 			this.isPublic = "1";
 		} else {
@@ -451,52 +559,8 @@ public class RouteBean {
 			promedio = suma / scores.size();
 		}
 		this.scorePromedio = String.valueOf(promedio);
-		return "route.xhtml";
-	}
-
-	public void edit() {
-
-	}
-
-	public void delete(Route route) {
-		routeDao.eliminar(route);
-		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
-		this.setRoutes(new RouteDaoImp().listar(us.getId()));
-		FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ruta ", route.getName() + " " + "eliminada"));
-	}
-
-	public void puntuar() {
-		if (this.score == 0) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El puntaje no puede ser 0", ""));
-		} else {
-			User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
-			this.myscore = String.valueOf(this.score);
-			Routescore routeScore = new Routescore(this.route, us, this.score);
-			scoreDao.nuevo(routeScore);
-			List<Routescore> scores = scoreDao.listar(this.route.getId());
-			double promedio = 0.0;
-			double suma = 0;
-			for (Routescore routescore : scores) {
-				suma += routescore.getScore();
-			}
-			if (suma > 0) {
-				promedio = suma / scores.size();
-			}
-			this.scorePromedio = String.valueOf(promedio);
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Se guardó tu puntaje:", String.valueOf(this.score)));
-		}
-	}
-
-	public boolean existePuntaje() {
-		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
-		if (scoreDao.existe(this.route.getId(), us.getId())) {
-			return true;
-		} else {
-			return false;
-		}
+		this.points = this.route.getPointsToString();
+		
 	}
 
 	public void hacerRuta() {
