@@ -26,25 +26,29 @@
 				
 				<div class="col-lg-4">
 					<h:form id="acciones" styleClass="pull-right">
-					 
-					 	<span class="pull-right"><i class="fa fa-users" aria-hidden="true"></i> <p:outputLabel value="#{routeBean.cantUsers()}"/></span>
-					 	<p:rating value="#{routeBean.score}" rendered="#{!routeBean.existePuntaje()}" styleClass="" />
-					 	<p:outputLabel value="Tu puntaje: #{routeBean.myscore}" rendered="#{routeBean.existePuntaje()}"/>
-					 	<p:spacer width="20"></p:spacer>
-						
-						<br/>
-						<p:outputLabel value="Puntaje promedio: #{routeBean.scorePromedio}" rendered="#{routeBean.existePuntaje()}"/>
-						<p:commandLink styleClass="" rendered="#{!routeBean.existePuntaje()}" update="acciones" action="#{routeBean.puntuar()}">
-							<span class="btn btn-warning"><i class="fa fa-star" aria-hidden="true"></i> Puntuar</span>
-						</p:commandLink>
-						<p:spacer width="20"></p:spacer>
-						<p:commandLink styleClass="" action="#{routeBean.hacerRuta()}" update="acciones" rendered="#{!routeBean.existeRutaHecha()}">
-							<span class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i> Hice esta Ruta</span>
-						</p:commandLink>
-						<p:commandLink styleClass="" update="acciones" rendered="#{routeBean.existeRutaHecha()}">
-							<span class="btn btn-success disabled"><i class="fa fa-check" aria-hidden="true"></i> Ruta realizada</span>
-						</p:commandLink>
-						
+						 <div class="col-lg-6">	
+						 	<div>
+							 	<p:rating value="#{routeBean.score}" rendered="#{!routeBean.existePuntaje()}" styleClass="" />
+							 	<p:rating value="#{routeBean.score}" disabled="true" rendered="#{routeBean.existePuntaje()}" styleClass="" />
+							</div>
+							<br />
+							<div>
+								<p:outputLabel value="Puntaje promedio: #{routeBean.scorePromedio}" rendered="#{routeBean.existePuntaje()}"/>
+								<p:commandLink styleClass="" rendered="#{!routeBean.existePuntaje()}" update="acciones" action="#{routeBean.puntuar()}">
+									<span class="btn btn-warning"><i class="fa fa-star" aria-hidden="true"></i> Puntuar</span>
+								</p:commandLink>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<span class="pull-right"><i class="fa fa-users" aria-hidden="true"></i> <p:outputLabel value="#{routeBean.cantUsers()}"/></span>
+							<br />
+							<p:commandLink styleClass="" action="#{routeBean.hacerRuta()}" update="acciones" rendered="#{!routeBean.existeRutaHecha()}">
+								<span class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i> Hice esta Ruta</span>
+							</p:commandLink>
+							<p:commandLink styleClass="" update="acciones" rendered="#{routeBean.existeRutaHecha()}">
+								<span class="btn btn-success disabled"><i class="fa fa-check" aria-hidden="true"></i> Ruta realizada</span>
+							</p:commandLink>
+						</div>
 					</h:form>  
 				</div>
 			</div>

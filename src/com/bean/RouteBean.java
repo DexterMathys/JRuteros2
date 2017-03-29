@@ -2,6 +2,7 @@ package com.bean;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -265,7 +266,6 @@ public class RouteBean {
 
 		} else {
 			Travel travel = new Travel();
-			
 
 			String action = obtenerPuntos();
 			// Separo los puntos
@@ -401,7 +401,7 @@ public class RouteBean {
 		for (String point : points) {
 			partPoint = point.split(" ");
 			// travel, lat ,long
-			//apointDAO.nuevo(new Apoint(travel, partPoint[0], partPoint[1]));
+			// apointDAO.nuevo(new Apoint(travel, partPoint[0], partPoint[1]));
 			listPoints.add(new Apoint(travel, partPoint[0], partPoint[1]));
 		}
 		return listPoints;
@@ -409,7 +409,7 @@ public class RouteBean {
 
 	public String obtenerPuntos() throws ParserConfigurationException, SAXException, IOException {
 		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-		//String action = params.get("points");
+		// String action = params.get("points");
 		this.points = params.get("points");
 		if (this.points.equals("")) {
 			upload();
@@ -427,10 +427,10 @@ public class RouteBean {
 	public String edit(Long routeId) {
 		initRoute(routeId);
 		return "editRoute.xhtml";
-		
+
 	}
-	
-	public String update() throws ParserConfigurationException, SAXException, IOException{
+
+	public String update() throws ParserConfigurationException, SAXException, IOException {
 		if (!this.validateRoute()) {
 			return "editRoute";
 		}
@@ -459,7 +459,7 @@ public class RouteBean {
 		this.route.setDate(this.date);
 		if (!this.points.equals(this.route.getPointsToString())) {
 			System.out.println("No son iguales");
-			//eliminar los puntos
+			// eliminar los puntos
 			travelDao.eliminar(this.route.getTravel());
 			String action = obtenerPuntos();
 			// Separo los puntos
@@ -481,7 +481,7 @@ public class RouteBean {
 		this.minutes = 0;
 		this.points = null;
 		return "index";
-		
+
 	}
 
 	public void delete(Route route) {
@@ -510,9 +510,10 @@ public class RouteBean {
 			if (suma > 0) {
 				promedio = suma / scores.size();
 			}
-			this.scorePromedio = String.valueOf(promedio);
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Se guard� tu puntaje:", String.valueOf(this.score)));
+			DecimalFormat df = new DecimalFormat("#.##");
+			this.scorePromedio = String.valueOf(df.format(promedio));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Se guard� tu puntaje:", String.valueOf(this.score)));
 		}
 	}
 
@@ -524,8 +525,8 @@ public class RouteBean {
 			return false;
 		}
 	}
-	
-	public void initRoute(Long routeId){
+
+	public void initRoute(Long routeId) {
 		this.route = routeDao.obtener(routeId);
 		if (this.route.isIsPublic()) {
 			this.isPublic = "1";
@@ -558,9 +559,10 @@ public class RouteBean {
 		if (suma > 0) {
 			promedio = suma / scores.size();
 		}
-		this.scorePromedio = String.valueOf(promedio);
+		DecimalFormat df = new DecimalFormat("#.##");
+		this.scorePromedio = String.valueOf(df.format(promedio));
 		this.points = this.route.getPointsToString();
-		
+
 	}
 
 	public void hacerRuta() {
