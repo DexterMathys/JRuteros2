@@ -16,16 +16,19 @@ function initMap() {
 			zoom : 10,
 			mapTypeId : google.maps.MapTypeId.ROADMAP
 		};
+	if (document.getElementById("map") != null){
+		map = new google.maps.Map(document.getElementById("map"), mapProp);
 
-	map = new google.maps.Map(document.getElementById("map"), mapProp);
+		map.addListener('click', function(e) {
+			agregarMarker(e.latLng, map);
 
-	map.addListener('click', function(e) {
-		agregarMarker(e.latLng, map);
-
-	});
-	puntos = [];
-	initPolyline()
-	obtenerMarkers();
+		});
+		puntos = [];
+		initPolyline()
+		obtenerMarkers();
+		
+	}
+	
 	//loadKmlLayer(src, map);
 	
 }
