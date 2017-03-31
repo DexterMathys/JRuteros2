@@ -228,6 +228,7 @@ public class RouteBean {
 		this.minutes = 0;
 		this.isCircular = null;
 		this.isPublic = null;
+		this.points = null;
 		this.listActivities();
 		return "/newRoute.xhtml";
 	}
