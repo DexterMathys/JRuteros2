@@ -24,10 +24,14 @@
 			
 			<h:form method="post" enctype="multipart/form-data" >
 				<ui:include src="/WEB-INF/facelets/forms/routeForm.xhtml"/>
+				<div class="row inline">
+				<p:fileUpload mode="simple" value="#{routeBean.uploadedFile}" />
+    			<p:commandButton value="Añadir foto" action="#{routeBean.uploadPhoto()}" ajax="false" />
+				</div>
 				<br></br>			
 				 <h:commandButton styleClass="btn btn-success btn-lg" value="Agregar" action="#{routeBean.add()}"/>	
 				
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<h:link class="btn btn-danger btn-lg" outcome="index">
 					<span><i class="fa fa-times" aria-hidden="true"></i> Cancelar</span>
 				</h:link>

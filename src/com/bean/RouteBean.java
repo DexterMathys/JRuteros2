@@ -1,11 +1,13 @@
 package com.bean;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import java.util.Scanner;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.Part;
@@ -21,6 +24,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.primefaces.model.UploadedFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -66,8 +70,17 @@ public class RouteBean {
 	private RouteDaoImp routeDao = new RouteDaoImp();
 	private Part file;
 	private String fileContent;
+	private UploadedFile uploadedFile;
 
 	public RouteBean() {
+	}
+
+	public UploadedFile getUploadedFile() {
+		return uploadedFile;
+	}
+
+	public void setUploadedFile(UploadedFile uploadedFile) {
+		this.uploadedFile = uploadedFile;
 	}
 
 	public String getMyscore() {
@@ -587,6 +600,40 @@ public class RouteBean {
 
 	public long cantUsers() {
 		return routeDao.countUsers(this.route.getId());
+	}
+
+	public void uploadPhoto() {
+		String contentType = uploadedFile.getContentType();
+		String[] extensiones = { "image/jpeg", "image/png", "image/bmp" };
+		if (Arrays.asList(extensiones).contains(contentType)) {
+			String fileName = uploadedFile.getFileName();
+			byte[] contents = uploadedFile.getContents();
+
+			File theDir = new File("tmp\\carpetaasdasd");
+
+			// if the directory does not exist, create it
+			System.out.println("creating directory: " + theDir.getName());
+
+			String resultFolder = "qweasdzxc";
+
+			ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
+
+			boolean result2 = new File(extContext.getRealPath("//WEB-INF//" + resultFolder)).mkdir();
+
+			if (result2) {
+				System.out.println("DIR created");
+			} else {
+				System.out.println("NO SE CREO UNA MIERDA");
+			}
+
+			FacesMessage msg = new FacesMessage("Éxito!", "Se cargó correctamente el archivo " + fileName + ".");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!",
+					"Los tipos de archivos válidos son JPEG, JPG, PNG y BMP.");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
 	}
 
 }
