@@ -1,7 +1,8 @@
 package com.bean;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -9,21 +10,25 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.Part;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,18 +39,22 @@ import org.xml.sax.SAXException;
 
 import com.imp.ActivityDaoImp;
 import com.imp.ApointDaoImp;
+import com.imp.PhotoDaoImp;
 import com.imp.RouteDaoImp;
 import com.imp.RoutescoreDaoImp;
 import com.imp.TravelDaoImp;
 import com.model.Activity;
 import com.model.Apoint;
 import com.model.Difficulty;
+import com.model.Photo;
 import com.model.Route;
 import com.model.Routescore;
 import com.model.Travel;
 import com.model.User;
 import com.model.UserRoute;
 import com.model.UserRouteId;
+
+import sun.misc.BASE64Encoder;
 
 @ManagedBean
 @RequestScoped
@@ -54,6 +63,7 @@ public class RouteBean {
 	private Route route = new Route();
 	private RoutescoreDaoImp scoreDao = new RoutescoreDaoImp();
 	private TravelDaoImp travelDao = new TravelDaoImp();
+	private PhotoDaoImp photoDao = new PhotoDaoImp();
 	private double totalScore = 0.0;
 	private int score = 0;
 	private String myscore;
@@ -71,8 +81,47 @@ public class RouteBean {
 	private Part file;
 	private String fileContent;
 	private UploadedFile uploadedFile;
+	private HashMap<String, byte[]> tmpFotos;
+	private StreamedContent myImage;
+	private List<String> images;
 
 	public RouteBean() {
+	}
+
+	public List<String> getImages() {
+		return images;
+	}
+
+	public void setImages(List<String> images) {
+		this.images = images;
+	}
+
+	public StreamedContent getMyImage() {
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+			// So, we're rendering the HTML. Return a stub StreamedContent so
+			// that it will generate right URL.
+			return new DefaultStreamedContent();
+		} else {
+			// So, browser is requesting the image. Return a real
+			// StreamedContent with the image bytes.
+			String imagename = context.getExternalContext().getRequestParameterMap().get("imagename");
+			byte[] content = this.tmpFotos.get(imagename);
+			return new DefaultStreamedContent(new ByteArrayInputStream(content));
+		}
+	}
+
+	public void setMyImage(StreamedContent myImage) {
+		this.myImage = myImage;
+	}
+
+	public HashMap<String, byte[]> getTmpFotos() {
+		return tmpFotos;
+	}
+
+	public void setTmpFotos(HashMap<String, byte[]> tmpFotos) {
+		this.tmpFotos = tmpFotos;
 	}
 
 	public UploadedFile getUploadedFile() {
@@ -230,6 +279,8 @@ public class RouteBean {
 		this.isPublic = null;
 		this.points = null;
 		this.listActivities();
+		this.tmpFotos = new HashMap<String, byte[]>();
+		this.images = new ArrayList<String>();
 		return "/newRoute.xhtml";
 	}
 
@@ -287,6 +338,13 @@ public class RouteBean {
 			travel.setApoints(crearPuntos(points, travel));
 			this.route.setTravel(travel);
 			routeDao.nuevo(this.route);
+
+			for (Entry<String, byte[]> foto : this.tmpFotos.entrySet()) {
+				BASE64Encoder encoder = new BASE64Encoder();
+				String data = encoder.encode(this.tmpFotos.get(foto.getKey()));
+				Photo photo = new Photo(this.route, foto.getKey(), data);
+				photoDao.nuevo(photo);
+			}
 
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Ruta agregada: ", this.route.getName()));
@@ -576,7 +634,7 @@ public class RouteBean {
 		DecimalFormat df = new DecimalFormat("#.##");
 		this.scorePromedio = String.valueOf(df.format(promedio));
 		this.points = this.route.getPointsToString();
-
+		this.images = new ArrayList<String>();
 	}
 
 	public void hacerRuta() {
@@ -609,23 +667,11 @@ public class RouteBean {
 		if (Arrays.asList(extensiones).contains(contentType)) {
 			String fileName = uploadedFile.getFileName();
 			byte[] contents = uploadedFile.getContents();
+			this.tmpFotos.put(fileName, contents);
 
-			File theDir = new File("tmp\\carpetaasdasd");
-
-			// if the directory does not exist, create it
-			System.out.println("creating directory: " + theDir.getName());
-
-			String resultFolder = "qweasdzxc";
-
-			ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
-
-			boolean result2 = new File(extContext.getRealPath("//WEB-INF//" + resultFolder)).mkdir();
-
-			if (result2) {
-				System.out.println("DIR created");
-			} else {
-				System.out.println("NO SE CREO UNA MIERDA");
-			}
+			InputStream is = new ByteArrayInputStream(contents);
+			this.myImage = new DefaultStreamedContent(is, "image/png");
+			this.images.add(fileName);
 
 			FacesMessage msg = new FacesMessage("Éxito!", "Se cargó correctamente el archivo " + fileName + ".");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -637,4 +683,9 @@ public class RouteBean {
 
 	}
 
+	public StreamedContent getImage(String name) {
+		byte[] content = this.tmpFotos.get(name);
+		InputStream is = new ByteArrayInputStream(content);
+		return new DefaultStreamedContent(is, "image/png");
+	}
 }

@@ -20,14 +20,24 @@
 			
 			<p:separator/>
 			
-			<p class="well">Completa todos los campos y luego presiona <b>Confirmar</b> para agregar la ruta</p><br></br>
+			<p class="well">Completa todos los campos y luego presiona <b>Confirmar</b> para agregar la ruta</p>
 			
 			<h:form method="post" enctype="multipart/form-data" >
 				<ui:include src="/WEB-INF/facelets/forms/routeForm.xhtml"/>
+			    				
 				<div class="row inline">
+				
+				<p:galleria value="#{routeBean.images}" var="image" showCaption="true" autoPlay="true" rendered="#{routeBean.images.size() > 0}">
+				        <p:graphicImage value="#{routeBean.myImage}" title="#{image}" width="600" height="450">
+				            <f:param name="imagename" value="#{image}" />
+				        </p:graphicImage>
+				</p:galleria>
+				
+				
 				<p:fileUpload mode="simple" value="#{routeBean.uploadedFile}" />
     			<p:commandButton value="Añadir foto" action="#{routeBean.uploadPhoto()}" ajax="false" />
 				</div>
+								
 				<br></br>			
 				 <h:commandButton styleClass="btn btn-success btn-lg" value="Agregar" action="#{routeBean.add()}"/>	
 				
