@@ -104,4 +104,9 @@
 	 	</p:column>
 	 	
 	 </p:panelGrid>
+	 <p:galleria value="#{routeBean.images}" var="image" showCaption="true" autoPlay="true" rendered="#{routeBean.images.size() > 0}">
+	        <p:graphicImage value="#{routeBean.myImage}" title="#{image}" width="600" height="450">
+	            <f:param name="imagename" value="#{image}" />
+	        </p:graphicImage>
+	</p:galleria>
 </div>

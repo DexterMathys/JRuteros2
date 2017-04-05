@@ -54,6 +54,7 @@ import com.model.User;
 import com.model.UserRoute;
 import com.model.UserRouteId;
 
+import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 @ManagedBean
@@ -84,6 +85,8 @@ public class RouteBean {
 	private HashMap<String, byte[]> tmpFotos;
 	private StreamedContent myImage;
 	private List<String> images;
+	private BASE64Encoder encoder = new BASE64Encoder();
+	private BASE64Decoder decoder = new BASE64Decoder();
 
 	public RouteBean() {
 	}
@@ -340,8 +343,7 @@ public class RouteBean {
 			routeDao.nuevo(this.route);
 
 			for (Entry<String, byte[]> foto : this.tmpFotos.entrySet()) {
-				BASE64Encoder encoder = new BASE64Encoder();
-				String data = encoder.encode(this.tmpFotos.get(foto.getKey()));
+				String data = this.encoder.encode(this.tmpFotos.get(foto.getKey()));
 				Photo photo = new Photo(this.route, foto.getKey(), data);
 				photoDao.nuevo(photo);
 			}
@@ -635,6 +637,20 @@ public class RouteBean {
 		this.scorePromedio = String.valueOf(df.format(promedio));
 		this.points = this.route.getPointsToString();
 		this.images = new ArrayList<String>();
+		this.tmpFotos = new HashMap<String, byte[]>();
+		List<Photo> photos = photoDao.listar(this.route.getId());
+		for (Photo photo : photos) {
+			byte[] content = null;
+			try {
+				content = this.decoder.decodeBuffer(photo.getPath());
+				this.tmpFotos.put(photo.getName(), content);
+				this.images.add(photo.getName());
+				System.out.println(photo.getName());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void hacerRuta() {
@@ -665,16 +681,25 @@ public class RouteBean {
 		String contentType = uploadedFile.getContentType();
 		String[] extensiones = { "image/jpeg", "image/png", "image/bmp" };
 		if (Arrays.asList(extensiones).contains(contentType)) {
-			String fileName = uploadedFile.getFileName();
-			byte[] contents = uploadedFile.getContents();
-			this.tmpFotos.put(fileName, contents);
 
-			InputStream is = new ByteArrayInputStream(contents);
-			this.myImage = new DefaultStreamedContent(is, "image/png");
-			this.images.add(fileName);
+			if (uploadedFile.getSize() <= 650000) {
+				String fileName = uploadedFile.getFileName();
+				byte[] contents = uploadedFile.getContents();
+				String data = this.encoder.encode(contents);
 
-			FacesMessage msg = new FacesMessage("Éxito!", "Se cargó correctamente el archivo " + fileName + ".");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+				this.tmpFotos.put(fileName, contents);
+
+				InputStream is = new ByteArrayInputStream(contents);
+				this.myImage = new DefaultStreamedContent(is, "image/png");
+				this.images.add(fileName);
+
+				FacesMessage msg = new FacesMessage("Éxito!", "Se cargó correctamente el archivo " + fileName + ".");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!",
+						"El tamaño de cada foto no debe superar 650kb.");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!",
 					"Los tipos de archivos válidos son JPEG, JPG, PNG y BMP.");

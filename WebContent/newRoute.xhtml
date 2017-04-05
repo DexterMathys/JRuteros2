@@ -26,16 +26,15 @@
 				<ui:include src="/WEB-INF/facelets/forms/routeForm.xhtml"/>
 			    				
 				<div class="row inline">
-				
-				<p:galleria value="#{routeBean.images}" var="image" showCaption="true" autoPlay="true" rendered="#{routeBean.images.size() > 0}">
-				        <p:graphicImage value="#{routeBean.myImage}" title="#{image}" width="600" height="450">
-				            <f:param name="imagename" value="#{image}" />
-				        </p:graphicImage>
-				</p:galleria>
-				
-				
-				<p:fileUpload mode="simple" value="#{routeBean.uploadedFile}" />
-    			<p:commandButton value="Añadir foto" action="#{routeBean.uploadPhoto()}" ajax="false" />
+					<div class="col-xs-4">
+						<p:fileUpload mode="simple" value="#{routeBean.uploadedFile}" />
+					</div>
+					<div class="col-xs-2">
+						(máximo 650kb por foto)
+					</div>		
+					<div class="col-xs-2">
+						<p:commandButton value="Añadir foto" action="#{routeBean.uploadPhoto()}" ajax="false" />
+					</div>
 				</div>
 								
 				<br></br>			
