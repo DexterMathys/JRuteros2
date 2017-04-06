@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Set;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -508,7 +509,7 @@ public class RouteBean {
 		if (!this.validateRoute()) {
 			return "editRoute";
 		}
-
+		// this.initRoute(this.route.getId());
 		if (this.isCircular.equals("1")) {
 			this.route.setIsCircular(true);
 		} else {
@@ -542,7 +543,23 @@ public class RouteBean {
 			travel.setApoints(crearPuntos(points, travel));
 			this.route.setTravel(travel);
 		}
+
 		routeDao.editar(this.route);
+
+		List<Photo> photos = photoDao.listar(this.route.getId());
+		for (Entry<String, byte[]> foto : this.tmpFotos.entrySet()) {
+			if (!this.inPhotoList(photos, foto.getKey())) {
+				String data = this.encoder.encode(this.tmpFotos.get(foto.getKey()));
+				Photo photo = new Photo(this.route, foto.getKey(), data);
+				photoDao.nuevo(photo);
+			}
+		}
+
+		for (Photo photo : photos) {
+			if (!this.inNameList(this.tmpFotos.keySet(), photo)) {
+				photoDao.eliminar(photo);
+			}
+		}
 
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO, "Ruta actualizada: ", this.route.getName()));
@@ -556,6 +573,28 @@ public class RouteBean {
 		this.points = null;
 		return "index";
 
+	}
+
+	private boolean inPhotoList(List<Photo> list, String name) {
+		boolean result = false;
+		for (Photo photo : list) {
+			if (photo.getName().equals(name)) {
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+
+	private boolean inNameList(Set<String> list, Photo photo) {
+		boolean result = false;
+		for (String name : list) {
+			if (photo.getName().equals(name)) {
+				result = true;
+				break;
+			}
+		}
+		return result;
 	}
 
 	public void delete(Route route) {
@@ -645,7 +684,6 @@ public class RouteBean {
 				content = this.decoder.decodeBuffer(photo.getPath());
 				this.tmpFotos.put(photo.getName(), content);
 				this.images.add(photo.getName());
-				System.out.println(photo.getName());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -686,14 +724,13 @@ public class RouteBean {
 				String fileName = uploadedFile.getFileName();
 				byte[] contents = uploadedFile.getContents();
 				String data = this.encoder.encode(contents);
-
 				this.tmpFotos.put(fileName, contents);
 
 				InputStream is = new ByteArrayInputStream(contents);
 				this.myImage = new DefaultStreamedContent(is, "image/png");
 				this.images.add(fileName);
 
-				FacesMessage msg = new FacesMessage("Éxito!", "Se cargó correctamente el archivo " + fileName + ".");
+				FacesMessage msg = new FacesMessage("Éxito!", "Se cargó correctamente la foto " + fileName + ".");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			} else {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!",
@@ -712,5 +749,22 @@ public class RouteBean {
 		byte[] content = this.tmpFotos.get(name);
 		InputStream is = new ByteArrayInputStream(content);
 		return new DefaultStreamedContent(is, "image/png");
+	}
+
+	public void deletePhoto() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Map<String, String> params = context.getExternalContext().getRequestParameterMap();
+		String imagename = params.get("eliminarfoto");
+		for (String name : (ArrayList<String>) this.images) {
+			if (imagename.equals(name)) {
+				this.images.remove(name);
+				this.tmpFotos.remove(name);
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito!",
+						"Se eliminó correctamente la foto " + imagename + ".");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				break;
+			}
+		}
+
 	}
 }
