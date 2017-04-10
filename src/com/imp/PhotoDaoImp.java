@@ -2,6 +2,7 @@ package com.imp;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -9,8 +10,8 @@ import com.dao.PhotoDao;
 import com.model.Photo;
 import com.util.HibernateUtil;
 
-public class PhotoDaoImp implements PhotoDao{
-	
+public class PhotoDaoImp implements PhotoDao {
+
 	private Session s;
 
 	@Override
@@ -18,14 +19,40 @@ public class PhotoDaoImp implements PhotoDao{
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		List<Photo> photos = null;
-		
+
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
 		String hql = "FROM Photo";
 		try {
 			photos = s.createQuery(hql).list();
 			t.commit();
-			//s.close();
+			// s.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+		return photos;
+	}
+
+	@Override
+	public List<Photo> listar(long route_id) {
+		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
+		List<Photo> photos = null;
+
+		s = HibernateUtil.sessionFactory.openSession();
+		Transaction t = s.beginTransaction();
+		String hql = "FROM Photo WHERE route_id = :route_id";
+		try {
+			Query q = s.createQuery(hql);
+			q.setParameter("route_id", route_id);
+			photos = q.list();
+			t.commit();
+			// s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -47,12 +74,12 @@ public class PhotoDaoImp implements PhotoDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -65,7 +92,7 @@ public class PhotoDaoImp implements PhotoDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
@@ -82,7 +109,7 @@ public class PhotoDaoImp implements PhotoDao{
 			s.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
@@ -97,9 +124,9 @@ public class PhotoDaoImp implements PhotoDao{
 		Transaction t = s.beginTransaction();
 		String hql = "FROM Photo where id = :id ";
 		try {
-			ex = (s.createQuery(hql).setString("id",photo.getId().toString()).uniqueResult() != null);
+			ex = (s.createQuery(hql).setString("id", photo.getId().toString()).uniqueResult() != null);
 			t.commit();
-			//s.close();
+			// s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -116,10 +143,9 @@ public class PhotoDaoImp implements PhotoDao{
 		// TODO Auto-generated method stub
 		Photo photo;
 		s = HibernateUtil.sessionFactory.openSession();
-		photo  = (Photo) s.get(Photo.class, id);
+		photo = (Photo) s.get(Photo.class, id);
 		s.close();
 		return photo;
 	}
-
 
 }

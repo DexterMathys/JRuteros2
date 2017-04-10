@@ -1,6 +1,8 @@
 package com.bean;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -10,21 +12,33 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Set;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.Part;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+
 import org.primefaces.context.RequestContext;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -34,18 +48,23 @@ import org.xml.sax.SAXException;
 
 import com.imp.ActivityDaoImp;
 import com.imp.ApointDaoImp;
+import com.imp.PhotoDaoImp;
 import com.imp.RouteDaoImp;
 import com.imp.RoutescoreDaoImp;
 import com.imp.TravelDaoImp;
 import com.model.Activity;
 import com.model.Apoint;
 import com.model.Difficulty;
+import com.model.Photo;
 import com.model.Route;
 import com.model.Routescore;
 import com.model.Travel;
 import com.model.User;
 import com.model.UserRoute;
 import com.model.UserRouteId;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 @ManagedBean
 @RequestScoped
@@ -54,6 +73,7 @@ public class RouteBean {
 	private Route route = new Route();
 	private RoutescoreDaoImp scoreDao = new RoutescoreDaoImp();
 	private TravelDaoImp travelDao = new TravelDaoImp();
+	private PhotoDaoImp photoDao = new PhotoDaoImp();
 	private double totalScore = 0.0;
 	private int score = 0;
 	private String myscore;
@@ -70,11 +90,64 @@ public class RouteBean {
 	private RouteDaoImp routeDao = new RouteDaoImp();
 	private Part file;
 	private String fileContent;
+
 	private float searchDistance = 1000;
 	private String searchLat;
 	private String searchLong;
 
+	private UploadedFile uploadedFile;
+	private HashMap<String, byte[]> tmpFotos;
+	private StreamedContent myImage;
+	private List<String> images;
+	private BASE64Encoder encoder = new BASE64Encoder();
+	private BASE64Decoder decoder = new BASE64Decoder();
+
+
 	public RouteBean() {
+	}
+
+	public List<String> getImages() {
+		return images;
+	}
+
+	public void setImages(List<String> images) {
+		this.images = images;
+	}
+
+	public StreamedContent getMyImage() {
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+			// So, we're rendering the HTML. Return a stub StreamedContent so
+			// that it will generate right URL.
+			return new DefaultStreamedContent();
+		} else {
+			// So, browser is requesting the image. Return a real
+			// StreamedContent with the image bytes.
+			String imagename = context.getExternalContext().getRequestParameterMap().get("imagename");
+			byte[] content = this.tmpFotos.get(imagename);
+			return new DefaultStreamedContent(new ByteArrayInputStream(content));
+		}
+	}
+
+	public void setMyImage(StreamedContent myImage) {
+		this.myImage = myImage;
+	}
+
+	public HashMap<String, byte[]> getTmpFotos() {
+		return tmpFotos;
+	}
+
+	public void setTmpFotos(HashMap<String, byte[]> tmpFotos) {
+		this.tmpFotos = tmpFotos;
+	}
+
+	public UploadedFile getUploadedFile() {
+		return uploadedFile;
+	}
+
+	public void setUploadedFile(UploadedFile uploadedFile) {
+		this.uploadedFile = uploadedFile;
 	}
 
 	public String getMyscore() {
@@ -251,6 +324,8 @@ public class RouteBean {
 		this.isPublic = null;
 		this.points = null;
 		this.listActivities();
+		this.tmpFotos = new HashMap<String, byte[]>();
+		this.images = new ArrayList<String>();
 		return "/newRoute.xhtml";
 	}
 
@@ -319,6 +394,12 @@ public class RouteBean {
 			travel.setApoints(crearPuntos(points, travel));
 			this.route.setTravel(travel);
 			routeDao.nuevo(this.route);
+
+			for (Entry<String, byte[]> foto : this.tmpFotos.entrySet()) {
+				String data = this.encoder.encode(this.tmpFotos.get(foto.getKey()));
+				Photo photo = new Photo(this.route, foto.getKey(), data);
+				photoDao.nuevo(photo);
+			}
 
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Ruta agregada: ", this.route.getName()));
@@ -480,7 +561,7 @@ public class RouteBean {
 		if (!this.validateRoute()) {
 			return "editRoute";
 		}
-
+		// this.initRoute(this.route.getId());
 		if (this.isCircular.equals("1")) {
 			this.route.setIsCircular(true);
 		} else {
@@ -514,7 +595,23 @@ public class RouteBean {
 			travel.setApoints(crearPuntos(points, travel));
 			this.route.setTravel(travel);
 		}
+
 		routeDao.editar(this.route);
+
+		List<Photo> photos = photoDao.listar(this.route.getId());
+		for (Entry<String, byte[]> foto : this.tmpFotos.entrySet()) {
+			if (!this.inPhotoList(photos, foto.getKey())) {
+				String data = this.encoder.encode(this.tmpFotos.get(foto.getKey()));
+				Photo photo = new Photo(this.route, foto.getKey(), data);
+				photoDao.nuevo(photo);
+			}
+		}
+
+		for (Photo photo : photos) {
+			if (!this.inNameList(this.tmpFotos.keySet(), photo)) {
+				photoDao.eliminar(photo);
+			}
+		}
 
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO, "Ruta actualizada: ", this.route.getName()));
@@ -528,6 +625,28 @@ public class RouteBean {
 		this.points = null;
 		return "index";
 
+	}
+
+	private boolean inPhotoList(List<Photo> list, String name) {
+		boolean result = false;
+		for (Photo photo : list) {
+			if (photo.getName().equals(name)) {
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+
+	private boolean inNameList(Set<String> list, Photo photo) {
+		boolean result = false;
+		for (String name : list) {
+			if (photo.getName().equals(name)) {
+				result = true;
+				break;
+			}
+		}
+		return result;
 	}
 
 	public void delete(Route route) {
@@ -608,7 +727,20 @@ public class RouteBean {
 		DecimalFormat df = new DecimalFormat("#.##");
 		this.scorePromedio = String.valueOf(df.format(promedio));
 		this.points = this.route.getPointsToString();
-
+		this.images = new ArrayList<String>();
+		this.tmpFotos = new HashMap<String, byte[]>();
+		List<Photo> photos = photoDao.listar(this.route.getId());
+		for (Photo photo : photos) {
+			byte[] content = null;
+			try {
+				content = this.decoder.decodeBuffer(photo.getPath());
+				this.tmpFotos.put(photo.getName(), content);
+				this.images.add(photo.getName());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void hacerRuta() {
@@ -672,4 +804,56 @@ public class RouteBean {
 		return "/publicRoutes.xhtml";
 	}
 
+	public void uploadPhoto() {
+		String contentType = uploadedFile.getContentType();
+		String[] extensiones = { "image/jpeg", "image/png", "image/bmp" };
+		if (Arrays.asList(extensiones).contains(contentType)) {
+
+			if (uploadedFile.getSize() <= 650000) {
+				String fileName = uploadedFile.getFileName();
+				byte[] contents = uploadedFile.getContents();
+				String data = this.encoder.encode(contents);
+				this.tmpFotos.put(fileName, contents);
+
+				InputStream is = new ByteArrayInputStream(contents);
+				this.myImage = new DefaultStreamedContent(is, "image/png");
+				this.images.add(fileName);
+
+				FacesMessage msg = new FacesMessage("�xito!", "Se carg� correctamente la foto " + fileName + ".");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!",
+						"El tama�o de cada foto no debe superar 650kb.");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!",
+					"Los tipos de archivos v�lidos son JPEG, JPG, PNG y BMP.");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+	}
+
+	public StreamedContent getImage(String name) {
+		byte[] content = this.tmpFotos.get(name);
+		InputStream is = new ByteArrayInputStream(content);
+		return new DefaultStreamedContent(is, "image/png");
+	}
+
+	public void deletePhoto() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Map<String, String> params = context.getExternalContext().getRequestParameterMap();
+		String imagename = params.get("eliminarfoto");
+		for (String name : (ArrayList<String>) this.images) {
+			if (imagename.equals(name)) {
+				this.images.remove(name);
+				this.tmpFotos.remove(name);
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "�xito!",
+						"Se elimin� correctamente la foto " + imagename + ".");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				break;
+			}
+		}
+
+	}
 }

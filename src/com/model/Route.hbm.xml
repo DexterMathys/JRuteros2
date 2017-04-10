@@ -44,19 +44,19 @@
         <property name="time" type="time">
             <column name="time" length="8" />
         </property>
-        <set name="photos" table="photo" inverse="true" lazy="true" fetch="select">
+        <set name="photos" table="photo" inverse="true" cascade="all" lazy="true" fetch="select">
             <key>
                 <column name="route_id" not-null="true" />
             </key>
             <one-to-many class="com.model.Photo" />
         </set>
-        <set name="userRoutes" table="user_route" inverse="true" lazy="true" fetch="select">
+        <set name="userRoutes" table="user_route" inverse="true" cascade="all" lazy="true" fetch="select">
             <key>
                 <column name="traveledRoutes_id" not-null="true" unique="true" />
             </key>
             <one-to-many class="com.model.UserRoute" />
         </set>
-        <set name="routescores" table="routescore" inverse="true" lazy="true" fetch="select">
+        <set name="routescores" table="routescore" inverse="true" cascade="all" lazy="true" fetch="select">
             <key>
                 <column name="route_id" not-null="true" />
             </key>

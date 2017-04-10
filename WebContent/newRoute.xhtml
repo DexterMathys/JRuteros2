@@ -20,14 +20,27 @@
 			
 			<p:separator/>
 			
-			<p class="well">Completa todos los campos y luego presiona <b>Confirmar</b> para agregar la ruta</p><br></br>
+			<p class="well">Completa todos los campos y luego presiona <b>Confirmar</b> para agregar la ruta</p>
 			
 			<h:form method="post" enctype="multipart/form-data" >
 				<ui:include src="/WEB-INF/facelets/forms/routeForm.xhtml"/>
+			    				
+				<div class="row inline">
+					<div class="col-xs-4">
+						<p:fileUpload mode="simple" value="#{routeBean.uploadedFile}" />
+					</div>
+					<div class="col-xs-2">
+						(máximo 650kb por foto)
+					</div>		
+					<div class="col-xs-2">
+						<p:commandButton value="Añadir foto" action="#{routeBean.uploadPhoto()}" ajax="false" />
+					</div>
+				</div>
+								
 				<br></br>			
 				 <h:commandButton styleClass="btn btn-success btn-lg" value="Agregar" action="#{routeBean.add()}"/>	
 				
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<h:link class="btn btn-danger btn-lg" outcome="index">
 					<span><i class="fa fa-times" aria-hidden="true"></i> Cancelar</span>
 				</h:link>

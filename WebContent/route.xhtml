@@ -40,7 +40,7 @@
 							</div>
 						</div>
 						<div class="col-lg-6">
-							<span class="pull-right"><i class="fa fa-users" aria-hidden="true"></i> <p:outputLabel value="#{routeBean.cantUsers()}"/></span>
+							<span class="pull-right"><i class="fa fa-users" aria-hidden="true"></i> <p:outputLabel value="La hicieron #{routeBean.cantUsers()} &nbsp;"/></span>
 							<br />
 							<p:commandLink styleClass="" action="#{routeBean.hacerRuta()}" update="acciones" rendered="#{!routeBean.existeRutaHecha()}">
 								<span class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i> Hice esta Ruta</span>
@@ -52,7 +52,13 @@
 					</h:form>  
 				</div>
 			</div>
+			
 			<h:form>
+				<p:galleria value="#{routeBean.images}" var="image" showCaption="true" autoPlay="true" rendered="#{routeBean.images.size() > 0}">
+				        <p:graphicImage value="#{routeBean.myImage}" title="#{image}" width="600" height="450">
+				            <f:param name="imagename" value="#{image}" />
+				        </p:graphicImage>
+				</p:galleria>
 				<p:panelGrid columns="2">
 				 	
 				 	<p:column>

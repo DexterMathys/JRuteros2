@@ -102,6 +102,32 @@
 	 	<p:column>
 			<p:calendar id="date" placeholder="dd/mm/aaaa" value="#{routeBean.date}" effect="fold" pattern="dd/MM/yyyy" />
 	 	</p:column>
-	 	
+	 	<p:column>
+	 		<p:outputLabel value="Fotos"/>
+	 	</p:column>
+	 	<p:column id="galleria">
+	 		<p:galleria id="galleria" value="#{routeBean.images}" var="image" panelWidth="500" panelHeight="350" autoPlay="true" rendered="#{routeBean.images.size() > 0}">
+				<p:graphicImage value="#{routeBean.myImage}" width="500" height="350">
+					<f:param name="imagename" value="#{image}" />
+				</p:graphicImage>
+				
+				<f:facet name="content"> 
+	                <h:panelGrid columns="1" >
+	                	<p:graphicImage value="#{routeBean.myImage}" width="500" height="350">
+							<f:param name="imagename" value="#{image}" />
+						</p:graphicImage>
+	                    <p:commandLink id="btnExcluir" 
+	                                     process="@this"
+	                                     action="#{routeBean.deletePhoto()}"
+	                                     title="Eliminar" style="position:absolute;right:0px;top:10px;"
+	                                     update="galleria"  ajax="false" 
+	                                     styleClass="btn btn-xs btn-danger">
+	                        <i class="fa fa-trash-o" aria-hidden="true" ></i>
+	                        <f:param name="eliminarfoto" value="#{image}" />
+	                    </p:commandLink>
+	                </h:panelGrid>
+	            </f:facet>
+			</p:galleria>
+	 	</p:column>
 	 </p:panelGrid>
 </div>
