@@ -55,5 +55,29 @@ public class Apoint implements java.io.Serializable {
 	public void setLonguitude(String longuitude) {
 		this.longuitude = longuitude;
 	}
+	
+	public double rad(double x){
+		 return (x * Math.PI / 180);
+	}
+	
+	public float toFloat(String str){
+		return new Float(str);
+	}
+	
+	public double getDistance(Apoint p2){
+		double lat2 = new Float(p2.getLatitude());
+		double lgt2 = new Float(p2.getLonguitude());
+		double lat1 = new Float(getLatitude());
+		double lgt1 = new Float(getLonguitude());
+		
+		
+		double R = 6378137; // Earth’s mean radius in meter
+		double dLat = rad(lat2 - lat1);
+		double dLong = rad(lgt2 - lgt1);
+		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		double d = R * c;
+		return d; // returns the distance in meter
+	}
 
 }

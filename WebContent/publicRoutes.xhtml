@@ -33,50 +33,147 @@
 			            <p:outputPanel>
 			                <h:outputText value="Buscar:" />
 			                <p:inputText id="globalFilter" onkeyup="PF('routesTable').filter()" style="width:150px" placeholder=""/>
+			               	<p:commandButton value="Buscar por punto"   onclick="loadModal();" style="float:right" update="" icon="ui-icon-plus" styleClass="btn btn-success btn-xs">
+						   		<p:ajax event="dialogReturn" update="" />
+						    </p:commandButton>
 			            </p:outputPanel>
 			        </f:facet>
 			       
 					 
-					<p:column headerText="Nombre" filterBy="#{item[0].name}" filterMatchMode="contains" sortBy="#{item[0].name}">
-						<p:outputLabel value="#{item[0].name}" />
+					<p:column headerText="Nombre" filterBy="#{item.name}" filterMatchMode="contains" sortBy="#{item.name}">
+						<p:outputLabel value="#{item.name}" />
 					</p:column>
 					
-					<p:column headerText="Formato" filterBy="#{item[0].getFormato()}" filterMatchMode="contains" sortBy="#{item[0].getFormato()}">
-						<p:outputLabel value="#{item[0].getFormato()}" />
+					<p:column headerText="Formato" filterBy="#{item.getFormato()}" filterMatchMode="contains" sortBy="#{item.getFormato()}">
+						<p:outputLabel value="#{item.getFormato()}" />
 					</p:column>
 					
-					<p:column headerText="Distancia" filterBy="#{item[0].distance}" filterMatchMode="contains" sortBy="#{item[0].distance}">
-						<p:outputLabel value="#{item[0].distance}" />
+					<p:column headerText="Distancia" filterBy="#{item.distance}" filterMatchMode="contains" sortBy="#{item.distance}">
+						<p:outputLabel value="#{item.distance}" />
 					</p:column>
 					
-					<p:column headerText="Dificultad" filterBy="#{item[0].difficulty}" filterMatchMode="contains" sortBy="#{item[0].difficulty}">
-						<p:outputLabel value="#{item[0].difficulty}" />
+					<p:column headerText="Dificultad" filterBy="#{item.difficulty}" filterMatchMode="contains" sortBy="#{item.difficulty}">
+						<p:outputLabel value="#{item.difficulty}" />
 					</p:column>
 					
-					<p:column headerText="Actividad" filterBy="#{item[1].name}" filterMatchMode="contains" sortBy="#{item[1].name}">
-						<p:outputLabel value="#{item[1].name}" />
+					<p:column headerText="Actividad" filterBy="#{item.activity.name}" filterMatchMode="contains" sortBy="#{item.activity.name}">
+						<p:outputLabel value="#{item.activity.name}" />
 					</p:column>
 					
-					<p:column headerText="Tiempo estimado" filterBy="#{item[0].time}" filterMatchMode="contains" sortBy="#{item[0].time}">
-						<p:outputLabel value="#{item[0].time}" />
+					<p:column headerText="Tiempo estimado" filterBy="#{item.time}" filterMatchMode="contains" sortBy="#{item.time}">
+						<p:outputLabel value="#{item.time}" />
 					</p:column>
 					
-					<p:column headerText="Fecha de realización" filterBy="#{item[0].date}" filterMatchMode="contains" sortBy="#{item[0].date}">
-						<p:calendar value="#{item[0].date}" pattern="dd-MM-yyyy" readonly="true" showOn="none" />
+					<p:column headerText="Fecha de realización" filterBy="#{item.date}" filterMatchMode="contains" sortBy="#{item.date}">
+						<p:calendar value="#{item.date}" pattern="dd-MM-yyyy" readonly="true" showOn="none" />
 					</p:column>
-					
+										
 					<p:column headerText="Accion">
-							<p:commandLink action="#{routeBean.view(item[0].id)}" update="tablaRutas" styleClass="btn btn-success">
+							<p:commandLink action="#{routeBean.view(item.id)}" update="tablaRutas" styleClass="btn btn-success">
 								<i class="fa fa-search" title="Ver"/>
 							</p:commandLink>
-							<p:inputText type="hidden" value="#{item[0].id}" id="userId"/>
+							<p:inputText type="hidden" value="#{item.id}" id="userId"/>
 					</p:column>
 				</p:dataTable>
 				
 			</h:form>
 		</div>
+
+	<p:dialog header="Buscar por punto" widgetVar="searchPoint" modal="true" resizable="true" draggable="true">
+	    <h:form>
+			<fieldset>
+				<h:panelGrid>
+					<p:gmap widgetVar="w_gmap" center="-57.9392111, -34.9038055, 18" zoom="10" type="ROADMAP" style="width:500px;height:380px;" onPointClick="handlePointClick(event);" />
+					
+					<p:column>
+	 					<p:outputLabel value="Distancia"/>
+	 				</p:column>
+	 				<p:column>
+	 					<p:spinner value="#{routeBean.searchDistance}" min="0" stepFactor="0.5" />
+						<p:outputLabel value=" Metros"/>
+	 				</p:column>
+	 				<input type="hidden" name="lat" id="lat" value="#{routeBean.getSearchLat()}"/>
+					<input type="hidden" name="lng" id="lng" value="#{routeBean.getSearchLong()}" />
+	 				
+				</h:panelGrid>
+			</fieldset>
+			<h:commandButton styleClass="btn btn-success btn-lg" value="Buscar" action="#{routeBean.searchForPoint()}" />	
+			<h:commandButton styleClass="btn btn-danger btn-lg" value="Cancelar" onclick="PF('searchPoint').hide();"/>
 		
-	</ui:define>
+		</h:form>
+        
+		
+	    <script type="text/javascript">
+	
+	    function loadModal(){
+	    	PF('searchPoint').show();
+	    	if (navigator.geolocation) {
+	            checkGeolocationByHTML5();
+	        } else {
+	            checkGeolocationByLoaderAPI(); // HTML5 not supported! Fall back to Loader API.
+	        }
+	     }
+	
+	        function checkGeolocationByHTML5() {
+	            navigator.geolocation.getCurrentPosition(function(position) {
+	                setMapCenter(position.coords.latitude, position.coords.longitude);
+	            }, function() {
+	                checkGeolocationByLoaderAPI(); // Error! Fall back to Loader API.
+	            });
+	        }
+	
+	        function checkGeolocationByLoaderAPI() {
+	            if (google.loader.ClientLocation) {
+	                setMapCenter(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);
+	            } else {
+	                // Unsupported! Show error/warning?
+	            }
+	        }
+	
+	        function setMapCenter(latitude, longitude) {
+	        	PF('w_gmap').getMap().setCenter(new google.maps.LatLng(latitude, longitude));
+	        }
+	
+	        var rad = function(x) {
+	      		return x * Math.PI / 180;
+	      	};
+	
+	     	var getDistance = function(p1, p2) {
+		      	var R = 6378137; // Earth’s mean radius in meter
+		      	var dLat = rad(p2.lat() - p1.lat());
+		      	var dLong = rad(p2.lng() - p1.lng());
+		      	var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+		          	Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) *
+		          	Math.sin(dLong / 2) * Math.sin(dLong / 2);
+		      	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		      	var d = R * c;
+		      	return d; // returns the distance in meter
+	      	}
+	
+	        function search(event) {
+	        	console.log("buscar");
+	        	event.latLng.lat();
+	           	event.latLng.lng();
+	        }
+	        var currentMarker = null;
+	        function handlePointClick(event) {
+	        	document.getElementById('lat').value = event.latLng.lat();
+	            document.getElementById('lng').value = event.latLng.lng();
+	        	if(currentMarker === null) {
+	                currentMarker = new google.maps.Marker({
+	                    position:new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+	                });
+	            }else{
+	            	currentMarker.setPosition(event.latLng);
+	            	
+	            }   
+	        	PF('w_gmap').addOverlay(currentMarker);
+	        }
+					
+		</script>
+	</p:dialog>   
+
+</ui:define>
 	
 
 </ui:composition>

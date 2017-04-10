@@ -68,10 +68,13 @@ public class Test {
 	        RouteDaoImp rd = new RouteDaoImp();
 	        rd.nuevo(r);
 	        System.out.println(t.getId());*/
-		 TravelDaoImp td = new TravelDaoImp();
+		/* TravelDaoImp td = new TravelDaoImp();
 		 Travel travel = td.obtener(new Long(10));
-		 td.eliminar(travel);
-	        
+		 td.eliminar(travel);*/
+		 RouteDaoImp routeDAO = new RouteDaoImp();
+		 ArrayList<Route> publicas = (ArrayList<Route>) routeDAO.listarPublicas();
+		 publicas.get(0).getActivity().getName();
+		 System.out.println("lala");
 	        
 	 }
 

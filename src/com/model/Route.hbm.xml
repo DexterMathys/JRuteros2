@@ -8,13 +8,13 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="travel" class="com.model.Travel" cascade="all" fetch="select">
+        <many-to-one name="travel" class="com.model.Travel" cascade="all"   lazy="false" fetch="select">
             <column name="travel_id" not-null="true" unique="true" />
         </many-to-one>
         <many-to-one name="user" class="com.model.User" fetch="select">
             <column name="user_id" />
         </many-to-one>
-       <many-to-one name="activity" class="com.model.Activity" fetch="select">
+       <many-to-one name="activity" class="com.model.Activity" lazy="false" fetch="select" >
             <column name="activity_id" />
         </many-to-one>
         <property name="date" type="timestamp">

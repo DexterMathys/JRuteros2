@@ -1,5 +1,6 @@
 package com.imp;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Hibernate;
@@ -150,7 +151,7 @@ public class RouteDaoImp implements RouteDao {
 
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
-		String hql = "FROM Route r INNER JOIN r.activity WHERE isPublic = 1";
+		String hql = "FROM Route r WHERE isPublic = 1";
 		try {
 			rutas = s.createQuery(hql).list();
 			t.commit();

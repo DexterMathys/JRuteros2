@@ -6,7 +6,10 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -21,6 +24,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.primefaces.context.RequestContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -66,6 +70,9 @@ public class RouteBean {
 	private RouteDaoImp routeDao = new RouteDaoImp();
 	private Part file;
 	private String fileContent;
+	private float searchDistance = 1000;
+	private String searchLat;
+	private String searchLong;
 
 	public RouteBean() {
 	}
@@ -181,6 +188,32 @@ public class RouteBean {
 	public void setRoutes(List<Route> routes) {
 		this.routes = routes;
 	}
+	
+	
+
+	public float getSearchDistance() {
+		return searchDistance;
+	}
+
+	public void setSearchDistance(float searchDistance) {
+		this.searchDistance = searchDistance;
+	}
+
+	public String getSearchLat() {
+		return searchLat;
+	}
+
+	public void setSearchLat(String searchLat) {
+		this.searchLat = searchLat;
+	}
+
+	public String getSearchLong() {
+		return searchLong;
+	}
+
+	public void setSearchLong(String searchLong) {
+		this.searchLong = searchLong;
+	}
 
 	public List<SelectItem> getActivities() {
 		this.activities = new ArrayList<SelectItem>();
@@ -197,6 +230,7 @@ public class RouteBean {
 	public void setActivities(List<SelectItem> activities) {
 		this.activities = activities;
 	}
+	
 
 	public void listActivities() {
 		// this.activities = (List<SelectItem>) new
@@ -227,7 +261,18 @@ public class RouteBean {
 	}
 
 	public String searchRoute() {
-		this.setRoutes(new RouteDaoImp().listarPublicas());
+	//	this.setRoutes(new RouteDaoImp().listarPublicas());
+		ArrayList<Route> publicas =  (ArrayList<Route>) routeDao.listarPublicas();
+		/*ArrayList<Route> result = new ArrayList();
+		Iterator itr = publicas.iterator();
+		while(itr.hasNext()){
+			//0 route, 1 activity, 2 travel
+			Object[] obj = (Object[]) itr.next();
+		  // publicRoutes.add((Route)obj[0]);
+			Route r = routeDao.obtener(((Route) obj[0]).getId());
+			result.add(r);
+		}*/
+		this.setRoutes(publicas);
 		return "/publicRoutes.xhtml";
 	}
 
@@ -588,6 +633,43 @@ public class RouteBean {
 
 	public long cantUsers() {
 		return routeDao.countUsers(this.route.getId());
+	}
+	
+	public String searchForPoint(){
+		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+		// String action = params.get("points");
+		this.searchLat = params.get("lat");
+		this.searchLong = params.get("lng");
+		Apoint searchPoint = new Apoint();
+		searchPoint.setLatitude(this.searchLat);
+		searchPoint.setLonguitude(this.searchLong);
+		
+		ArrayList<Route> result =  new ArrayList();
+		ArrayList<Route> publicas =  (ArrayList<Route>) routeDao.listarPublicas();
+	
+		Iterator itr = publicas.iterator();
+		while(itr.hasNext()){
+			//0 route, 1 activity, 2 travel
+			//Object[] obj = (Object[]) itr.next();
+			//Route r = routeDao.obtener(((Route) obj[0]).getId());
+			Route r = (Route) itr.next();
+			Iterator it = r.getPoints().iterator();
+			
+			boolean seguir = true;
+			while( seguir && it.hasNext() ) {
+				Apoint point = (Apoint) it.next();
+				if (point!= null){
+					double dis = point.getDistance(searchPoint);
+					if (dis <= this.searchDistance) {
+						result.add(r);
+						seguir = false;
+					}
+				}	
+			}
+		}
+		
+		this.setRoutes(result);
+		return "/publicRoutes.xhtml";
 	}
 
 }

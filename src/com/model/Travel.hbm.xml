@@ -14,7 +14,7 @@
             </key>
             <one-to-many class="com.model.Route" />
         </set>
-        <list name="apoints" fetch="select" inverse="true" lazy="true" cascade="all">
+        <list name="apoints" fetch="select" inverse="true" lazy="false" cascade="all">
             <key column="travel_id" />
             <index column="id" />  
             <one-to-many class="com.model.Apoint" />
