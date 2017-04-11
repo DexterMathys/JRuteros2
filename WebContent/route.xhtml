@@ -40,7 +40,7 @@
 							</div>
 						</div>
 						<div class="col-lg-6">
-							<span class="pull-right"><i class="fa fa-users" aria-hidden="true"></i> <p:outputLabel value="La hicieron #{routeBean.cantUsers()} &nbsp;"/></span>
+							<span class="pull-right"><i class="fa fa-users" aria-hidden="true"></i> <p:outputLabel value="#{routeBean.cantUsers()}"/></span>
 							<br />
 							<p:commandLink styleClass="" action="#{routeBean.hacerRuta()}" update="acciones" rendered="#{!routeBean.existeRutaHecha()}">
 								<span class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i> Hice esta Ruta</span>

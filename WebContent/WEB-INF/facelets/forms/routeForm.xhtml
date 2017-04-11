@@ -106,7 +106,7 @@
 	 		<p:outputLabel value="Fotos"/>
 	 	</p:column>
 	 	<p:column id="galleria">
-	 		<p:galleria id="galleria" value="#{routeBean.images}" var="image" panelWidth="500" panelHeight="350" autoPlay="true" rendered="#{routeBean.images.size() > 0}">
+	 		<p:galleria value="#{routeBean.images}" var="image" panelWidth="500" panelHeight="350" autoPlay="true" rendered="#{routeBean.images.size() > 0}">
 				<p:graphicImage value="#{routeBean.myImage}" width="500" height="350">
 					<f:param name="imagename" value="#{image}" />
 				</p:graphicImage>
