@@ -72,7 +72,7 @@
 				 	<p:outputLabel value="Recorrido"/>
 				 	</p:column>
 				 	<p:column>
-				 		<div id="map"  style="width:500px;height:380px;"></div>
+				 		<div id="show_map"  style="width:500px;height:380px;"></div>
 				 		<div id="route_points">
 				 			<input type="hidden" name="points" id="points"  value="#{routeBean.getPoints()}"/>
 				 		</div>
@@ -127,7 +127,37 @@
 
  			</h:form>
 		</div>
-	</ui:define>
-	
+		<script type="text/javascript">
 
+		var mapProp = {
+				center : new google.maps.LatLng(-34.9038055, -57.9392111, 18),
+				zoom : 10,
+				mapTypeId : google.maps.MapTypeId.ROADMAP
+			};
+		if (document.getElementById("show_map") != null){
+			var map = new google.maps.Map(document.getElementById("show_map"), mapProp);
+			puntos = [];
+			initPolyline()
+			obtenerMarkers();	
+		}
+//sobre escribe la otra funcion, para no tener los eventos
+		function dibujarMarker(dato) {
+
+			var position = new google.maps.LatLng(dato.lat, dato.lon);
+
+			var marker = new google.maps.Marker({
+				position : position,
+				icon: {
+				      path: google.maps.SymbolPath.CIRCLE,
+				      scale: 3
+				    },
+				id : dato.id
+			});
+
+			puntos[puntos.length] = marker;
+			marker.setMap(map);
+		}
+		
+	</script>
+	</ui:define>
 </ui:composition>

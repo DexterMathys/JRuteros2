@@ -46,16 +46,21 @@ function initPolyline(){
 // Obtiene markers y los dibuja
 function obtenerMarkers() {
 	var points = $("#points").val().split(",");
-	$.each(points, function( index, apoint ) {
-		p = apoint.split(" ");
-		var punto = {
-			lat : p[0],
-			lon : p[1]
-		};
-		dibujarMarker(punto)
-	})
-	
-	dibujarRecorrido();
+	if (points != "") {
+		$.each(points, function( index, apoint ) {
+			p = apoint.split(" ");
+			var punto = {
+				lat : p[0],
+				lon : p[1]
+			};
+			dibujarMarker(punto);
+			if (index == 0) {
+				map.setCenter(new google.maps.LatLng(p[0],  p[1]));
+			}
+		})
+		
+		dibujarRecorrido();
+	}
 	/*$.ajax({
 		type: 'GET',
         url: myURI,
