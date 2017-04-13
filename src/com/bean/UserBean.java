@@ -13,7 +13,15 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.PieChartModel;
+
+import com.imp.RouteDaoImp;
 import com.imp.UserDaoImp;
+import com.model.Route;
 import com.model.User;
 
 @ManagedBean
@@ -30,9 +38,116 @@ public class UserBean {
 	private Date birthdate;
 	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
 			Pattern.CASE_INSENSITIVE);
+	private BarChartModel animatedModel2;
+	private PieChartModel pieModel1;
+	private PieChartModel pieModel2;
 
 	public UserBean() {
 		this.users = (userDao.listarUsers());
+	}
+
+	public PieChartModel getPieModel1() {
+		return pieModel1;
+	}
+
+	public PieChartModel getPieModel2() {
+		return pieModel2;
+	}
+
+	public BarChartModel getAnimatedModel2() {
+		return animatedModel2;
+	}
+
+	private void createAnimatedModels() {
+
+		animatedModel2 = initBarModel();
+		animatedModel2.setTitle("Detalles de Rutas");
+		animatedModel2.setMouseoverHighlight(true);
+		animatedModel2.setAnimate(true);
+		animatedModel2.setLegendPosition("ne");
+		animatedModel2.setShowPointLabels(true);
+		Axis yAxis = animatedModel2.getAxis(AxisType.Y);
+		yAxis.setMin(0);
+		yAxis.setMax(10);
+
+		createPieModel1();
+		createPieModel2();
+	}
+
+	private void createPieModel1() {
+		pieModel1 = new PieChartModel();
+
+		List<User> users = new UserDaoImp().listarOrdenado();
+		RouteDaoImp routeDao = new RouteDaoImp();
+
+		for (User us : users) {
+			List<Route> routes = routeDao.listar(us.getId());
+			pieModel1.set(us.getUserName(), routes.size());
+		}
+
+		pieModel1.setTitle("Rutas por usuario");
+		pieModel1.setLegendPosition("w");
+		pieModel1.setShowDataLabels(true);
+	}
+
+	private void createPieModel2() {
+		pieModel2 = new PieChartModel();
+
+		List<Route> routes = new RouteDaoImp().listarSinActivity();
+		RouteDaoImp routeDao = new RouteDaoImp();
+		int pu = 0;
+		int pr = 0;
+
+		for (Route r : routes) {
+			if (r.isIsPublic()) {
+				pu++;
+			} else {
+				pr++;
+			}
+		}
+
+		pieModel2.set("Públicas", pu);
+		pieModel2.set("Privadas", pr);
+
+		pieModel2.setTitle("Rutas por privacidad");
+		pieModel2.setLegendPosition("e");
+		pieModel2.setShowDataLabels(true);
+		pieModel2.setDiameter(150);
+	}
+
+	private BarChartModel initBarModel() {
+
+		List<User> users = new UserDaoImp().listarOrdenado();
+		RouteDaoImp routeDao = new RouteDaoImp();
+
+		BarChartModel model = new BarChartModel();
+		ChartSeries cant = new ChartSeries();
+		ChartSeries public_routes = new ChartSeries();
+		ChartSeries private_routes = new ChartSeries();
+		cant.setLabel("Cantidad");
+		public_routes.setLabel("Públicas");
+		private_routes.setLabel("Privadas");
+
+		for (User us : users) {
+			List<Route> routes = routeDao.listarSinActividad(us.getId());
+			cant.set(us.getUserName(), routes.size());
+			int pu = 0;
+			int pr = 0;
+			for (Route r : routes) {
+				if (r.isIsPublic()) {
+					pu++;
+				} else {
+					pr++;
+				}
+			}
+			public_routes.set(us.getUserName(), pu);
+			private_routes.set(us.getUserName(), pr);
+		}
+		model.addSeries(cant);
+		model.addSeries(public_routes);
+		model.addSeries(private_routes);
+
+		return model;
 	}
 
 	public List<User> getFilteredUsers() {
@@ -294,6 +409,11 @@ public class UserBean {
 			return "/WEB-INF/facelets/menus/userMenu.xhtml";
 		}
 
+	}
+
+	public String statistics(User user) {
+		createAnimatedModels();
+		return "statistics.xhtml";
 	}
 
 }

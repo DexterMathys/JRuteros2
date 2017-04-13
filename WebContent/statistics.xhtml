@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      template="/WEB-INF/facelets/templates/layout.xhtml"> 
+	
+	<ui:define name="encabezado">
+		<ui:include src="/WEB-INF/facelets/headers/userHeader.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="menu">
+		<ui:include src="/WEB-INF/facelets/menus/adminMenu.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="body" >
+		
+		<h1><p:outputLabel value="Estadísticas" /></h1>
+		
+		<p:separator/>
+		
+		<p class="well">Aquí puedes ver <b>datos estadísticos</b> de los <b>usuarios</b> del sistema</p>
+			
+			<h:panelGrid columns="2" columnClasses="left,right" style="width:100%">
+			    <p:chart type="pie" model="#{userBean.pieModel1}" style="width:400px;height:300px" />
+             
+				<p:chart type="pie" model="#{userBean.pieModel2}" style="width:400px;height:300px" />
+			</h:panelGrid>
+		    
+		    
+		    <p:chart type="bar" model="#{userBean.animatedModel2}" style="width:1000px;" responsive="true"/>
+	
+	</ui:define>
+	
+</ui:composition>

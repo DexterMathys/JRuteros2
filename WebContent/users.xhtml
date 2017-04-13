@@ -18,7 +18,7 @@
 					<h1><p:outputLabel value="Usuarios" /></h1>
 					<p:separator/>
 					
-						<p class="well">Aquí puedes <b>habilitar/desabilitar Usuarios</b> del sistema</p><br></br>
+						<p class="well">Aquí puedes <b>habilitar/desabilitar Usuarios</b> del sistema y ver <b>estadísticas Globales y Particulares</b> de cada usuario.</p>
 						
 						<h:form>
 						
@@ -29,6 +29,9 @@
 						            <p:outputPanel>
 						                <h:outputText value="Buscar:" />
 						                <p:inputText id="globalFilter" onkeyup="PF('usersTable').filter()" style="width:150px" placeholder=""/>
+						            	<p:commandLink title="Estadísticas globales" alt="Estadísticas globales" action="#{userBean.statistics(null)}" style="float:right" styleClass="btn btn-info">
+						            		<i class="fa fa-bar-chart" title="Estadísticas globales" alt="Estadísticas globales"/> Globales
+						            	</p:commandLink>
 						            </p:outputPanel>
 						        </f:facet>
 								
@@ -62,6 +65,9 @@
 										</p:commandLink>
 										<p:commandLink action="#{userBean.toggle(item)}" rendered="#{(item.active)}" update="tablaUsuarios" styleClass="btn btn-danger">
 											<i class="fa fa-close" title="Deshabilitar"/>
+										</p:commandLink>
+										<p:commandLink action="#{userBean.statistics(item)}" styleClass="btn btn-info">
+											<i class="fa fa-bar-chart" title="Estadísticas"/>
 										</p:commandLink>
 										<p:inputText type="hidden" value="#{item.id}" id="userId"/>
 								</p:column>

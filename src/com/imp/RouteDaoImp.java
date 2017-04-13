@@ -1,9 +1,7 @@
 package com.imp;
 
-import java.util.Iterator;
 import java.util.List;
 
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -29,7 +27,7 @@ public class RouteDaoImp implements RouteDao {
 		try {
 			rutas = s.createQuery(hql).setString("id", activity.getId().toString()).list();
 			t.commit();
-			//s.close();
+			// s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -109,7 +107,7 @@ public class RouteDaoImp implements RouteDao {
 		try {
 			ex = (s.createQuery(hql).setString("id", route.getId().toString()).uniqueResult() != null);
 			t.commit();
-			//s.close();
+			// s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -132,7 +130,30 @@ public class RouteDaoImp implements RouteDao {
 		try {
 			rutas = s.createQuery(hql).list();
 			t.commit();
-			//s.close();
+			// s.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+		return rutas;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Route> listarSinActivity() {
+		List<Route> rutas = null;
+
+		s = HibernateUtil.sessionFactory.openSession();
+		Transaction t = s.beginTransaction();
+		String hql = "FROM Route r";
+		try {
+			rutas = s.createQuery(hql).list();
+			t.commit();
+			// s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -155,7 +176,7 @@ public class RouteDaoImp implements RouteDao {
 		try {
 			rutas = s.createQuery(hql).list();
 			t.commit();
-			//s.close();
+			// s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -178,7 +199,30 @@ public class RouteDaoImp implements RouteDao {
 		try {
 			rutas = s.createQuery(hql).list();
 			t.commit();
-			//s.close();
+			// s.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+		return rutas;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Route> listarSinActividad(long idUser) {
+		List<Route> rutas = null;
+
+		s = HibernateUtil.sessionFactory.openSession();
+		Transaction t = s.beginTransaction();
+		String hql = "FROM Route r WHERE user_id = " + idUser;
+		try {
+			rutas = s.createQuery(hql).list();
+			t.commit();
+			// s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -203,8 +247,7 @@ public class RouteDaoImp implements RouteDao {
 			System.out.println(e.getMessage());
 		}
 		return route;
-		
-		
+
 	}
 
 	@Override

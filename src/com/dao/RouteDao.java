@@ -31,4 +31,9 @@ public interface RouteDao {
 	public UserRoute obtener(UserRouteId user_route_id);
 
 	public long countUsers(long route_id);
+
+	public List<Route> listarSinActivity();
+
+	public List<Route> listarSinActividad(long idUser);
+
 }
