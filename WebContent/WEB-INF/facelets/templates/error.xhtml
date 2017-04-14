@@ -1,0 +1,13 @@
+<div xmlns:h="http://java.sun.com/jsf/html"
+	 xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:p="http://primefaces.org/ui">
+     
+	<h1>
+		<p:outputLabel value="Oops! No tienes los permisos necesarios para acceder."/>
+	</h1>
+	<p:separator/>
+	<p:commandLink action="#{userBean.volverInicio()}">
+		<span class="btn btn-success btn-lg"><i class="fa fa-arrow-left" aria-hidden="true"></i> Volver al Inicio</span>
+	</p:commandLink>
+     
+</div>

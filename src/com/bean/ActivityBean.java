@@ -74,7 +74,7 @@ public class ActivityBean {
 		 * FacesContext.getCurrentInstance().addMessage(null, new
 		 * FacesMessage(FacesMessage.SEVERITY_ERROR, "Esta actividad ya existe",
 		 * "")); //return "login";
-		 * 
+		 *
 		 * }else { activityDAO.nuevo(this.activity);
 		 * this.activities.add(this.activity); }
 		 */
@@ -92,16 +92,18 @@ public class ActivityBean {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Esta actividad ya existe", ""));
 
+		} else if (this.activity.getName().length() <= 0) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El nombre no puede ser vacio", ""));
 		} else {
 			activityDAO.nuevo(this.activity);
 			this.activities.add(this.activity);
-
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Actividad agregada", this.activity.getName()));
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Actividad agregada", this.activity.getName()));
 			RequestContext.getCurrentInstance().closeDialog(this.activities);
 
 		}
-		//
+
 	}
 
 	public void delete(Activity ac) {
@@ -115,7 +117,7 @@ public class ActivityBean {
 			this.activities.remove(ac);
 
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Actividad ", ac.getName() + " " + "eliminada"));
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Actividad ", ac.getName() + " " + "eliminada"));
 
 		}
 
@@ -126,6 +128,9 @@ public class ActivityBean {
 		if (activityDAO.existe(ac)) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Esta actividad ya existe", ""));
+		} else if (this.activity.getName().length() <= 0) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "El nombre no puede ser vacio", ""));
 		} else {
 			activityDAO.editar(ac);
 			this.activities = (new ActivityDaoImp().listar());
@@ -133,7 +138,6 @@ public class ActivityBean {
 		}
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.update("datatable:datatable");
-
 	}
 
 	public void responseUpdate(SelectEvent event) {

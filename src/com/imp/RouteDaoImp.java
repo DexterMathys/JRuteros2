@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 import com.dao.RouteDao;
 import com.model.Activity;
 import com.model.Route;
+import com.model.User;
 import com.model.UserRoute;
 import com.model.UserRouteId;
 import com.util.HibernateUtil;
@@ -26,6 +27,30 @@ public class RouteDaoImp implements RouteDao {
 		String hql = "FROM Route where activity_id = :id";
 		try {
 			rutas = s.createQuery(hql).setString("id", activity.getId().toString()).list();
+			t.commit();
+			// s.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+		return rutas;
+	}
+
+	@Override
+	public List<Route> rutasUserActividad(User user, Activity activity) {
+		// TODO Auto-generated method stub
+		List<Route> rutas = null;
+
+		s = HibernateUtil.sessionFactory.openSession();
+		Transaction t = s.beginTransaction();
+		String hql = "FROM Route WHERE activity_id = :id_ac AND user_id = :id_us";
+		try {
+			rutas = s.createQuery(hql).setString("id_ac", activity.getId().toString())
+					.setString("id_us", user.getId().toString()).list();
 			t.commit();
 			// s.close();
 		} catch (Exception e) {

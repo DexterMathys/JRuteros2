@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.model.Activity;
 import com.model.Route;
+import com.model.User;
 import com.model.UserRoute;
 import com.model.UserRouteId;
 
@@ -35,5 +36,7 @@ public interface RouteDao {
 	public List<Route> listarSinActivity();
 
 	public List<Route> listarSinActividad(long idUser);
+
+	public List<Route> rutasUserActividad(User user, Activity activity);
 
 }

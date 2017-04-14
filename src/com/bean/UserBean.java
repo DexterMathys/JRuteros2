@@ -1,9 +1,13 @@
 package com.bean;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,9 +23,13 @@ import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.PieChartModel;
 
+import com.imp.ActivityDaoImp;
 import com.imp.RouteDaoImp;
+import com.imp.RoutescoreDaoImp;
 import com.imp.UserDaoImp;
+import com.model.Activity;
 import com.model.Route;
+import com.model.Routescore;
 import com.model.User;
 
 @ManagedBean
@@ -38,12 +46,26 @@ public class UserBean {
 	private Date birthdate;
 	public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
 			Pattern.CASE_INSENSITIVE);
+	private User userStatistics;
+	private BarChartModel animatedModel1;
 	private BarChartModel animatedModel2;
 	private PieChartModel pieModel1;
 	private PieChartModel pieModel2;
 
 	public UserBean() {
 		this.users = (userDao.listarUsers());
+	}
+
+	public BarChartModel getAnimatedModel1() {
+		return animatedModel1;
+	}
+
+	public User getUserStatistics() {
+		return userStatistics;
+	}
+
+	public void setUserStatistics(User userStatistics) {
+		this.userStatistics = userStatistics;
 	}
 
 	public PieChartModel getPieModel1() {
@@ -58,20 +80,49 @@ public class UserBean {
 		return animatedModel2;
 	}
 
-	private void createAnimatedModels() {
+	public boolean validateSessionAdmin() {
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		if (us != null && us.isAdmin()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-		animatedModel2 = initBarModel();
-		animatedModel2.setTitle("Detalles de Rutas");
+	private void createAnimatedModels() {
+		createBarModel1();
+		createBarModel2();
+
+		createPieModel1();
+		createPieModel2();
+	}
+
+	private void createBarModel1() {
+		animatedModel1 = initBarModel1();
+		animatedModel1.setTitle("Puntaje promedio y usuarios que la hicieron");
+		animatedModel1.setMouseoverHighlight(true);
+		animatedModel1.setAnimate(true);
+		animatedModel1.setLegendPosition("ne");
+		animatedModel1.setShowPointLabels(true);
+		Axis xAxis = animatedModel1.getAxis(AxisType.X);
+		xAxis.setLabel("Rutas");
+		Axis yAxis = animatedModel1.getAxis(AxisType.Y);
+		yAxis.setMin(0);
+		yAxis.setMax(10);
+	}
+
+	private void createBarModel2() {
+		animatedModel2 = initBarModel2();
+		animatedModel2.setTitle("Cantidad y privacidad por usuario");
 		animatedModel2.setMouseoverHighlight(true);
 		animatedModel2.setAnimate(true);
 		animatedModel2.setLegendPosition("ne");
 		animatedModel2.setShowPointLabels(true);
+		Axis xAxis = animatedModel2.getAxis(AxisType.X);
+		xAxis.setLabel("Usuarios");
 		Axis yAxis = animatedModel2.getAxis(AxisType.Y);
 		yAxis.setMin(0);
 		yAxis.setMax(10);
-
-		createPieModel1();
-		createPieModel2();
 	}
 
 	private void createPieModel1() {
@@ -115,7 +166,47 @@ public class UserBean {
 		pieModel2.setDiameter(150);
 	}
 
-	private BarChartModel initBarModel() {
+	private BarChartModel initBarModel1() {
+
+		List<Route> routes = new RouteDaoImp().listarSinActivity();
+		RouteDaoImp routeDao = new RouteDaoImp();
+
+		BarChartModel model = new BarChartModel();
+		ChartSeries cant = new ChartSeries();
+		ChartSeries puntaje = new ChartSeries();
+		cant.setLabel("Usuarios");
+		puntaje.setLabel("Puntaje");
+
+		for (Route r : routes) {
+			List<Routescore> scores = new RoutescoreDaoImp().listar(r.getId());
+			double promedio = 0.0;
+			double suma = 0;
+			for (Routescore routescore : scores) {
+				suma += routescore.getScore();
+			}
+			if (suma > 0) {
+				promedio = suma / scores.size();
+			}
+			DecimalFormat df = new DecimalFormat("#.##");
+			NumberFormat format = NumberFormat.getInstance(Locale.FRANCE);
+			Number number = null;
+			try {
+				number = format.parse(df.format(promedio));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			double d = number.doubleValue();
+			puntaje.set(r.getName(), d);
+			cant.set(r.getName(), routeDao.countUsers(r.getId()));
+		}
+		model.addSeries(puntaje);
+		model.addSeries(cant);
+
+		return model;
+	}
+
+	private BarChartModel initBarModel2() {
 
 		List<User> users = new UserDaoImp().listarOrdenado();
 		RouteDaoImp routeDao = new RouteDaoImp();
@@ -250,6 +341,10 @@ public class UserBean {
 	}
 
 	public String usersList() {
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		if (us == null || !us.isAdmin()) {
+			return "login.xhtml";
+		}
 		this.users = (userDao.listarUsers());
 		return "users";
 	}
@@ -412,8 +507,128 @@ public class UserBean {
 	}
 
 	public String statistics(User user) {
-		createAnimatedModels();
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		if (us == null || !us.isAdmin()) {
+			return "login.xhtml";
+		}
+
+		this.userStatistics = user;
+		if (this.userStatistics == null) {
+			createAnimatedModels();
+		} else {
+			createAnimatedModels(user);
+		}
+
 		return "statistics.xhtml";
+	}
+
+	private void createAnimatedModels(User user) {
+		createBarModel1(user);
+
+		createPieModel1(user);
+		createPieModel2(user);
+	}
+
+	private void createPieModel2(User user) {
+		pieModel2 = new PieChartModel();
+
+		List<Route> routes = new RouteDaoImp().listarSinActividad(user.getId());
+		RouteDaoImp routeDao = new RouteDaoImp();
+		int pu = 0;
+		int pr = 0;
+
+		for (Route r : routes) {
+			if (r.isIsPublic()) {
+				pu++;
+			} else {
+				pr++;
+			}
+		}
+
+		pieModel2.set("Públicas", pu);
+		pieModel2.set("Privadas", pr);
+
+		pieModel2.setTitle("Rutas por privacidad");
+		pieModel2.setLegendPosition("e");
+		pieModel2.setShowDataLabels(true);
+		pieModel2.setDiameter(150);
+	}
+
+	private void createPieModel1(User user) {
+		pieModel1 = new PieChartModel();
+		RouteDaoImp routeDao = new RouteDaoImp();
+
+		List<Activity> activities = new ActivityDaoImp().listar();
+
+		for (Activity ac : activities) {
+			List<Route> routes = routeDao.rutasUserActividad(user, ac);
+			pieModel1.set(ac.getName(), routes.size());
+		}
+
+		pieModel1.setTitle("Rutas por actividad");
+		pieModel1.setLegendPosition("w");
+		pieModel1.setShowDataLabels(true);
+	}
+
+	private void createBarModel1(User user) {
+		animatedModel1 = initBarModel1(user);
+		animatedModel1.setTitle("Puntaje promedio y usuarios que la hicieron");
+		animatedModel1.setMouseoverHighlight(true);
+		animatedModel1.setAnimate(true);
+		animatedModel1.setLegendPosition("ne");
+		animatedModel1.setShowPointLabels(true);
+		Axis xAxis = animatedModel1.getAxis(AxisType.X);
+		xAxis.setLabel("Rutas de " + user.getUserName());
+		Axis yAxis = animatedModel1.getAxis(AxisType.Y);
+		yAxis.setMin(0);
+		yAxis.setMax(10);
+	}
+
+	private BarChartModel initBarModel1(User user) {
+		List<Route> routes = new RouteDaoImp().listarSinActividad(user.getId());
+		RouteDaoImp routeDao = new RouteDaoImp();
+
+		BarChartModel model = new BarChartModel();
+		ChartSeries cant = new ChartSeries();
+		ChartSeries puntaje = new ChartSeries();
+		cant.setLabel("Usuarios");
+		puntaje.setLabel("Puntaje");
+
+		for (Route r : routes) {
+			List<Routescore> scores = new RoutescoreDaoImp().listar(r.getId());
+			double promedio = 0.0;
+			double suma = 0;
+			for (Routescore routescore : scores) {
+				suma += routescore.getScore();
+			}
+			if (suma > 0) {
+				promedio = suma / scores.size();
+			}
+			DecimalFormat df = new DecimalFormat("#.##");
+			NumberFormat format = NumberFormat.getInstance(Locale.FRANCE);
+			Number number = null;
+			try {
+				number = format.parse(df.format(promedio));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			double d = number.doubleValue();
+			puntaje.set(r.getName(), d);
+			cant.set(r.getName(), routeDao.countUsers(r.getId()));
+		}
+		model.addSeries(puntaje);
+		model.addSeries(cant);
+
+		return model;
+	}
+
+	public String volverInicio() {
+		if (this.validateSession()) {
+			return "index.xhtml";
+		} else {
+			return "login.xhtml";
+		}
 	}
 
 }

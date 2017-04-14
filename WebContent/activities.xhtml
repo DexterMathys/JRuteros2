@@ -15,55 +15,59 @@
 	</ui:define>
 	
 	<ui:define name="body" >
-					<h1><p:outputLabel value="Actividades" /></h1>
-					<p:separator/>			
-					<div class="well">Aquí puedes <b>habilitar/desabilitar Actividades</b> del sistema. También las puedes <b>eliminar</b> si no poseen rutas asociadas.</div>
-						<p:messages id="message" showDetail="true" autoUpdate="true" closable="true" styleClass="text-center" />
-					
-					<h:form>
+		<h:panelGrid rendered="#{userBean.validateSessionAdmin()}">
+			<h:form>
+			<h1><p:outputLabel value="Actividades" /></h1>
+			<p:separator/>			
+			<div class="well">Aquí puedes <b>habilitar/desabilitar Actividades</b> del sistema. También las puedes <b>eliminar</b> si no poseen rutas asociadas.</div>
+				<p:messages id="message" showDetail="true" autoUpdate="true" closable="true" styleClass="text-center" />
+							
+					<p:dataTable id="tablaActividades" var="item" value="#{activityBean.activities}" widgetVar="activitiesTable" emptyMessage="No se encuentra ninguna Actividad" paginator="true" rows="5"
+					 			 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					 			 rowsPerPageTemplate="5,10,15" filteredValue="#{activityBean.activitiesFiltered}">
+						<f:facet name="header">
+				            <p:outputPanel>
+				                <h:outputText value="Buscar:" />
+				                <p:inputText id="globalFilter" onkeyup="PF('activitiesTable').filter()" style="width:150px" placeholder=""/>
+				            	<p:commandButton value="Crear" actionListener="#{activityBean.addActivity()}" style="float:right" update="tablaActividades" icon="ui-icon-plus" styleClass="btn btn-success btn-xs">
+				            		<p:ajax event="dialogReturn" update="tablaActividades" />
+				            	</p:commandButton>
+				            </p:outputPanel>
+				        </f:facet>
 						
-							<p:dataTable id="tablaActividades" var="item" value="#{activityBean.activities}" widgetVar="activitiesTable" emptyMessage="No se encuentra ninguna Actividad" paginator="true" rows="5"
-							 			 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							 			 rowsPerPageTemplate="5,10,15" filteredValue="#{activityBean.activitiesFiltered}">
-								<f:facet name="header">
-						            <p:outputPanel>
-						                <h:outputText value="Buscar:" />
-						                <p:inputText id="globalFilter" onkeyup="PF('activitiesTable').filter()" style="width:150px" placeholder=""/>
-						            	<p:commandButton value="Agregar" actionListener="#{activityBean.addActivity()}" style="float:right" update="tablaActividades" icon="ui-icon-plus" styleClass="btn btn-success btn-xs">
-						            		<p:ajax event="dialogReturn" update="tablaActividades" />
-						            	</p:commandButton>
-						            </p:outputPanel>
-						        </f:facet>
-								
-								<p:column headerText="Nombre" filterBy="#{item.name}" filterMatchMode="contains" sortBy="#{item.name}">
-									<p:outputLabel value="#{item.name}" />
-								</p:column>
-								
-								<p:column headerText="Estado" filterBy="#{item.getEstado()}" filterMatchMode="contains" sortBy="#{item.getEstado()}">
-									<p:outputLabel value="#{item.getEstado()}" />
-								</p:column>
-								
-								<p:column headerText="Accion">
-										<p:commandLink action="#{activityBean.toggle(item)}" rendered="#{!(item.active)}" update="tablaActividades" styleClass="btn btn-success">
-											<i class="fa fa-check" title="Habilitar"/>
-										</p:commandLink>
-										<p:commandLink action="#{activityBean.toggle(item)}" rendered="#{(item.active)}" update="tablaActividades" styleClass="btn btn-danger">
-											<i class="fa fa-close" title="Deshabilitar"/>
-										</p:commandLink>
-										<p:commandLink title="Editar" styleClass="btn btn-warning" action="#{activityBean.formEdit(item)}">
-	        								<i class="fa fa-edit" ></i>
-	        								<p:ajax event="dialogReturn" listener="#{activityBean.responseUpdate}" update="tablaActividades" />
-	    								</p:commandLink>
-	    								<h:commandLink  title="Eliminar" action="#{activityBean.delete(item)}" update="tablaActividades" styleClass="btn btn-danger">
-	    									<i class="fa fa-trash" aria-hidden="true" ></i>
-	    								</h:commandLink>
-										<p:inputText type="hidden" value="#{item.id}" id="userId"/>
-							
-								</p:column>
-								
-							</p:dataTable>
-							
-						</h:form>									
+						<p:column headerText="Nombre" filterBy="#{item.name}" filterMatchMode="contains" sortBy="#{item.name}">
+							<p:outputLabel value="#{item.name}" />
+						</p:column>
+						
+						<p:column headerText="Estado" filterBy="#{item.getEstado()}" filterMatchMode="contains" sortBy="#{item.getEstado()}">
+							<p:outputLabel value="#{item.getEstado()}" />
+						</p:column>
+						
+						<p:column headerText="Accion">
+								<p:commandLink action="#{activityBean.toggle(item)}" rendered="#{!(item.active)}" update="tablaActividades" styleClass="btn btn-success">
+									<i class="fa fa-check" title="Habilitar"/>
+								</p:commandLink>
+								<p:commandLink action="#{activityBean.toggle(item)}" rendered="#{(item.active)}" update="tablaActividades" styleClass="btn btn-danger">
+									<i class="fa fa-close" title="Deshabilitar"/>
+								</p:commandLink>
+								<p:commandLink title="Editar" styleClass="btn btn-warning" action="#{activityBean.formEdit(item)}">
+	      								<i class="fa fa-edit" ></i>
+	      								<p:ajax event="dialogReturn" listener="#{activityBean.responseUpdate}" update="tablaActividades" />
+	  								</p:commandLink>
+	  								<h:commandLink  title="Eliminar" action="#{activityBean.delete(item)}" update="tablaActividades" styleClass="btn btn-danger">
+	  									<i class="fa fa-trash" aria-hidden="true" ></i>
+	  								</h:commandLink>
+								<p:inputText type="hidden" value="#{item.id}" id="userId"/>
+					
+						</p:column>
+						
+					</p:dataTable>
+					
+				</h:form>									
+		</h:panelGrid>
 		
+		<h:form rendered="#{!userBean.validateSessionAdmin()}">
+			<ui:include src="/WEB-INF/facelets/templates/error.xhtml"/>
+		</h:form>
 	</ui:define>
 </ui:composition>

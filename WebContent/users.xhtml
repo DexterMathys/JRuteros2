@@ -15,66 +15,70 @@
 	</ui:define>
 	
 	<ui:define name="body" >
-					<h1><p:outputLabel value="Usuarios" /></h1>
-					<p:separator/>
-					
-						<p class="well">Aquí puedes <b>habilitar/desabilitar Usuarios</b> del sistema y ver <b>estadísticas Globales y Particulares</b> de cada usuario.</p>
+		<h:panelGrid rendered="#{userBean.validateSessionAdmin()}">
+		<h:form>
+			<h1><p:outputLabel value="Usuarios" /></h1>
+			<p:separator/>
+			
+				<p class="well">Aquí puedes <b>habilitar/desabilitar Usuarios</b> del sistema y ver <b>estadísticas Globales y Particulares</b> de cada usuario.</p>
+								
+					<p:dataTable id="tablaUsuarios" var="item" value="#{userBean.users}" widgetVar="usersTable" emptyMessage="No se encuentra ningun Usuario" paginator="true" rows="5"
+					 			 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					 			 rowsPerPageTemplate="5,10,15" filteredValue="#{userBean.filteredUsers}">
+						<f:facet name="header">
+				            <p:outputPanel>
+				                <h:outputText value="Buscar:" />
+				                <p:inputText id="globalFilter" onkeyup="PF('usersTable').filter()" style="width:150px" placeholder=""/>
+				            	<p:commandLink title="Estadísticas globales" alt="Estadísticas globales" action="#{userBean.statistics(null)}" style="float:right" styleClass="btn btn-info">
+				            		<i class="fa fa-bar-chart" title="Estadísticas globales" alt="Estadísticas globales"/> Globales
+				            	</p:commandLink>
+				            </p:outputPanel>
+				        </f:facet>
 						
-						<h:form>
+						<p:column headerText="Usuario" filterBy="#{item.userName}" filterMatchMode="contains" sortBy="#{item.userName}">
+							<p:outputLabel value="#{item.userName}" />
+						</p:column>
 						
-							<p:dataTable id="tablaUsuarios" var="item" value="#{userBean.users}" widgetVar="usersTable" emptyMessage="No se encuentra ningun Usuario" paginator="true" rows="5"
-							 			 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							 			 rowsPerPageTemplate="5,10,15" filteredValue="#{userBean.filteredUsers}">
-								<f:facet name="header">
-						            <p:outputPanel>
-						                <h:outputText value="Buscar:" />
-						                <p:inputText id="globalFilter" onkeyup="PF('usersTable').filter()" style="width:150px" placeholder=""/>
-						            	<p:commandLink title="Estadísticas globales" alt="Estadísticas globales" action="#{userBean.statistics(null)}" style="float:right" styleClass="btn btn-info">
-						            		<i class="fa fa-bar-chart" title="Estadísticas globales" alt="Estadísticas globales"/> Globales
-						            	</p:commandLink>
-						            </p:outputPanel>
-						        </f:facet>
-								
-								<p:column headerText="Usuario" filterBy="#{item.userName}" filterMatchMode="contains" sortBy="#{item.userName}">
-									<p:outputLabel value="#{item.userName}" />
-								</p:column>
-								
-								<p:column headerText="Nombre" filterBy="#{item.name}" filterMatchMode="contains" sortBy="#{item.name}">
-									<p:outputLabel value="#{item.name}" />
-								</p:column>
-								
-								<p:column headerText="Apellido" filterBy="#{item.lastName}" filterMatchMode="contains" sortBy="#{item.lastName}">
-									<p:outputLabel value="#{item.lastName}" />
-								</p:column>
-								
-								<p:column headerText="Email" filterBy="#{item.email}" filterMatchMode="contains" sortBy="#{item.email}">
-									<p:outputLabel value="#{item.email}" />
-								</p:column>
-								
-								<p:column headerText="Rol" filterBy="#{item.roll}" filterMatchMode="contains" sortBy="#{item.roll}">
-									<p:outputLabel value="#{item.roll}" />
-								</p:column>
-								
-								<p:column headerText="Estado" filterBy="#{item.getEstado()}" filterMatchMode="contains" sortBy="#{item.getEstado()}">
-									<p:outputLabel value="#{item.getEstado()}" />
-								</p:column>
-								
-								<p:column headerText="Accion">
-										<p:commandLink action="#{userBean.toggle(item)}" rendered="#{!(item.active)}" update="tablaUsuarios" styleClass="btn btn-success">
-											<i class="fa fa-check" title="Habilitar"/>
-										</p:commandLink>
-										<p:commandLink action="#{userBean.toggle(item)}" rendered="#{(item.active)}" update="tablaUsuarios" styleClass="btn btn-danger">
-											<i class="fa fa-close" title="Deshabilitar"/>
-										</p:commandLink>
-										<p:commandLink action="#{userBean.statistics(item)}" styleClass="btn btn-info">
-											<i class="fa fa-bar-chart" title="Estadísticas"/>
-										</p:commandLink>
-										<p:inputText type="hidden" value="#{item.id}" id="userId"/>
-								</p:column>
-								
-							</p:dataTable>
-							
-						</h:form>					
+						<p:column headerText="Nombre" filterBy="#{item.name}" filterMatchMode="contains" sortBy="#{item.name}">
+							<p:outputLabel value="#{item.name}" />
+						</p:column>
+						
+						<p:column headerText="Apellido" filterBy="#{item.lastName}" filterMatchMode="contains" sortBy="#{item.lastName}">
+							<p:outputLabel value="#{item.lastName}" />
+						</p:column>
+						
+						<p:column headerText="Email" filterBy="#{item.email}" filterMatchMode="contains" sortBy="#{item.email}">
+							<p:outputLabel value="#{item.email}" />
+						</p:column>
+						
+						<p:column headerText="Rol" filterBy="#{item.roll}" filterMatchMode="contains" sortBy="#{item.roll}">
+							<p:outputLabel value="#{item.roll}" />
+						</p:column>
+						
+						<p:column headerText="Estado" filterBy="#{item.getEstado()}" filterMatchMode="contains" sortBy="#{item.getEstado()}">
+							<p:outputLabel value="#{item.getEstado()}" />
+						</p:column>
+						
+						<p:column headerText="Accion">
+								<p:commandLink action="#{userBean.toggle(item)}" rendered="#{!(item.active)}" update="tablaUsuarios" styleClass="btn btn-success">
+									<i class="fa fa-check" title="Habilitar"/>
+								</p:commandLink>
+								<p:commandLink action="#{userBean.toggle(item)}" rendered="#{(item.active)}" update="tablaUsuarios" styleClass="btn btn-danger">
+									<i class="fa fa-close" title="Deshabilitar"/>
+								</p:commandLink>
+								<p:commandLink action="#{userBean.statistics(item)}" styleClass="btn btn-info">
+									<i class="fa fa-bar-chart" title="Estadísticas"/>
+								</p:commandLink>
+								<p:inputText type="hidden" value="#{item.id}" id="userId"/>
+						</p:column>
+						
+					</p:dataTable>
+				</h:form>	
+		</h:panelGrid>
+		
+		<h:form rendered="#{!userBean.validateSessionAdmin()}">
+			<ui:include src="/WEB-INF/facelets/templates/error.xhtml"/>
+		</h:form>					
 			
 	</ui:define>
 	
