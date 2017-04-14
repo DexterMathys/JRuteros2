@@ -22,17 +22,17 @@
 		
 		<p class="well">Aquí puedes ver <b>datos estadísticos</b> de los <b>usuarios</b> del sistema</p>
 			
-			<p:chart type="bar" styleClass="well" model="#{userBean.animatedModel1}" style="width:1000px;" responsive="true"/>
+			<p:chart rendered="#{userBean.tieneRutasPublicas}" type="bar" styleClass="well" model="#{userBean.animatedModel1}" style="width:1000px;" responsive="true"/>
 		
-			<h:panelGrid columns="2" columnClasses="left,right" style="width:100%">
+			<h:panelGrid rendered="#{userBean.tieneRutas}" columns="2" columnClasses="left,right" style="width:100%">
 			    <p:chart type="pie" model="#{userBean.pieModel1}" styleClass="well" style="width:400px;height:300px" />
              
 				<p:chart type="pie" model="#{userBean.pieModel2}" styleClass="well" style="width:400px;height:300px" />
 			</h:panelGrid>
 		    
-		    
-		    <p:chart rendered="#{userBean.userStatistics == null}" styleClass="well" type="bar" model="#{userBean.animatedModel2}" style="width:1000px;" responsive="true"/>
-		
+		    <h:panelGrid rendered="#{userBean.tieneRutas}">
+		    	<p:chart rendered="#{userBean.userStatistics == null}" styleClass="well" type="bar" model="#{userBean.animatedModel2}" style="width:1000px;" responsive="true"/>
+			</h:panelGrid>
 	</ui:define>
 	
 </ui:composition>

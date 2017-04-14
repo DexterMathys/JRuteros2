@@ -318,4 +318,26 @@ public class RouteDaoImp implements RouteDao {
 
 	}
 
+	@Override
+	public List<Route> listarPublicas(Long id) {
+		List<Route> rutas = null;
+
+		s = HibernateUtil.sessionFactory.openSession();
+		Transaction t = s.beginTransaction();
+		String hql = "FROM Route r WHERE isPublic = 1 AND user_id = " + id;
+		try {
+			rutas = s.createQuery(hql).list();
+			t.commit();
+			// s.close();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			t.rollback();
+		} finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+		return rutas;
+	}
+
 }

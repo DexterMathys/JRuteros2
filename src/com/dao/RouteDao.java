@@ -39,4 +39,6 @@ public interface RouteDao {
 
 	public List<Route> rutasUserActividad(User user, Activity activity);
 
+	public List<Route> listarPublicas(Long id);
+
 }

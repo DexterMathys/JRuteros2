@@ -51,9 +51,27 @@ public class UserBean {
 	private BarChartModel animatedModel2;
 	private PieChartModel pieModel1;
 	private PieChartModel pieModel2;
+	private boolean tieneRutas;
+	private boolean tieneRutasPublicas;
 
 	public UserBean() {
 		this.users = (userDao.listarUsers());
+	}
+
+	public boolean isTieneRutasPublicas() {
+		return tieneRutasPublicas;
+	}
+
+	public void setTieneRutasPublicas(boolean tieneRutasPublicas) {
+		this.tieneRutasPublicas = tieneRutasPublicas;
+	}
+
+	public boolean isTieneRutas() {
+		return tieneRutas;
+	}
+
+	public void setTieneRutas(boolean tieneRutas) {
+		this.tieneRutas = tieneRutas;
 	}
 
 	public BarChartModel getAnimatedModel1() {
@@ -90,11 +108,25 @@ public class UserBean {
 	}
 
 	private void createAnimatedModels() {
-		createBarModel1();
-		createBarModel2();
 
-		createPieModel1();
-		createPieModel2();
+		RouteDaoImp routeDao = new RouteDaoImp();
+		List<Route> routes = routeDao.listar();
+		if (routes.size() > 0) {
+			this.tieneRutas = true;
+			List<Route> public_routes = routeDao.listarPublicas();
+			if (public_routes.size() > 0) {
+				this.tieneRutasPublicas = true;
+				createBarModel1();
+			} else {
+				this.tieneRutasPublicas = false;
+			}
+			createBarModel2();
+			createPieModel1();
+			createPieModel2();
+		} else {
+			this.tieneRutas = false;
+			this.tieneRutasPublicas = false;
+		}
 	}
 
 	private void createBarModel1() {
@@ -168,7 +200,7 @@ public class UserBean {
 
 	private BarChartModel initBarModel1() {
 
-		List<Route> routes = new RouteDaoImp().listarSinActivity();
+		List<Route> routes = new RouteDaoImp().listarPublicas();
 		RouteDaoImp routeDao = new RouteDaoImp();
 
 		BarChartModel model = new BarChartModel();
@@ -523,10 +555,23 @@ public class UserBean {
 	}
 
 	private void createAnimatedModels(User user) {
-		createBarModel1(user);
-
-		createPieModel1(user);
-		createPieModel2(user);
+		RouteDaoImp routeDao = new RouteDaoImp();
+		List<Route> routes = routeDao.listar(user.getId());
+		if (routes.size() > 0) {
+			this.tieneRutas = true;
+			List<Route> public_routes = routeDao.listarPublicas(user.getId());
+			if (public_routes.size() > 0) {
+				this.tieneRutasPublicas = true;
+				createBarModel1(user);
+			} else {
+				this.tieneRutasPublicas = false;
+			}
+			createPieModel1(user);
+			createPieModel2(user);
+		} else {
+			this.tieneRutas = false;
+			this.tieneRutasPublicas = false;
+		}
 	}
 
 	private void createPieModel2(User user) {
@@ -585,7 +630,7 @@ public class UserBean {
 	}
 
 	private BarChartModel initBarModel1(User user) {
-		List<Route> routes = new RouteDaoImp().listarSinActividad(user.getId());
+		List<Route> routes = new RouteDaoImp().listarPublicas(user.getId());
 		RouteDaoImp routeDao = new RouteDaoImp();
 
 		BarChartModel model = new BarChartModel();
