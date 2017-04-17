@@ -15,40 +15,45 @@
 	</ui:define>
 	
 	<ui:define name="body">
-		<div class="container-fluid">
-			<h1><p:outputLabel value="Editar Perfil" /></h1>
-			
-			<p:separator/>
-			
-			<p class="well">Completa todos los campos y luego presiona <b>Confirmar</b> para modificar tu perfil</p>
-			
-			<h:form>
-				<ui:include src="/WEB-INF/facelets/forms/userForm.xhtml"/>
+		<h:panelGrid style="width: 100%" rendered="#{userBean.validateSessionUser()}">
+			<div class="container-fluid">
+				<h:form>
+				<h1><p:outputLabel value="Editar Perfil" /></h1>
+				</h:form>
+				<p:separator/>
 				
-				<br />
-				<p class="well">Si desea modificar su clave, por favor complete los siguientes campos y presione <b>Confirmar</b></p>
-				<p:panelGrid columns="2">
+				<p class="well">Completa todos los campos y luego presiona <b>Confirmar</b> para modificar tu perfil</p>
 				
-					<p:outputLabel value="Clave actual"/>
-					<p:password value="#{userBean.currentPass}"/>
+				<h:form>
+					<ui:include src="/WEB-INF/facelets/forms/userForm.xhtml"/>
 					
-					<p:outputLabel value="Clave nueva"/>
-					<p:password label="Clave nueva" value="#{userBean.newPass}"/>
+					<br />
+					<p class="well">Si desea modificar su clave, por favor complete los siguientes campos y presione <b>Confirmar</b></p>
+					<p:panelGrid columns="2">
 					
-					<p:outputLabel value="Repetir clave nueva"/>
-					<p:password label="Repetir clave nueva" value="#{userBean.confirmPass}"/>
-				
-				</p:panelGrid>
-				<br />
-				<p:commandLink action="#{userBean.modificar()}">
-					<span class="btn btn-success btn-lg"><i class="fa fa-check" aria-hidden="true"></i> Confirmar</span>
-				</p:commandLink>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<h:link class="btn btn-danger btn-lg" outcome="index">
-					<span><i class="fa fa-times" aria-hidden="true"></i> Cancelar</span>
-				</h:link>
- 			</h:form>
-		</div>
+						<p:outputLabel value="Clave actual"/>
+						<p:password value="#{userBean.currentPass}"/>
+						
+						<p:outputLabel value="Clave nueva"/>
+						<p:password label="Clave nueva" value="#{userBean.newPass}"/>
+						
+						<p:outputLabel value="Repetir clave nueva"/>
+						<p:password label="Repetir clave nueva" value="#{userBean.confirmPass}"/>
+					
+					</p:panelGrid>
+					<br />
+					<p:commandButton icon="fa fa-check" styleClass="btn btn-success btn-lg" value="Confirmar" action="#{userBean.modificar()}" />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<h:link class="btn btn-danger" outcome="index">
+						<span><i class="fa fa-times" aria-hidden="true"></i> Cancelar</span>
+					</h:link>
+	 			</h:form>
+			</div>
+		</h:panelGrid>
+		
+		<h:form rendered="#{!userBean.validateSessionUser()}">
+			<ui:include src="/WEB-INF/facelets/templates/error.xhtml"/>
+		</h:form>
 	</ui:define>
 
 </ui:composition>

@@ -15,42 +15,52 @@
 	</ui:define>
 	
 	<ui:define name="body">
-		<div class="container-fluid">
-			<h1><p:outputLabel value="Nueva Ruta" /></h1>
-			
-			<p:separator/>
-			
-			<p class="well">Completa todos los campos y luego presiona <b>Confirmar</b> para agregar la ruta</p>
-			
-			<h:form method="post" enctype="multipart/form-data" >
-				<ui:include src="/WEB-INF/facelets/forms/routeForm.xhtml"/>
-			    				
-				<div class="row inline">
-					<div class="col-xs-4">
-						<p:fileUpload mode="simple" value="#{routeBean.uploadedFile}" />
-					</div>
-					<div class="col-xs-2">
-						(máximo 650kb por foto)
-					</div>		
-					<div class="col-xs-2">
-						<p:commandButton value="Añadir foto" action="#{routeBean.uploadPhoto()}" ajax="false" />
-					</div>
-				</div>
-								
-				<br></br>			
-				 <h:commandButton styleClass="btn btn-success btn-lg" value="Agregar" action="#{routeBean.add()}"/>	
+		<h:panelGroup style="width: 100%" rendered="#{userBean.validateSessionUser()}">
+			<div class="container-fluid">
+				<h:form>
+					<h1><p:outputLabel value="Nueva Ruta" /></h1>
+				</h:form>
 				
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<h:link class="btn btn-danger btn-lg" outcome="index">
-					<span><i class="fa fa-times" aria-hidden="true"></i> Cancelar</span>
-				</h:link>
- 			</h:form>
-		</div>
-		<script type="text/javascript">
+				<p:separator/>
+				
+				<p class="well">Completa todos los campos y luego presiona <b>Confirmar</b> para agregar la ruta</p>
+				
+				<h:form method="post" enctype="multipart/form-data" >
+					<ui:include src="/WEB-INF/facelets/forms/routeForm.xhtml"/>
+				    				
+					<div class="row inline">
+						<div class="col-xs-4">
+							<p:fileUpload mode="simple" value="#{routeBean.uploadedFile}" />
+						</div>
+						<div class="col-xs-2">
+							(máximo 650kb por foto)
+						</div>		
+						<div class="col-xs-2">
+							<p:commandButton icon="fa fa-plus" value="Foto" action="#{routeBean.uploadPhoto()}" ajax="false" />
+						</div>
+					</div>
+									
+					<br></br>			
+					<h:commandButton styleClass="btn btn-success btn-lg"  value="Confirmar" action="#{routeBean.add()}"/>	
+					
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<h:link class="btn btn-danger btn-lg" outcome="index">
+						<span>Cancelar</span>
+					</h:link>
+	 			</h:form>
+			</div>
+			
+			<script type="text/javascript">
 				$( document ).ready(function() {
 					initMap();
 				});
-	</script>
+			</script>
+			
+		</h:panelGroup>
+		
+		<h:form rendered="#{!userBean.validateSessionUser()}">
+			<ui:include src="/WEB-INF/facelets/templates/error.xhtml"/>
+		</h:form>
 	</ui:define>
 	
 

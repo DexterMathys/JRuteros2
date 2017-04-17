@@ -107,6 +107,15 @@ public class UserBean {
 		}
 	}
 
+	public boolean validateSessionUser() {
+		User us = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("user");
+		if (us != null && !us.isAdmin()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	private void createAnimatedModels() {
 
 		RouteDaoImp routeDao = new RouteDaoImp();
@@ -530,6 +539,9 @@ public class UserBean {
 	}
 
 	public String getMenu() {
+		if (!this.validateSession()) {
+			return "";
+		}
 		if (this.user.isAdmin()) {
 			return "/WEB-INF/facelets/menus/adminMenu.xhtml";
 		} else {

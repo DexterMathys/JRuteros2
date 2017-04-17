@@ -11,21 +11,20 @@
 	</ui:define>
 	
 	<ui:define name="body">
-		<h1><p:outputLabel>Felicidades!</p:outputLabel></h1>
-		<p:separator></p:separator>
-			<p class="alert alert-success">Tu registro ha sido exitoso.<br></br>
-			Tu nombre de usuario es <b><p:outputLabel value="#{userBean.user.userName}"/></b> y tu clave es <b><p:outputLabel value="#{userBean.user.password}"/></b><br></br>
-			Ahora puedes <b>acceder</b> para ver todo el contenido de nuestro sitio o <b>salir</b> y volver más tarde.</p>
-		<br></br>
-		<h:form>
-		
-			<p:commandLink action="#{userBean.verificarDatos()}">
-				<span class="btn btn-success btn-lg"><i class="fa fa-sign-in" aria-hidden="true"></i> Acceder</span>
-			</p:commandLink>
-			<p:commandLink action="#{userBean.logout()}">
-				<span class="btn btn-danger btn-lg"><i class="fa fa-sign-out" aria-hidden="true"></i> Salir</span>
-			</p:commandLink>
-		 </h:form>
+			<h:form>
+			<h1><p:outputLabel>Felicidades!</p:outputLabel></h1>
+			</h:form>
+			<p:separator></p:separator>
+				<p class="alert alert-success">Tu registro ha sido exitoso.<br></br>
+				Tu nombre de usuario es <b><p:outputLabel value="#{userBean.user.userName}"/></b> y tu clave es <b><p:outputLabel value="#{userBean.user.password}"/></b><br></br>
+				Ahora puedes <b>acceder</b> para ver todo el contenido de nuestro sitio o <b>salir</b> y volver más tarde.</p>
+			<br></br>
+			<h:form>
+			
+				<p:commandButton styleClass="btn btn-success btn-lg" icon="fa fa-sign-in" value="Acceder" action="#{userBean.verificarDatos()}" />
+				<p:commandButton styleClass="btn btn-danger btn-lg" icon="fa fa-sign-out" value="Salir" action="#{userBean.logout()}" />
+			 </h:form>
+
 	</ui:define>
 
 </ui:composition>

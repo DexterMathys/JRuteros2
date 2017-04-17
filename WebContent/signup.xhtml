@@ -12,8 +12,9 @@
 	
 	<ui:define name="body">
 		<div class="container-fluid">
+			<h:form>
 			<h1><p:outputLabel value="Registrarse" /></h1>
-			
+			</h:form>
 			<p:separator/>
 			
 			<p class="well">Completa todos los campos y luego presiona <b>Registrar</b> para crear tu cuenta</p><br></br>
@@ -22,9 +23,7 @@
 				<ui:include src="/WEB-INF/facelets/forms/userForm.xhtml"/>
 				<br></br>
 				
-				<p:commandLink action="#{userBean.registrar()}">
-					<span class="btn btn-success btn-lg"><i class="fa fa-upload" aria-hidden="true"></i> Registrar</span>
-				</p:commandLink>
+				<p:commandButton styleClass="btn btn-success btn-lg" value="Registrar" action="#{userBean.registrar()}" icon="fa fa-upload" />
  				<br /><br/>
  				<b>Si ya tienes cuenta <h:link value="inicia sesión!" outcome="login" /></b> 
 			</h:form>

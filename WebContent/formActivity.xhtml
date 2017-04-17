@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
       <title>Actividad</title>
     </h:head>
 	
-<h:body>
-<p:messages id="message" showDetail="true" autoUpdate="true" closable="true" styleClass="text-center" />
-		<h:form>
-			<fieldset>
-				<h:panelGrid>
-					<p:outputLabel value="Nombre"/>
-					<!-- Text input-->
-					<p:inputText name="name" value="#{activityBean.activity.name}" />
-					<p:commandButton value="Actualizar" rendered="#{activityBean.activity.id != null eq true }" actionListener="#{activityBean.update(activityBean.activity)}" styleClass="btn btn-success" />
-					<p:commandButton value="Crear" rendered="#{activityBean.activity.id == null eq true }" actionListener="#{activityBean.add()}" styleClass="btn btn-success" />
-				</h:panelGrid>
-			</fieldset>
-        </h:form>
+	<h:body>
+		<h:panelGrid style="width: 100%" rendered="#{userBean.validateSessionAdmin()}">
+			<p:messages id="message" showDetail="true" autoUpdate="true" closable="true" styleClass="text-center" />
+			<h:form>
+				<fieldset>
+					<h:panelGrid>
+						<p:outputLabel value="Nombre"/>
+						<!-- Text input-->
+						<p:inputText name="name" value="#{activityBean.activity.name}" />
+						<p:commandButton icon="fa fa-check" value="Actualizar" rendered="#{activityBean.activity.id != null eq true }" actionListener="#{activityBean.update(activityBean.activity)}" styleClass="btn btn-success" />
+						<p:commandButton icon="fa fa-check" value="Crear" rendered="#{activityBean.activity.id == null eq true }" actionListener="#{activityBean.add()}" styleClass="btn btn-success" />
+					</h:panelGrid>
+				</fieldset>
+	        </h:form>
+	    </h:panelGrid>
+		
+		<h:form rendered="#{!userBean.validateSessionAdmin()}">
+			<ui:include src="/WEB-INF/facelets/templates/error.xhtml"/>
+		</h:form>
    </h:body>
 </html>

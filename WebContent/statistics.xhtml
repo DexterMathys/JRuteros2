@@ -16,11 +16,24 @@
 	
 	<ui:define name="body" >
 		
-		<h1><p:outputLabel value="Estadísticas" /><p:outputLabel value="&nbsp;de #{userBean.userStatistics.userName}" rendered="#{userBean.userStatistics != null}" /></h1>
-		
-		<p:separator/>
-		
-		<p class="well">Aquí puedes ver <b>datos estadísticos</b> de los <b>usuarios</b> del sistema</p>
+		<h:panelGrid style="width: 100%" rendered="#{userBean.validateSessionAdmin()}">
+			<h:form>
+				<h1><p:outputLabel value="Estadísticas" /><p:outputLabel value="&nbsp;de #{userBean.userStatistics.userName}" rendered="#{userBean.userStatistics != null}" /></h1>
+			</h:form>
+			
+			<p:separator/>
+			
+			<p class="well">Aquí puedes ver <b>datos estadísticos</b> de los <b>usuarios</b> del sistema</p>
+			
+			<h:panelGrid rendered="#{!userBean.tieneRutas}">
+				<p class="well">No se encontraron rutas.</p>
+			</h:panelGrid>
+			
+			<h:panelGrid rendered="#{userBean.tieneRutas}">
+				<h:panelGrid rendered="#{!userBean.tieneRutasPublicas}">
+					<p class="well">No se encontraron rutas públicas.</p>
+				</h:panelGrid>
+			</h:panelGrid>
 			
 			<p:chart rendered="#{userBean.tieneRutasPublicas}" type="bar" styleClass="well" model="#{userBean.animatedModel1}" style="width:1000px;" responsive="true"/>
 		
@@ -33,6 +46,11 @@
 		    <h:panelGrid rendered="#{userBean.tieneRutas}">
 		    	<p:chart rendered="#{userBean.userStatistics == null}" styleClass="well" type="bar" model="#{userBean.animatedModel2}" style="width:1000px;" responsive="true"/>
 			</h:panelGrid>
+		</h:panelGrid>
+		
+		<h:form rendered="#{!userBean.validateSessionAdmin()}">
+			<ui:include src="/WEB-INF/facelets/templates/error.xhtml"/>
+		</h:form>
 	</ui:define>
 	
 </ui:composition>

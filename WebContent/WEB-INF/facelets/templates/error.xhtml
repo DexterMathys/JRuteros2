@@ -6,8 +6,6 @@
 		<p:outputLabel value="Oops! No tienes los permisos necesarios para acceder."/>
 	</h1>
 	<p:separator/>
-	<p:commandLink action="#{userBean.volverInicio()}">
-		<span class="btn btn-success btn-lg"><i class="fa fa-arrow-left" aria-hidden="true"></i> Volver al Inicio</span>
-	</p:commandLink>
+	<p:commandButton styleClass="btn btn-success btn-lg" icon="fa fa-arrow-left" value="Volver al Inicio" action="#{userBean.volverInicio()}" />
      
 </div>

@@ -15,149 +15,156 @@
 	</ui:define>
 	
 	<ui:define name="body">
-		<div class="container-fluid">
-			<h1><p:outputLabel value="Ruta #{routeBean.route.name}, de #{routeBean.route.user.userName}" /></h1>
-			
-			<p:separator/>
-			
-			<p:messages  showDetail="true" autoUpdate="true" closable="true" globalOnly="true" />
-			<div class="row">
-				<div class="well col-md-8">#{routeBean.route.description}</div>
+		<h:panelGroup style="width: 100%" rendered="#{userBean.validateSessionUser()}">
+			<div class="container-fluid">
+				<h:form>
+				<h1><p:outputLabel value="Ruta #{routeBean.route.name}, de #{routeBean.route.user.userName}" /></h1>
+				</h:form>
+				<p:separator/>
 				
-				<div class="col-lg-4">
-					<h:form id="acciones" styleClass="pull-right">
-						 <div class="col-lg-6">	
-						 	<div>
-							 	<p:rating value="#{routeBean.score}" rendered="#{!routeBean.existePuntaje()}" styleClass="" />
-							 	<p:rating value="#{routeBean.score}" disabled="true" rendered="#{routeBean.existePuntaje()}" styleClass="" />
+				<p:messages  showDetail="true" autoUpdate="true" closable="true" globalOnly="true" />
+				<div class="row">
+					<div class="well col-md-8">#{routeBean.route.description}</div>
+					
+					<div class="col-lg-4">
+						<h:form id="acciones" styleClass="pull-right">
+							 <div class="col-lg-6">	
+							 	<div>
+								 	<p:rating value="#{routeBean.score}" rendered="#{!routeBean.existePuntaje()}" styleClass="" />
+								 	<p:rating value="#{routeBean.score}" disabled="true" rendered="#{routeBean.existePuntaje()}" styleClass="" />
+								</div>
+								<br />
+								<div>
+									<p:outputLabel value="Puntaje promedio: #{routeBean.scorePromedio}" rendered="#{routeBean.existePuntaje()}"/>
+									<p:commandLink styleClass="" rendered="#{!routeBean.existePuntaje()}" update="acciones" action="#{routeBean.puntuar()}">
+										<span class="btn btn-warning"><i class="fa fa-star" aria-hidden="true"></i> Puntuar</span>
+									</p:commandLink>
+								</div>
 							</div>
-							<br />
-							<div>
-								<p:outputLabel value="Puntaje promedio: #{routeBean.scorePromedio}" rendered="#{routeBean.existePuntaje()}"/>
-								<p:commandLink styleClass="" rendered="#{!routeBean.existePuntaje()}" update="acciones" action="#{routeBean.puntuar()}">
-									<span class="btn btn-warning"><i class="fa fa-star" aria-hidden="true"></i> Puntuar</span>
+							<div class="col-lg-6">
+								<span class="pull-right"><i class="fa fa-users" aria-hidden="true"></i> <p:outputLabel value="#{routeBean.cantUsers()}"/></span>
+								<br />
+								<p:commandLink styleClass="" action="#{routeBean.hacerRuta()}" update="acciones" rendered="#{!routeBean.existeRutaHecha()}">
+									<span class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i> Hice esta Ruta</span>
+								</p:commandLink>
+								<p:commandLink styleClass="" update="acciones" rendered="#{routeBean.existeRutaHecha()}">
+									<span class="btn btn-success disabled"><i class="fa fa-check" aria-hidden="true"></i> Ruta realizada</span>
 								</p:commandLink>
 							</div>
-						</div>
-						<div class="col-lg-6">
-							<span class="pull-right"><i class="fa fa-users" aria-hidden="true"></i> <p:outputLabel value="#{routeBean.cantUsers()}"/></span>
-							<br />
-							<p:commandLink styleClass="" action="#{routeBean.hacerRuta()}" update="acciones" rendered="#{!routeBean.existeRutaHecha()}">
-								<span class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i> Hice esta Ruta</span>
-							</p:commandLink>
-							<p:commandLink styleClass="" update="acciones" rendered="#{routeBean.existeRutaHecha()}">
-								<span class="btn btn-success disabled"><i class="fa fa-check" aria-hidden="true"></i> Ruta realizada</span>
-							</p:commandLink>
-						</div>
-					</h:form>  
+						</h:form>  
+					</div>
 				</div>
-			</div>
-			
-			<h:form>
-				<p:galleria value="#{routeBean.images}" var="image" showCaption="true" autoPlay="true" rendered="#{routeBean.images.size() > 0}">
-				        <p:graphicImage value="#{routeBean.myImage}" title="#{image}" width="600" height="450">
-				            <f:param name="imagename" value="#{image}" />
-				        </p:graphicImage>
-				</p:galleria>
-				<p:panelGrid columns="2">
-				 	
-				 	<p:column>
-				 	<p:outputLabel value="Privacidad"/>
-				 	</p:column>
-				 	<p:column>
-				 		<p:outputLabel value="#{routeBean.route.getPrivacidad()}" />	 	
-				 	</p:column>
-				 	
-				 	<p:column>
-				 	<p:outputLabel value="Recorrido"/>
-				 	</p:column>
-				 	<p:column>
-				 		<div id="show_map"  style="width:500px;height:380px;"></div>
-				 		<div id="route_points">
-				 			<input type="hidden" name="points" id="points"  value="#{routeBean.getPoints()}"/>
-				 		</div>
-				 	</p:column>
-				 	
-					<p:column>
-				 	<p:outputLabel value="Formato"/>
-				 	</p:column>
-				 	<p:column>
-				 		<p:outputLabel id="format" value="#{routeBean.route.getFormato()}" />	
-				 	</p:column>
-				 	
-				 	<p:column>
-				 	<p:outputLabel value="Distancia"/>
-				 	</p:column>
-				 	<p:column>
-						<p:outputLabel id="distance" value="#{routeBean.route.distance} Metros"/>
-				 	</p:column>
-				 	
-				 	<p:column>
-				 	<p:outputLabel value="Dificultad"/>
-				 	</p:column>
-				 	<p:column>
-				 		<p:outputLabel id="difficulty" value="#{routeBean.route.difficulty}"/>
-				 	</p:column>
-				 	
-				 	<p:column>
-				 	 
-				 	<p:outputLabel value="Actividad"/>
-				 	</p:column>
-				 	<p:column>
-						<p:outputLabel id="activity" value="#{routeBean.route.activity.name}"/>
-				 	</p:column>
-				 	 
-				 	<p:column>
-				 	<p:outputLabel value="Tiempo estimado"/>
-				 	</p:column>
-				 	<p:column>
-						<p:outputLabel id="hours" value="#{routeBean.hours} Horas &nbsp;" />
-						
-						<p:outputLabel id="minutes" value="#{routeBean.minutes} Minutos " />		
-				 	</p:column>
-				 	
-				 	<p:column>
-				 	<p:outputLabel value="Fecha de realización"/>
-				 	</p:column>
-				 	<p:column>
-						<p:calendar id="date" showOn="none" readonly="true" value="#{routeBean.date}" pattern="dd/MM/yyyy" />
-				 	</p:column>
-				 	
-				 </p:panelGrid>
-
- 			</h:form>
-		</div>
-		<script type="text/javascript">
-
-		var mapProp = {
-				center : new google.maps.LatLng(-34.9038055, -57.9392111, 18),
-				zoom : 10,
-				mapTypeId : google.maps.MapTypeId.ROADMAP
-			};
-		if (document.getElementById("show_map") != null){
-			var map = new google.maps.Map(document.getElementById("show_map"), mapProp);
-			puntos = [];
-			initPolyline()
-			obtenerMarkers();	
-		}
-//sobre escribe la otra funcion, para no tener los eventos
-		function dibujarMarker(dato) {
-
-			var position = new google.maps.LatLng(dato.lat, dato.lon);
-
-			var marker = new google.maps.Marker({
-				position : position,
-				icon: {
-				      path: google.maps.SymbolPath.CIRCLE,
-				      scale: 3
-				    },
-				id : dato.id
-			});
-
-			puntos[puntos.length] = marker;
-			marker.setMap(map);
-		}
+				
+				<h:form>
+					<p:galleria value="#{routeBean.images}" var="image" showCaption="true" autoPlay="true" rendered="#{routeBean.images.size() > 0}">
+					        <p:graphicImage value="#{routeBean.myImage}" title="#{image}" width="600" height="450">
+					            <f:param name="imagename" value="#{image}" />
+					        </p:graphicImage>
+					</p:galleria>
+					<p:panelGrid columns="2">
+					 	
+					 	<p:column>
+					 	<p:outputLabel value="Privacidad"/>
+					 	</p:column>
+					 	<p:column>
+					 		<p:outputLabel value="#{routeBean.route.getPrivacidad()}" />	 	
+					 	</p:column>
+					 	
+					 	<p:column>
+					 	<p:outputLabel value="Recorrido"/>
+					 	</p:column>
+					 	<p:column>
+					 		<div id="show_map"  style="width:500px;height:380px;"></div>
+					 		<div id="route_points">
+					 			<input type="hidden" name="points" id="points"  value="#{routeBean.getPoints()}"/>
+					 		</div>
+					 	</p:column>
+					 	
+						<p:column>
+					 	<p:outputLabel value="Formato"/>
+					 	</p:column>
+					 	<p:column>
+					 		<p:outputLabel id="format" value="#{routeBean.route.getFormato()}" />	
+					 	</p:column>
+					 	
+					 	<p:column>
+					 	<p:outputLabel value="Distancia"/>
+					 	</p:column>
+					 	<p:column>
+							<p:outputLabel id="distance" value="#{routeBean.route.distance} Metros"/>
+					 	</p:column>
+					 	
+					 	<p:column>
+					 	<p:outputLabel value="Dificultad"/>
+					 	</p:column>
+					 	<p:column>
+					 		<p:outputLabel id="difficulty" value="#{routeBean.route.difficulty}"/>
+					 	</p:column>
+					 	
+					 	<p:column>
+					 	 
+					 	<p:outputLabel value="Actividad"/>
+					 	</p:column>
+					 	<p:column>
+							<p:outputLabel id="activity" value="#{routeBean.route.activity.name}"/>
+					 	</p:column>
+					 	 
+					 	<p:column>
+					 	<p:outputLabel value="Tiempo estimado"/>
+					 	</p:column>
+					 	<p:column>
+							<p:outputLabel id="hours" value="#{routeBean.hours} Horas &nbsp;" />
+							
+							<p:outputLabel id="minutes" value="#{routeBean.minutes} Minutos " />		
+					 	</p:column>
+					 	
+					 	<p:column>
+					 	<p:outputLabel value="Fecha de realización"/>
+					 	</p:column>
+					 	<p:column>
+							<p:calendar id="date" showOn="none" readonly="true" value="#{routeBean.date}" pattern="dd/MM/yyyy" />
+					 	</p:column>
+					 	
+					 </p:panelGrid>
 		
-	</script>
+					</h:form>
+			</div>
+			<script type="text/javascript">
+
+				var mapProp = {
+						center : new google.maps.LatLng(-34.9038055, -57.9392111, 18),
+						zoom : 10,
+						mapTypeId : google.maps.MapTypeId.ROADMAP
+					};
+				if (document.getElementById("show_map") != null){
+					var map = new google.maps.Map(document.getElementById("show_map"), mapProp);
+					puntos = [];
+					initPolyline()
+					obtenerMarkers();	
+				}
+		//sobre escribe la otra funcion, para no tener los eventos
+				function dibujarMarker(dato) {
+		
+					var position = new google.maps.LatLng(dato.lat, dato.lon);
+		
+					var marker = new google.maps.Marker({
+						position : position,
+						icon: {
+						      path: google.maps.SymbolPath.CIRCLE,
+						      scale: 3
+						    },
+						id : dato.id
+					});
+		
+					puntos[puntos.length] = marker;
+					marker.setMap(map);
+				}
+				
+			</script>
+		</h:panelGroup>
+		
+		<h:form rendered="#{!userBean.validateSessionUser()}">
+			<ui:include src="/WEB-INF/facelets/templates/error.xhtml"/>
+		</h:form>
 	</ui:define>
 </ui:composition>

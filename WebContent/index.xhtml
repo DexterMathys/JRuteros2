@@ -11,39 +11,45 @@
 		</ui:define>
 		
 		<ui:define name="menu">
-	   		<ui:include src="#{userBean.getMenu()}" />	
+			<ui:include src="#{userBean.getMenu()}" />
 		</ui:define>
 		
 		<ui:define name="body">
-			<h:form>
-				<h1>
-					<p:outputLabel value="Bienvenido #{userBean.user.userName}"/>
-				</h1>
+			<h:panelGrid style="width: 100%" rendered="#{userBean.validateSession()}">
+				<h:form>
+					<h1>
+						<p:outputLabel value="Bienvenido #{userBean.user.userName}"/>
+					</h1>
+				</h:form>
+				<p:separator/>
+				<p:messages  showDetail="true" autoUpdate="true" closable="true" globalOnly="true" />
+				
+				<h:panelGrid rendered="#{userBean.validateSessionAdmin()}">
+					<h2>
+						<p:outputLabel value="Como usuario Administrador tienes acceso a las siguientes funciones del sistema:"/>
+						<ul>
+							<li> Administrar Usuarios. </li>
+							<li> Administrar Actividades. </li>
+						</ul>
+					</h2>
+				</h:panelGrid>
+				
+				<h:panelGrid rendered="#{userBean.validateSessionUser()}">
+					<h2>
+						<p:outputLabel value="Como Usuario tienes acceso a las siguientes funciones del sistema:"/>
+						<ul>
+							<li> Crear una nueva ruta. </li>
+							<li> Administrar tus rutas. </li>
+							<li> Buscar rutas públicas. </li>
+							<li> Editar tu perfil de usuario. </li>
+						</ul>
+					</h2>
+				</h:panelGrid>
+			</h:panelGrid>
+		
+			<h:form rendered="#{!userBean.validateSession()}">
+				<ui:include src="/WEB-INF/facelets/templates/error.xhtml"/>
 			</h:form>
-			<p:separator/>
-			<p:messages  showDetail="true" autoUpdate="true" closable="true" globalOnly="true" />
-			
-			<h:panelGrid rendered="#{userBean.validateSessionAdmin()}">
-				<h2>
-					<p:outputLabel value="Como usuario Administrador tienes acceso a las siguientes funciones del sistema:"/>
-					<ul>
-						<li> Administrar Usuarios. </li>
-						<li> Administrar Actividades. </li>
-					</ul>
-				</h2>
-			</h:panelGrid>
-			
-			<h:panelGrid rendered="#{!userBean.validateSessionAdmin()}">
-				<h2>
-					<p:outputLabel value="Como Usuario tienes acceso a las siguientes funciones del sistema:"/>
-					<ul>
-						<li> Crear una nueva ruta. </li>
-						<li> Administrar tus rutas. </li>
-						<li> Buscar rutas públicas. </li>
-						<li> Editar tu perfil de usuario. </li>
-					</ul>
-				</h2>
-			</h:panelGrid>
 		</ui:define>
 	
 </ui:composition>
