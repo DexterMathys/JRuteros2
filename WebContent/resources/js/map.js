@@ -244,3 +244,20 @@ function loadKmlLayer(src, map) {
 	    map: map
 	  });
   }
+
+
+function initShow() {
+	
+	
+	var mapProp = {
+			center : new google.maps.LatLng(-34.9038055, -57.9392111, 18),
+			zoom : 10,
+			mapTypeId : google.maps.MapTypeId.ROADMAP
+		};
+	if (document.getElementById("show_map") != null){
+		map = new google.maps.Map(document.getElementById("show_map"), mapProp);
+		puntos = [];
+		initPolyline()
+		obtenerMarkers();	
+	}
+}

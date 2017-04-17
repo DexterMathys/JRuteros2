@@ -128,20 +128,9 @@
 					 </p:panelGrid>
 		
 					</h:form>
-			</div>
+			</div> 
+			<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPzAnrgQpTj3YyX8IWSEfQEsxn9lcLPwc&amp;callback=initShow"></script> 
 			<script type="text/javascript">
-
-				var mapProp = {
-						center : new google.maps.LatLng(-34.9038055, -57.9392111, 18),
-						zoom : 10,
-						mapTypeId : google.maps.MapTypeId.ROADMAP
-					};
-				if (document.getElementById("show_map") != null){
-					var map = new google.maps.Map(document.getElementById("show_map"), mapProp);
-					puntos = [];
-					initPolyline()
-					obtenerMarkers();	
-				}
 		//sobre escribe la otra funcion, para no tener los eventos
 				function dibujarMarker(dato) {
 		
@@ -159,7 +148,6 @@
 					puntos[puntos.length] = marker;
 					marker.setMap(map);
 				}
-				
 			</script>
 		</h:panelGroup>
 		
