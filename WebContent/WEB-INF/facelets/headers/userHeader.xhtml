@@ -20,31 +20,8 @@
 				<ul class="nav navbar-nav">
 					<!-- User Account: style can be found in dropdown.less -->
 					<li class="dropdown user user-menu">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"> 
-							<span class="hidden-xs">
-								<p:outputLabel value="#{userBean.user.userName}" />
-							</span>
-						</a>
-						<ul class="dropdown-menu">
-							<li class="user-header">
-								<p>
-									<p:outputLabel value="#{userBean.user.name} #{userBean.user.lastName}" />
-									<small>
-										<p:outputLabel value="Perfil Administrador" rendered="#{userBean.user.roll == 'Admin'}" />
-										<p:outputLabel value="Perfil Usuario" rendered="#{userBean.user.roll == 'User'}" />
-									</small>
-								</p>
-							</li>
-							<!-- Menu Footer-->
-							<li class="user-footer">
-								<div class="pull-left">
-									<h:link outcome="editprofile" styleClass="btn btn-success btn-flat" rendered="#{userBean.user.roll == 'User'}">Perfil</h:link>
-								</div>
-								<div class="pull-right">
-									<p:commandButton icon="fa fa-sign-out" value="Salir" styleClass="btn btn-danger btn-flat" action="#{userBean.logout()}" />
-								</div>
-							</li>
-						</ul>
+						<h:link outcome="editprofile" rendered="#{userBean.user.roll == 'User'}"><p:outputLabel value="#{userBean.user.userName}"/></h:link>
+						<h:link rendered="#{userBean.user.roll == 'Admin'}"><p:outputLabel value="Administrador"/></h:link>
 					</li>
 				</ul>
 			</div>

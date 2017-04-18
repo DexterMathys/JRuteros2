@@ -62,12 +62,12 @@
 							<p:outputLabel value="#{item.activity.name}" />
 						</p:column>
 						
-						<p:column headerText="Tiempo estimado" filterBy="#{item.time}" filterMatchMode="contains" sortBy="#{item.time}">
-							<p:outputLabel value="#{item.time}" />
+						<p:column headerText="Puntuación" filterBy="#{routeBean.getPuntuacion(item)}" filterMatchMode="contains" sortBy="#{routeBean.getPuntuacion(item)}">
+							<p:outputLabel value="#{routeBean.getPuntuacion(item)}" />
 						</p:column>
 						
-						<p:column headerText="Fecha de realización" filterBy="#{item.date}" filterMatchMode="contains" sortBy="#{item.date}">
-							<p:calendar value="#{item.date}" pattern="dd-MM-yyyy" readonly="true" showOn="none" />
+						<p:column headerText="Usuarios" filterBy="#{routeBean.getCantUsers(item)}" filterMatchMode="contains" sortBy="#{routeBean.getCantUsers(item)}">
+							<p:outputLabel value="#{routeBean.getCantUsers(item)}" />
 						</p:column>
 											
 						<p:column headerText="Accion">
