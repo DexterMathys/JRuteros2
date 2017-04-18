@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -845,6 +847,34 @@ public class RouteBean {
 				break;
 			}
 		}
+	}
+	
+	public double getPuntuacion(Route r) {
+		List<Routescore> scores = new RoutescoreDaoImp().listar(r.getId());
+		double promedio = 0.0;
+		double suma = 0;
+		for (Routescore routescore : scores) {
+			suma += routescore.getScore();
+		}
+		if (suma > 0) {
+			promedio = suma / scores.size();
+		}
+		DecimalFormat df = new DecimalFormat("#.##");
+		NumberFormat format = NumberFormat.getInstance(Locale.FRANCE);
+		Number number = null;
+		try {
+			number = format.parse(df.format(promedio));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		double d = number.doubleValue();
 
+		return d;
+	}
+
+	public long getCantUsers(Route r) {
+		RouteDaoImp routeDao = new RouteDaoImp();
+		return routeDao.countUsers(r.getId());
 	}
 }
