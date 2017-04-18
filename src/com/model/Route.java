@@ -204,13 +204,14 @@ public class Route implements java.io.Serializable {
 	}
 	
 	public List<Apoint> getPoints(){
-		return getTravel().getApoints();
+		List<Apoint> points = getTravel().getApoints();
+		points.removeIf(Objects::isNull);
+		return points;
 	}
 	
 	public String getPointsToString(){
 		String points = "";
 		List<Apoint> l = getPoints();
-		l.removeIf(Objects::isNull);
 		Iterator<Apoint> itr = l.iterator();
 		Apoint point = itr.next();
 		points = point.getLatitude() + " " +  point.getLonguitude();
@@ -218,7 +219,6 @@ public class Route implements java.io.Serializable {
 	         point = itr.next();
 	         points = points + "," +  point.getLatitude() + " " +  point.getLonguitude();
 	    }
-	    //System.out.println(points);
 		return points ;
 	}
 

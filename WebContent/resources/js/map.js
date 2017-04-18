@@ -24,7 +24,7 @@ function initMap() {
 
 		});
 		puntos = [];
-		initPolyline()
+		initPolyline();
 		obtenerMarkers();
 		
 	}
@@ -60,6 +60,7 @@ function obtenerMarkers() {
 		})
 		
 		dibujarRecorrido();
+		//dibujarRecorridoCircular()
 	}
 	/*$.ajax({
 		type: 'GET',
@@ -99,11 +100,23 @@ function dibujarMarker(dato) {
 		dibujarRecorrido();
 		//quitar del input
 		var removePoint = marker.getPosition().lat() + " " + marker.getPosition().lng();
-		if ($('#points').val().split(",").length > 1 ) {
+		/*if ($('#points').val().split(",").length > 1 ) {
 			removePoint = "," + removePoint;
-		}
-		var points = $('#points').val().replace(removePoint, '');
-		$('#points').val(points);
+		}*/
+		points = $('#points').val().split(",");
+		$.each(points, function( index, apoint ) {
+			console.log(apoint);
+			if (apoint == removePoint){
+				points[index] = null;
+			}
+		})
+		console.log(points);
+		//var points = $('#points').val().replace(removePoint, '');
+		points = jQuery.grep(points, function(n, i){
+			  return (n !== "" && n != null);
+			});
+		console.log(points);
+		$('#points').val(points.join(","));
 		
 	});
 
@@ -145,6 +158,9 @@ function dibujarRecorrido() {
 	drawPuntos = [];
 	for (i = 0; i < puntos.length; i++) { 
 	    drawPuntos[i] =  {lat: puntos[i].position.lat(), lng: puntos[i].position.lng()};
+	}
+	if ($("#is_circular").val() == "true"){
+		drawPuntos[puntos.length] =  {lat: puntos[0].position.lat(), lng: puntos[0].position.lng()};
 	}
 	flightPath.setPath(drawPuntos);
 }
@@ -257,7 +273,7 @@ function initShow() {
 	if (document.getElementById("show_map") != null){
 		map = new google.maps.Map(document.getElementById("show_map"), mapProp);
 		puntos = [];
-		initPolyline()
+		initPolyline();
 		obtenerMarkers();	
 	}
 }
