@@ -83,7 +83,8 @@
 		    <h:form>
 				<fieldset>
 					<h:panelGrid>
-						<p:gmap widgetVar="w_gmap" center="-34.9038055, -57.9392111, 18" zoom="10" type="ROADMAP" style="width:500px;height:380px;" onPointClick="handlePointClick(event);" />
+						<div id="search_map"  style="width:500px;height:380px;"></div>
+						
 						
 						<p:column>
 		 					<p:outputLabel value="Distancia"/>
@@ -116,8 +117,12 @@
 		        } else {
 		            checkGeolocationByLoaderAPI(); // HTML5 not supported! Fall back to Loader API.
 		        }*/
+		    	initSearch()
 		     }
-		
+
+		   
+		    		     
+		/*
 		        function checkGeolocationByHTML5() {
 		            navigator.geolocation.getCurrentPosition(function(position) {
 		                setMapCenter(position.coords.latitude, position.coords.longitude);
@@ -135,7 +140,7 @@
 		        }
 		
 		        function setMapCenter(latitude, longitude) {
-		        	PF('w_gmap').getMap().setCenter(new google.maps.LatLng(latitude, longitude));
+		        	PF('w_gmap').getMap().setCenter(new google.maps.LatLng(latitude, longitude, 18));
 		        }
 		
 		        var rad = function(x) {
@@ -152,13 +157,8 @@
 			      	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 			      	var d = R * c;
 			      	return d; // returns the distance in meter
-		      	}
+		      	}*/
 		
-		        function search(event) {
-		        	console.log("buscar");
-		        	event.latLng.lat();
-		           	event.latLng.lng();
-		        }
 		        var currentMarker = null;
 		        function handlePointClick(event) {
 		        	document.getElementById('lat').value = event.latLng.lat();
@@ -171,7 +171,8 @@
 		            	currentMarker.setPosition(event.latLng);
 		            	
 		            }   
-		        	PF('w_gmap').addOverlay(currentMarker);
+		        	currentMarker.setMap(map)
+		        	//document.getElementById('search_map').addOverlay(currentMarker);
 		        }
 						
 			</script>

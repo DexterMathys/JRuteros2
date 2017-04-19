@@ -277,3 +277,20 @@ function initShow() {
 		obtenerMarkers();	
 	}
 }
+
+
+function initSearch() {
+	
+	
+	var mapProp = {
+			center : new google.maps.LatLng(-34.9038055, -57.9392111, 18),
+			zoom : 10,
+			mapTypeId : google.maps.MapTypeId.ROADMAP
+		};
+	if (document.getElementById("search_map") != null){
+		map = new google.maps.Map(document.getElementById("search_map"), mapProp);
+		map.addListener('click', function(e) {
+			handlePointClick(e);;
+		});
+	}
+}
