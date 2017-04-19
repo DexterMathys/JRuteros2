@@ -762,9 +762,14 @@ public class RouteBean {
 
 	public String searchForPoint() {
 		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-		// String action = params.get("points");
+		
 		this.searchLat = params.get("lat");
 		this.searchLong = params.get("lng");
+		if (this.searchLong == "" || this.searchLat == "" ) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Se debe seleccionar un punto.", ""));
+			return "/publicRoutes.xhtml";
+		}
 		Apoint searchPoint = new Apoint();
 		searchPoint.setLatitude(this.searchLat);
 		searchPoint.setLonguitude(this.searchLong);
@@ -794,6 +799,8 @@ public class RouteBean {
 		}
 
 		this.setRoutes(result);
+		this.searchLat = "";
+		this.searchLong = "";
 		return "/publicRoutes.xhtml";
 	}
 
