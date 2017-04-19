@@ -83,7 +83,7 @@
 		    <h:form>
 				<fieldset>
 					<h:panelGrid>
-						<p:gmap widgetVar="w_gmap" center="-57.9392111, -34.9038055, 18" zoom="10" type="ROADMAP" style="width:500px;height:380px;" onPointClick="handlePointClick(event);" />
+						<p:gmap widgetVar="w_gmap" center="-34.9038055, -57.9392111, 18" zoom="10" type="ROADMAP" style="width:500px;height:380px;" onPointClick="handlePointClick(event);" />
 						
 						<p:column>
 		 					<p:outputLabel value="Distancia"/>
@@ -111,11 +111,11 @@
 		
 		    function loadModal(){
 		    	PF('searchPoint').show();
-		    	if (navigator.geolocation) {
+		    	/*if (navigator.geolocation) {
 		            checkGeolocationByHTML5();
 		        } else {
 		            checkGeolocationByLoaderAPI(); // HTML5 not supported! Fall back to Loader API.
-		        }
+		        }*/
 		     }
 		
 		        function checkGeolocationByHTML5() {
