@@ -55,7 +55,7 @@
 					</div>
 				</div>
 				
-				<h:form>
+				<h:form id="route_form">
 					<p:galleria value="#{routeBean.images}" var="image" showCaption="true" autoPlay="true" rendered="#{routeBean.images.size() > 0}">
 					        <p:graphicImage value="#{routeBean.myImage}" title="#{image}" width="600" height="450">
 					            <f:param name="imagename" value="#{image}" />
@@ -76,7 +76,7 @@
 					 	<p:column>
 					 		<div id="show_map"  style="width:500px;height:380px;"></div>
 					 		<div id="route_points">
-					 			<input type="hidden" name="points" id="points"  value="#{routeBean.getPoints()}"/>
+					 			<h:inputHidden value="#{routeBean.points}" name="points" id="points" />
 					 		</div>
 					 	</p:column>
 					 	

@@ -45,7 +45,7 @@ function initPolyline(){
 
 // Obtiene markers y los dibuja
 function obtenerMarkers() {
-	var points = $("#points").val().split(",");
+	var points = $("#route_form\\:points").val().split(",");
 	if (points != "") {
 		$.each(points, function( index, apoint ) {
 			p = apoint.split(" ");
@@ -103,20 +103,19 @@ function dibujarMarker(dato) {
 		/*if ($('#points').val().split(",").length > 1 ) {
 			removePoint = "," + removePoint;
 		}*/
-		points = $('#points').val().split(",");
+		points = $("#route_form\\:points").val().split(",");
 		$.each(points, function( index, apoint ) {
-			console.log(apoint);
 			if (apoint == removePoint){
 				points[index] = null;
 			}
 		})
-		console.log(points);
+		
 		//var points = $('#points').val().replace(removePoint, '');
 		points = jQuery.grep(points, function(n, i){
 			  return (n !== "" && n != null);
 			});
-		console.log(points);
-		$('#points').val(points.join(","));
+		
+		$("#route_form\\:points").val(points.join(","));
 		
 	});
 
@@ -133,12 +132,12 @@ function agregarMarker(latLng) {
 	dibujarMarker(punto);
 	dibujarRecorrido();
 	//$('<input>').attr({type: 'hidden', name: 'points[]', value: [punto.lat , punto.lon] }).appendTo('#route_points');
-	points = $('#points').val();
+	points = $("#route_form\\:points").val();
 	newPoint = punto.lat + " " + punto.lon;
 	if (points != ''){
-		$('#points').val(points +  "," + newPoint);
+		$("#route_form\\:points").val(points +  "," + newPoint);
 	}else {
-		$('#points').val(newPoint);
+		$("#route_form\\:points").val(newPoint);
 	}
 	
 
@@ -245,7 +244,7 @@ function clearMarkers() {
 function deleteMarkers() {
 	clearMarkers();
 	limpiarRecorrido();
-	$('#points').val("");
+	$("#route_form\\:points").val("");
 }
 
 

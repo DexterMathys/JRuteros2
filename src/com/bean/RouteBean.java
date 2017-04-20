@@ -526,7 +526,7 @@ public class RouteBean {
 	public String obtenerPuntos() throws ParserConfigurationException, SAXException, IOException {
 		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 		// String action = params.get("points");
-		this.points = params.get("points");
+		//this.points = params.get("points");
 		try {
 			if (this.points.equals("")) {
 				upload();

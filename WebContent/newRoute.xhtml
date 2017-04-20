@@ -25,7 +25,7 @@
 				
 				<p class="well">Completa todos los campos y luego presiona <b>Confirmar</b> para agregar la ruta</p>
 				
-				<h:form method="post" enctype="multipart/form-data" >
+				<h:form method="post" enctype="multipart/form-data" id="route_form">
 					<ui:include src="/WEB-INF/facelets/forms/routeForm.xhtml"/>
 				    				
 					<div class="row inline">
@@ -50,11 +50,7 @@
 	 			</h:form>
 			</div>
 			
-			<script type="text/javascript">
-				$( document ).ready(function() {
-					initMap();
-				});
-			</script>
+			
 			
 		</h:panelGroup>
 		

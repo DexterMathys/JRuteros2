@@ -36,8 +36,8 @@
 	    	</div>
 	 		<div id="map"  style="width:500px;height:380px;"></div>
 	 		<div id="route_points">
+	 			<h:inputHidden value="#{routeBean.points}" name="points" id="points" />
 	 			
-	 			<input type="hidden" name="points" id="points" value="#{routeBean.points}"/>
 	 		</div>
 	 	</p:column>
 	 	
@@ -131,4 +131,9 @@
 			</p:galleria>
 	 	</p:column>
 	 </p:panelGrid>
+	 <script type="text/javascript">
+				$( document ).ready(function() {
+					initMap();
+				});
+			</script>
 </div>
