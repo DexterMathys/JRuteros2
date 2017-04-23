@@ -450,7 +450,7 @@ public class RouteBean {
 		String[] points = obtenerPuntos().split(",");
 		if (points.length < 2) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Debe seleccionar al menos 2 puntos en el mapa.", ""));
+					"Debe seleccionar al menos 2 puntos en el mapa o adjuntar un archivo KML.", ""));
 			ok = false;
 		}
 		return ok;
