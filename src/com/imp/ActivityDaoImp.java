@@ -22,6 +22,7 @@ public class ActivityDaoImp implements ActivityDao {
 			s.save(activity);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
 		} finally {
 			if (s != null) {
@@ -38,6 +39,7 @@ public class ActivityDaoImp implements ActivityDao {
 			s.update(activity);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
 		} finally {
 			if (s != null) {
@@ -56,6 +58,7 @@ public class ActivityDaoImp implements ActivityDao {
 			s.delete(activity);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
 		} finally {
 			if (s != null) {
@@ -75,7 +78,6 @@ public class ActivityDaoImp implements ActivityDao {
 		try {
 			activities = s.createQuery(hql).list();
 			t.commit();
-			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -98,7 +100,6 @@ public class ActivityDaoImp implements ActivityDao {
 			Activity act = (Activity) s.createQuery(hql).setString("aname", activity.getName()).uniqueResult();
 			ex = (act != null && act.getId() != activity.getId());
 			t.commit();
-			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -121,7 +122,6 @@ public class ActivityDaoImp implements ActivityDao {
 		try {
 			rutas = s.createQuery(hql).setString("id", activity.getId().toString()).list();
 			t.commit();
-			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -144,7 +144,6 @@ public class ActivityDaoImp implements ActivityDao {
 		try {
 			activities = s.createQuery(hql).list();
 			t.commit();
-			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();

@@ -472,7 +472,8 @@ public class RouteBean {
 		}
 	}
 
-	private String fileToString(String filePath) throws ParserConfigurationException, SAXException, IOException, NullPointerException {
+	private String fileToString(String filePath)
+			throws ParserConfigurationException, SAXException, IOException, NullPointerException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
 		Document document = null;
@@ -526,7 +527,7 @@ public class RouteBean {
 	public String obtenerPuntos() throws ParserConfigurationException, SAXException, IOException {
 		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 		// String action = params.get("points");
-		//this.points = params.get("points");
+		// this.points = params.get("points");
 		try {
 			if (this.points.equals("")) {
 				upload();
@@ -686,6 +687,7 @@ public class RouteBean {
 
 	public void initRoute(Long routeId) {
 		this.route = routeDao.obtener(routeId);
+		System.out.println(this.route.getUser().getUserName());
 		if (this.route.isIsPublic()) {
 			this.isPublic = "1";
 		} else {
@@ -762,12 +764,12 @@ public class RouteBean {
 
 	public String searchForPoint() {
 		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-		
+
 		this.searchLat = params.get("lat");
 		this.searchLong = params.get("lng");
-		if (this.searchLong == "" || this.searchLat == "" ) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Se debe seleccionar un punto.", ""));
+		if (this.searchLong == "" || this.searchLat == "") {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Se debe seleccionar un punto.", ""));
 			return "/publicRoutes.xhtml";
 		}
 		Apoint searchPoint = new Apoint();
@@ -855,7 +857,7 @@ public class RouteBean {
 			}
 		}
 	}
-	
+
 	public double getPuntuacion(Route r) {
 		List<Routescore> scores = new RoutescoreDaoImp().listar(r.getId());
 		double promedio = 0.0;

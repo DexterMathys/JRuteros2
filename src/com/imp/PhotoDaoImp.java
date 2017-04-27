@@ -16,8 +16,6 @@ public class PhotoDaoImp implements PhotoDao {
 
 	@Override
 	public List<Photo> listar() {
-		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub
 		List<Photo> photos = null;
 
 		s = HibernateUtil.sessionFactory.openSession();
@@ -26,7 +24,6 @@ public class PhotoDaoImp implements PhotoDao {
 		try {
 			photos = s.createQuery(hql).list();
 			t.commit();
-			// s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -52,7 +49,6 @@ public class PhotoDaoImp implements PhotoDao {
 			q.setParameter("route_id", route_id);
 			photos = q.list();
 			t.commit();
-			// s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -73,6 +69,7 @@ public class PhotoDaoImp implements PhotoDao {
 			s.save(photo);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
 		} finally {
 			if (s != null) {
@@ -91,6 +88,7 @@ public class PhotoDaoImp implements PhotoDao {
 			s.update(photo);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
 		} finally {
 			if (s != null) {
@@ -108,6 +106,7 @@ public class PhotoDaoImp implements PhotoDao {
 			s.delete(photo);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
 		} finally {
 			if (s != null) {
@@ -126,7 +125,6 @@ public class PhotoDaoImp implements PhotoDao {
 		try {
 			ex = (s.createQuery(hql).setString("id", photo.getId().toString()).uniqueResult() != null);
 			t.commit();
-			// s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -141,10 +139,19 @@ public class PhotoDaoImp implements PhotoDao {
 	@Override
 	public Photo obtener(Long id) {
 		// TODO Auto-generated method stub
-		Photo photo;
-		s = HibernateUtil.sessionFactory.openSession();
-		photo = (Photo) s.get(Photo.class, id);
-		s.close();
+		Photo photo = null;
+
+		try {
+			s = HibernateUtil.sessionFactory.openSession();
+			photo = (Photo) s.get(Photo.class, id);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+
 		return photo;
 	}
 

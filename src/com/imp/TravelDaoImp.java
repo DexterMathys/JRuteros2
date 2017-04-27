@@ -6,19 +6,18 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import com.dao.TravelDao;
-import com.model.Route;
 import com.model.Travel;
 import com.util.HibernateUtil;
 
-public class TravelDaoImp implements TravelDao{
-	
+public class TravelDaoImp implements TravelDao {
+
 	private Session s;
 
 	@Override
 	public List<Travel> listar() {
 		// TODO Auto-generated method stub
 		List<Travel> travels = null;
-		
+
 		s = HibernateUtil.sessionFactory.openSession();
 		Transaction t = s.beginTransaction();
 		String hql = "FROM Travel";
@@ -39,32 +38,36 @@ public class TravelDaoImp implements TravelDao{
 	@Override
 	public void nuevo(Travel travel) {
 		// TODO Auto-generated method stub
+
 		try {
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
 			s.save(travel);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
 		}
-		
+
 	}
 
 	@Override
 	public void editar(Travel travel) {
 		// TODO Auto-generated method stub
+
 		try {
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
 			s.update(travel);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
@@ -74,14 +77,16 @@ public class TravelDaoImp implements TravelDao{
 	@Override
 	public void eliminar(Travel travel) {
 		// TODO Auto-generated method stub
+
 		try {
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
 			s.delete(travel);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			if (s != null) {
 				s.close();
 			}
@@ -96,9 +101,8 @@ public class TravelDaoImp implements TravelDao{
 		Transaction t = s.beginTransaction();
 		String hql = "FROM Travel where id = :id ";
 		try {
-			ex = (s.createQuery(hql).setString("id",travel.getId().toString()).uniqueResult() != null);
+			ex = (s.createQuery(hql).setString("id", travel.getId().toString()).uniqueResult() != null);
 			t.commit();
-			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -113,11 +117,20 @@ public class TravelDaoImp implements TravelDao{
 	@Override
 	public Travel obtener(Long id) {
 		// TODO Auto-generated method stub
-		Travel travel;
-		s = HibernateUtil.sessionFactory.openSession();
-		travel  = (Travel) s.get(Travel.class, id);
+		Travel travel = null;
+
+		try {
+			s = HibernateUtil.sessionFactory.openSession();
+			travel = (Travel) s.get(Travel.class, id);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+
 		return travel;
 	}
-
 
 }

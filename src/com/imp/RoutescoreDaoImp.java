@@ -26,7 +26,6 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 		try {
 			scores = s.createQuery(hql).list();
 			t.commit();
-			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -41,12 +40,14 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 	@Override
 	public void nuevo(Routescore score) {
 		// TODO Auto-generated method stub
+
 		try {
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
 			s.save(score);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
 		} finally {
 			if (s != null) {
@@ -59,12 +60,14 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 	@Override
 	public void editar(Routescore score) {
 		// TODO Auto-generated method stub
+
 		try {
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
 			s.update(score);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
 		} finally {
 			if (s != null) {
@@ -76,12 +79,14 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 	@Override
 	public void eliminar(Routescore score) {
 		// TODO Auto-generated method stub
+
 		try {
 			s = HibernateUtil.sessionFactory.openSession();
 			s.beginTransaction();
 			s.delete(score);
 			s.getTransaction().commit();
 		} catch (Exception e) {
+			s.getTransaction().rollback();
 			System.out.println(e.getMessage());
 		} finally {
 			if (s != null) {
@@ -100,7 +105,6 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 		try {
 			ex = (s.createQuery(hql).setString("id", score.getId().toString()).uniqueResult() != null);
 			t.commit();
-			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -125,7 +129,6 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 			q.setParameter("idUser", idUser);
 			ex = (q.uniqueResult() != null);
 			t.commit();
-			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -151,7 +154,6 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 			q.setParameter("idRoute", idRoute);
 			scores = q.list();
 			t.commit();
-			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
@@ -166,10 +168,19 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 	@Override
 	public Routescore obtener(Long id) {
 		// TODO Auto-generated method stub
-		Routescore score;
-		s = HibernateUtil.sessionFactory.openSession();
-		score = (Routescore) s.get(Routescore.class, id);
-		s.close();
+		Routescore score = null;
+
+		try {
+			s = HibernateUtil.sessionFactory.openSession();
+			score = (Routescore) s.get(Routescore.class, id);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+
 		return score;
 	}
 
@@ -187,7 +198,6 @@ public class RoutescoreDaoImp implements RoutescoreDao {
 			q.setParameter("idUser", idUser);
 			score = (Routescore) q.uniqueResult();
 			t.commit();
-			//s.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			t.rollback();
