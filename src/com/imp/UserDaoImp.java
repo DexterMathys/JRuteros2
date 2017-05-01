@@ -83,7 +83,7 @@ public class UserDaoImp implements UserDao {
 			t.commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			t.rollback();
+			//t.rollback();
 		} finally {
 			if (s != null) {
 				s.close();
