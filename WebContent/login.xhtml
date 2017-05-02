@@ -34,39 +34,8 @@
 			<br/>
 			<!-- Registrate -->
 			<b>Si no tienes cuenta <h:link value="registrate!" outcome="signup" /></b>
-			<br></br><br></br>
-			<h:form>
-				<div class="well" style="width:50%">	
-					<b>Datos de los usuarios del sistema</b> <br></br>				
-					<p:dataTable id="tablaUsuarios" var="item" value="#{userBean.users}" widgetVar="usersTable" emptyMessage="No se encuentra ningun Usuario" paginator="true" rows="5"
-					 			 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					 			 rowsPerPageTemplate="5,10,15" filteredValue="#{userBean.filteredUsers}">
-						<f:facet name="header">
-				            <p:outputPanel>
-				                <h:outputText value="Buscar:" />
-				                <p:inputText id="globalFilter" onkeyup="PF('usersTable').filter()" style="width:150px" placeholder=""/>
-				            </p:outputPanel>
-				        </f:facet>
-						
-						<p:column headerText="Usuario" filterBy="#{item.userName}" filterMatchMode="contains" sortBy="#{item.userName}">
-							<p:outputLabel value="#{item.userName}" />
-						</p:column>
-						
-						<p:column headerText="Contraseña" filterBy="#{item.password}" filterMatchMode="contains" sortBy="#{item.password}">
-							<p:outputLabel value="#{item.password}" />
-						</p:column>
-						
-						<p:column headerText="Rol" filterBy="#{item.roll}" filterMatchMode="contains" sortBy="#{item.roll}">
-							<p:outputLabel value="#{item.roll}" />
-						</p:column>
-						
-						<p:column headerText="Estado" filterBy="#{item.getEstado()}" filterMatchMode="contains" sortBy="#{item.getEstado()}">
-							<p:outputLabel value="#{item.getEstado()}" />
-						</p:column>
-						
-					</p:dataTable>
-				</div>
-			</h:form>
+			<br></br>
+			<p:commandButton  action="#{userBean.info()}" icon="fa fa-users" styleClass="btn btn-success btn-xs" value="Click aqui para ver los datos de los usuarios del sistema"/>
 		</h:form>
 		 
 	</ui:define>

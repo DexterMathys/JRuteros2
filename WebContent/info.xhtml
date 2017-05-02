@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"	
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:p="http://primefaces.org/ui"
+			    template="/WEB-INF/facelets/templates/layout.xhtml"> 
+
+	<ui:define name="encabezado">
+		<ui:include src="/WEB-INF/facelets/headers/defaultHeader.xhtml"/>
+	</ui:define>
+	
+	<ui:define name="body">
+		<h1><p:outputLabel>Datos de usuarios</p:outputLabel></h1>
+		<p:separator></p:separator>
+		<h:form>
+			<h:form>
+					<div class="well">Datos de los usuarios del sistema necesarios para <b>iniciar sesion</b>.</div>			
+					<p:dataTable id="tablaUsuarios" var="item" value="#{userBean.users}" widgetVar="usersTable" emptyMessage="No se encuentra ningun Usuario" paginator="true" rows="5"
+					 			 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					 			 rowsPerPageTemplate="5,10,15" filteredValue="#{userBean.filteredUsers}">
+						<f:facet name="header">
+				            <p:outputPanel>
+				                <h:outputText value="Buscar:" />
+				                <p:inputText id="globalFilter" onkeyup="PF('usersTable').filter()" style="width:150px" placeholder=""/>
+				            </p:outputPanel>
+				        </f:facet>
+						
+						<p:column headerText="Usuario" filterBy="#{item.userName}" filterMatchMode="contains" sortBy="#{item.userName}">
+							<p:outputLabel value="#{item.userName}" />
+						</p:column>
+						
+						<p:column headerText="Contraseña" filterBy="#{item.password}" filterMatchMode="contains" sortBy="#{item.password}">
+							<p:outputLabel value="#{item.password}" />
+						</p:column>
+						
+						<p:column headerText="Rol" filterBy="#{item.roll}" filterMatchMode="contains" sortBy="#{item.roll}">
+							<p:outputLabel value="#{item.roll}" />
+						</p:column>
+						
+						<p:column headerText="Estado" filterBy="#{item.getEstado()}" filterMatchMode="contains" sortBy="#{item.getEstado()}">
+							<p:outputLabel value="#{item.getEstado()}" />
+						</p:column>
+						
+					</p:dataTable>
+			</h:form>
+			<br></br>
+			<p:commandButton styleClass="btn btn-success btn-lg" icon="fa fa-arrow-left" value="Volver al Inicio" action="#{userBean.volverInicio()}" />
+		</h:form>
+		 
+	</ui:define>
+	
+</ui:composition>

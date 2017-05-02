@@ -688,4 +688,8 @@ public class UserBean {
 		}
 	}
 
+	public String info() {
+		return "info.xhtml";
+	}
+
 }
