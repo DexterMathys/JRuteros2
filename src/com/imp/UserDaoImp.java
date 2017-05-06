@@ -14,7 +14,8 @@ import com.util.HibernateUtil;
 
 public class UserDaoImp implements UserDao {
 
-	private Session s = HibernateUtil.sessionFactory.openSession();
+	private Session s;
+	//= HibernateUtil.sessionFactory.openSession();
 
 	@Override
 	public void nuevoUser(User user) {
@@ -83,7 +84,7 @@ public class UserDaoImp implements UserDao {
 			t.commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			//t.rollback();
+			t.rollback();
 		} finally {
 			if (s != null) {
 				s.close();
